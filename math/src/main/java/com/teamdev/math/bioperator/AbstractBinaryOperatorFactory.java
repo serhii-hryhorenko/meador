@@ -3,9 +3,9 @@ package com.teamdev.math.bioperator;
 /**
  * Abstract factory for {@link DoubleValueBinaryOperator}.
  */
-public interface PrioritizedBinaryOperatorFactory {
+public interface AbstractBinaryOperatorFactory {
 
-    DoubleValueBinaryOperator create(char c);
+    AbstractBinaryOperator create(char c);
 
     boolean hasOperator(char operator);
 }

@@ -57,7 +57,6 @@ public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor
         var currentState = transitionMatrix.getStartState();
 
         while (true) {
-
             if (skippingWhitespaces) {
                 input.skipWhitespaces();
             }
@@ -76,9 +75,6 @@ public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor
                     return false;
                 }
 
-                if (restore(input, currentState)) {
-                    return false;
-                }
 
                 if (currentState.isFinite()) {
 
@@ -91,10 +87,14 @@ public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor
                     return true;
                 }
 
+                if (currentState.isTemporary()) {
+                    return restore(input);
+                }
+
                 if (logger.isErrorEnabled()) {
                     logger.error("[{}] got into deadlock when [{}]",
-                                 this.getClass()
-                                     .getSimpleName(), currentState);
+                            this.getClass()
+                                    .getSimpleName(), currentState);
                 }
 
                 exceptionThrower.throwException();
@@ -104,17 +104,12 @@ public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor
         }
     }
 
-    private boolean restore(InputSequence input, State<O, E> currentState) {
+    private boolean restore(InputSequence input) {
+        input.restorePosition();
 
-        if (currentState.isTemporary()) {
-            input.restorePosition();
-
-            if (logger.isInfoEnabled()) {
-                logger.info("InputSequence restored to [{}], index: {}.",
-                            input.getSequence(), input.getPosition());
-            }
-
-            return true;
+        if (logger.isInfoEnabled()) {
+            logger.info("[{}] restored to [{}], index: {}.",
+                        getClass().getSimpleName(), input.getSequence(), input.getPosition());
         }
 
         return false;

@@ -3,9 +3,9 @@ package com.teamdev.math.bioperator;
 
 import com.teamdev.math.type.Value;
 
-import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 
-public abstract class AbstractBinaryOperator implements BiFunction<Value, Value, Value>,
+public abstract class AbstractBinaryOperator implements BinaryOperator<Value>,
                                                         Comparable<AbstractBinaryOperator> {
 
     public enum Priority {
@@ -19,9 +19,6 @@ public abstract class AbstractBinaryOperator implements BiFunction<Value, Value,
     AbstractBinaryOperator(Priority priority) {
         this.priority = priority;
     }
-
-    @Override
-    public abstract Value apply(Value a, Value b);
 
     @Override
     public int compareTo(AbstractBinaryOperator o) {
