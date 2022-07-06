@@ -15,7 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class MeadorCompileTest {
-
     private static final Logger logger = LoggerFactory.getLogger(MeadorCompileTest.class);
 
     private final Meador executor = new Meador();
@@ -24,6 +23,8 @@ class MeadorCompileTest {
 
         return Stream.of(
                 Arguments.of("a = 5; print(a);", "[5.0]"),
+                Arguments.of("a = 5 > 2; print(a);", "[true]"),
+                Arguments.of("a = 5 > 2 ^ 2 * 2; print(a);", "[false]"),
                 Arguments.of("a = 5; b = a + 5; print(a+b, a);", "[15.0, 5.0]"),
                 Arguments.of("abc = (2 + 2) * 2; bcd = (abc + 1) * 2; print(bcd);", "[18.0]"),
                 Arguments.of("a = pi(); b = a ^ 2 * 10; print(b);", "[" +

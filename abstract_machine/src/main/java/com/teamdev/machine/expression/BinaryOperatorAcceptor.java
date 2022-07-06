@@ -3,9 +3,8 @@ package com.teamdev.machine.expression;
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.InputSequence;
 import com.teamdev.fsm.StateAcceptor;
-import com.teamdev.math.PrioritizedBinaryOperatorFactoryImpl;
-import com.teamdev.math.bioperator.DoubleValueBinaryOperator;
-import com.teamdev.math.bioperator.PrioritizedBinaryOperatorFactory;
+import com.teamdev.math.bioperator.AbstractBinaryOperator;
+import com.teamdev.math.bioperator.AbstractBinaryOperatorFactory;
 
 import java.util.function.BiConsumer;
 
@@ -15,14 +14,13 @@ import java.util.function.BiConsumer;
  */
 public class BinaryOperatorAcceptor<O, E extends Exception> implements StateAcceptor<O, E> {
 
-    private final PrioritizedBinaryOperatorFactory prioritizedBinaryOperatorFactory
-            = new PrioritizedBinaryOperatorFactoryImpl();
+    private final AbstractBinaryOperatorFactory factory;
+    private final BiConsumer<O, AbstractBinaryOperator> resultConsumer;
 
-    private final BiConsumer<O, DoubleValueBinaryOperator> resultConsumer;
+    public BinaryOperatorAcceptor(AbstractBinaryOperatorFactory factory,
+                                  BiConsumer<O, AbstractBinaryOperator> resultConsumer) {
 
-    BinaryOperatorAcceptor(
-            BiConsumer<O, DoubleValueBinaryOperator> resultConsumer) {
-
+        this.factory = Preconditions.checkNotNull(factory);
         this.resultConsumer = Preconditions.checkNotNull(resultConsumer);
     }
 
@@ -30,9 +28,9 @@ public class BinaryOperatorAcceptor<O, E extends Exception> implements StateAcce
     public boolean accept(InputSequence inputSequence, O outputSequence) {
 
         if (inputSequence.canRead() &&
-                prioritizedBinaryOperatorFactory.hasOperator(inputSequence.read())) {
+                factory.hasOperator(inputSequence.read())) {
 
-            var operator = prioritizedBinaryOperatorFactory.create(inputSequence.read());
+            var operator = factory.create(inputSequence.read());
             resultConsumer.accept(outputSequence, operator);
             inputSequence.next();
             return true;

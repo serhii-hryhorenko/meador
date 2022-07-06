@@ -45,7 +45,7 @@ public class TransitionOneOfMatrixBuilder<O, E extends Exception> {
 
     public final TransitionMatrix<O, E> build() {
         return builder.withStartState(initial)
-                      .allowTransition(initial, transitions.toArray(new State[transitions.size()]))
-                      .build();
+                .allowTransition(initial, transitions.toArray(State[]::new))
+                .build();
     }
 }

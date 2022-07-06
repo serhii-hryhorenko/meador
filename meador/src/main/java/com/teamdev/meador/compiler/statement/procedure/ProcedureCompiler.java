@@ -13,7 +13,7 @@ import com.teamdev.meador.runtime.Command;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.teamdev.meador.compiler.StatementType.EXPRESSION;
+import static com.teamdev.meador.compiler.StatementType.NUMERIC_EXPRESSION;
 
 public class ProcedureCompiler implements StatementCompiler {
 
@@ -31,7 +31,7 @@ public class ProcedureCompiler implements StatementCompiler {
         var functionFSM = FunctionFSM.<CompileFunctionContext, CompilingException>create(
                 (inputSequence, outputSequence) -> {
 
-                    var optionalCommand = compilerFactory.create(EXPRESSION)
+                    var optionalCommand = compilerFactory.create(NUMERIC_EXPRESSION)
                                                          .compile(inputSequence);
 
                     optionalCommand.ifPresent(outputSequence::addCommand);

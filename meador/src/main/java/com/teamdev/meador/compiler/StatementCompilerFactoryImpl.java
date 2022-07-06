@@ -11,6 +11,10 @@ import com.teamdev.machine.number.NumberFSM;
 import com.teamdev.machine.operand.OperandFSM;
 import com.teamdev.machine.util.TextIdentifierFSM;
 import com.teamdev.machine.util.ValidatedFunctionFactoryImpl;
+import com.teamdev.math.MathBinaryOperatorFactoryImpl;
+import com.teamdev.math.type.Value;
+import com.teamdev.meador.compiler.fsmimpl.RelationalExpressionFSM;
+import com.teamdev.meador.compiler.statement.relative_expr.RelationalExpressionContext;
 import com.teamdev.meador.compiler.statement.function.FunctionCompiler;
 import com.teamdev.meador.compiler.statement.procedure.ProcedureCompiler;
 import com.teamdev.meador.compiler.statement.variable.VariableFSM;
@@ -22,14 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.teamdev.meador.compiler.StatementType.BRACKETS;
-import static com.teamdev.meador.compiler.StatementType.EXPRESSION;
-import static com.teamdev.meador.compiler.StatementType.FUNCTION;
-import static com.teamdev.meador.compiler.StatementType.NUMBER;
-import static com.teamdev.meador.compiler.StatementType.OPERAND;
-import static com.teamdev.meador.compiler.StatementType.PROCEDURE;
-import static com.teamdev.meador.compiler.StatementType.VARIABLE_DECLARATION;
-import static com.teamdev.meador.compiler.StatementType.VARIABLE_VALUE;
+import static com.teamdev.meador.compiler.StatementType.*;
 
 public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
 
@@ -47,15 +44,58 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
 
         );
 
-        compilers.put(EXPRESSION, new CommandListMachineCompiler(createExpressionMachine(),
+        compilers.put(EXPRESSION, new CommandListMachineCompiler(
+                OperandFSM.create(new TransitionOneOfMatrixBuilder<List<Command>, CompilingException>()
+                                .allowTransition(new CompileStatementAcceptor<>(this, RELATIONAL_EXPRESSION, List::add),
+                                        "RELATIONAL EXPRESSION")
+                                .allowTransition(new CompileStatementAcceptor<>(this, NUMERIC_EXPRESSION, List::add),
+                                "NUMERIC EXPRESSION")
+                                .build(),
+                        new ExceptionThrower<>(CompilingException::new)
+                ),
+                (environment, value) -> environment.stack().peek().pushOperand(value)
+        ));
+
+        compilers.put(NUMERIC_EXPRESSION, new CommandListMachineCompiler(createNumericExpressionMachine(),
                                                                  (environment, value) ->
                                                                          environment.stack()
                                                                                     .peek()
-                                                                                    .pushOperand(
-                                                                                            value)));
+                                                                                    .pushOperand(value)));
+
+        compilers.put(RELATIONAL_EXPRESSION, inputSequence -> {
+            var relationalExpressionFSM = RelationalExpressionFSM.create(this);
+
+            var context = new RelationalExpressionContext();
+
+            if (relationalExpressionFSM.accept(inputSequence, context)) {
+                return Optional.of(runtimeEnvironment -> {
+                    runtimeEnvironment.stack().create();
+
+                    context.left().execute(runtimeEnvironment);
+
+                    Value leftValue = runtimeEnvironment.stack().pop().popResult();
+
+                    runtimeEnvironment.stack().create();
+
+                    context.right().execute(runtimeEnvironment);
+
+                    Value rightValue = runtimeEnvironment.stack().pop().popResult();
+
+                    runtimeEnvironment.stack().create();
+                    runtimeEnvironment.stack().peek().pushOperand(leftValue);
+                    runtimeEnvironment.stack().peek().pushOperand(rightValue);
+                    runtimeEnvironment.stack().peek().pushOperator(context.operator());
+
+                    Value result = runtimeEnvironment.stack().pop().popResult();
+                    runtimeEnvironment.stack().peek().pushOperand(result);
+                });
+            }
+
+            return Optional.empty();
+        });
 
         compilers.put(BRACKETS,
-                      new CommandListMachineCompiler(BracketsFSM.create(createExpressionMachine(),
+                      new CommandListMachineCompiler(BracketsFSM.create(createNumericExpressionMachine(),
                                                                         new ExceptionThrower<>(
                                                                                 CompilingException::new)),
                                                      (environment, value) ->
@@ -67,8 +107,7 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
                                                               (environment, value) ->
                                                                       environment.stack()
                                                                                  .peek()
-                                                                                 .pushOperand(
-                                                                                         value)));
+                                                                                 .pushOperand(value)));
 
         compilers.put(FUNCTION, new FunctionCompiler(this,
                                                      new ValidatedFunctionFactoryImpl()));
@@ -84,9 +123,7 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
                                  .accept(inputSequence, variableName)) {
 
                 return Optional.of(runtimeEnvironment -> {
-                    var value = runtimeEnvironment.memory()
-                                                  .getVariable(
-                                                          variableName.toString());
+                    var value = runtimeEnvironment.memory().getVariable(variableName.toString());
                     runtimeEnvironment.stack()
                                       .peek()
                                       .pushOperand(value);
@@ -98,9 +135,10 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
         });
     }
 
-    private StateAcceptor<List<Command>, CompilingException> createExpressionMachine() {
+    private StateAcceptor<List<Command>, CompilingException> createNumericExpressionMachine() {
         return ExpressionFSM.create(
                 new CompileStatementAcceptor<>(this, OPERAND, List::add),
+                new MathBinaryOperatorFactoryImpl(),
                 (commands, operator) -> commands.add(
                         runtimeEnvironment -> runtimeEnvironment.stack()
                                                                 .peek()
@@ -125,8 +163,8 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
                         .allowTransition(
                                 new CompileStatementAcceptor<>(this, VARIABLE_VALUE, List::add),
                                 "MEADOR VARIABLE")
-
                         .build(),
+
                 new ExceptionThrower<>(CompilingException::new)
         );
     }

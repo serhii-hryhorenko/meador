@@ -23,7 +23,7 @@ public class ShuntingYard {
         operandStack.push(operand);
     }
 
-    public void pushOperator(DoubleValueBinaryOperator operator) {
+    public void pushOperator(AbstractBinaryOperator operator) {
 
         while (!operatorStack.isEmpty() && operatorStack.peek()
                                                         .compareTo(operator) >= 0) {

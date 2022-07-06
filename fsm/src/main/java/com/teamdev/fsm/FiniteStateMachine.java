@@ -15,8 +15,7 @@ import java.util.Optional;
  * Realizes traversal algorithm from a so-called start state to so-called finish state
  * that are defined by a transition matrix also.
  *
- * @param <O>
- *         output sequence type
+ * @param <O> output sequence type
  */
 
 public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor<O, E> {
@@ -50,14 +49,12 @@ public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor
 
         if (logger.isInfoEnabled()) {
             logger.info("[{}] runs with [{}] input sequence",
-                        this.getClass()
-                            .getSimpleName(), input.getSequence());
+                    getClass().getSimpleName(), input.getSequence());
         }
 
         var currentState = transitionMatrix.getStartState();
 
         while (true) {
-
             if (skippingWhitespaces) {
                 input.skipWhitespaces();
             }
@@ -66,35 +63,37 @@ public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor
 
             if (nextState.isEmpty()) {
                 if (transitionMatrix.getStartState()
-                                    .equals(currentState)) {
+                        .equals(currentState)) {
 
                     if (logger.isInfoEnabled()) {
                         logger.info("[{}] is failed to start.", this.getClass()
-                                                                    .getSimpleName());
+                                .getSimpleName());
                     }
 
                     return false;
                 }
 
-                if (restore(input, currentState)) {
-                    return false;
-                }
 
                 if (currentState.isFinite()) {
 
                     if (logger.isInfoEnabled()) {
                         logger.info("[{}]: finished successfully in [{}]",
-                                    this.getClass()
+                                this.getClass()
                                         .getSimpleName(), currentState);
                     }
 
                     return true;
                 }
 
+                if (currentState.isTemporary()) {
+                    restore(input);
+                    return false;
+                }
+
                 if (logger.isErrorEnabled()) {
                     logger.error("[{}] got into deadlock when [{}]",
-                                 this.getClass()
-                                     .getSimpleName(), currentState);
+                            this.getClass()
+                                    .getSimpleName(), currentState);
                 }
 
                 exceptionThrower.throwException();
@@ -104,25 +103,18 @@ public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor
         }
     }
 
-    private boolean restore(InputSequence input, State<O, E> currentState) {
+    private void restore(InputSequence input) {
+        input.restorePosition();
 
-        if (currentState.isTemporary()) {
-            input.restorePosition();
-
-            if (logger.isInfoEnabled()) {
-                logger.info("InputSequence restored to [{}], index: {}.",
-                            input.getSequence(), input.getPosition());
-            }
-
-            return true;
+        if (logger.isInfoEnabled()) {
+            logger.info("[{}] restored to [{}], index: {}.",
+                    getClass().getSimpleName(), input.getSequence(), input.getPosition());
         }
-
-        return false;
     }
 
     private Optional<State<O, E>> getNextState(State<O, E> currentState,
-                                            InputSequence input,
-                                            O output) throws E {
+                                               InputSequence input,
+                                               O output) throws E {
 
         var allowedStates = Optional.ofNullable(
                 transitionMatrix.getAllowedStates(currentState));
@@ -135,7 +127,7 @@ public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor
 
                     if (logger.isInfoEnabled()) {
                         logger.info("InputSequence is saved at position [{}], index: {}.",
-                                    input.getSequence(), input.getPosition());
+                                input.getSequence(), input.getPosition());
                     }
                 }
 
@@ -143,11 +135,14 @@ public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor
 
                     if (logger.isInfoEnabled()) {
                         logger.info("[{}]: [{}] -> [{}]",
-                                    this.getClass()
-                                        .getSimpleName(), currentState, candidateState);
+                                getClass().getSimpleName(), currentState, candidateState);
                     }
 
                     return Optional.of(candidateState);
+                }
+
+                if (candidateState.isTemporary()) {
+                    restore(input);
                 }
             }
         }

@@ -15,6 +15,7 @@ import com.teamdev.machine.function.FunctionHolder;
 import com.teamdev.machine.number.NumberFSM;
 import com.teamdev.machine.operand.OperandFSM;
 import com.teamdev.machine.util.ValidatedFunctionFactoryImpl;
+import com.teamdev.math.MathBinaryOperatorFactoryImpl;
 import com.teamdev.math.ShuntingYard;
 
 import java.util.EnumMap;
@@ -36,6 +37,7 @@ public class MathElementResolverFactoryImpl implements MathElementResolverFactor
 
         resolvers.put(EXPRESSION, new ShuntingYardResolver(ExpressionFSM.create(
                 new ResolveMathElementAcceptor<>(this, OPERAND, ShuntingYard::pushOperand),
+                new MathBinaryOperatorFactoryImpl(),
                 ShuntingYard::pushOperator,
                 new ExceptionThrower<>(ResolvingException::new)))
         );
@@ -62,6 +64,7 @@ public class MathElementResolverFactoryImpl implements MathElementResolverFactor
                                 new ResolveMathElementAcceptor<>(this,
                                                                  EXPRESSION,
                                                                  ShuntingYard::pushOperand),
+                                new MathBinaryOperatorFactoryImpl(),
                                 ShuntingYard::pushOperator,
                                 new ExceptionThrower<>(ResolvingException::new)),
 

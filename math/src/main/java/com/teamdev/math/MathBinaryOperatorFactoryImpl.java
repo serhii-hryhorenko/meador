@@ -1,7 +1,7 @@
 package com.teamdev.math;
 
 import com.teamdev.math.bioperator.DoubleValueBinaryOperator;
-import com.teamdev.math.bioperator.PrioritizedBinaryOperatorFactory;
+import com.teamdev.math.bioperator.AbstractBinaryOperatorFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +11,7 @@ import static com.teamdev.math.bioperator.AbstractBinaryOperator.Priority.LOW;
 import static com.teamdev.math.bioperator.AbstractBinaryOperator.Priority.MEDIUM;
 
 /**
- * {@link PrioritizedBinaryOperatorFactory} implementation with prepared objects inside a Map.
+ * {@link AbstractBinaryOperatorFactory} implementation with prepared objects inside a Map.
  *
  * Before trying to create an operator strictly recommended to check presence of an operator in
  * implementation.
@@ -23,11 +23,11 @@ import static com.teamdev.math.bioperator.AbstractBinaryOperator.Priority.MEDIUM
  * }
  * }
  */
-public class PrioritizedBinaryOperatorFactoryImpl implements PrioritizedBinaryOperatorFactory {
+public class MathBinaryOperatorFactoryImpl implements AbstractBinaryOperatorFactory {
 
     private final Map<Character, DoubleValueBinaryOperator> operators = new HashMap<>();
 
-    public PrioritizedBinaryOperatorFactoryImpl() {
+    public MathBinaryOperatorFactoryImpl() {
         operators.put('+', new DoubleValueBinaryOperator(Double::sum, LOW));
         operators.put('-', new DoubleValueBinaryOperator((left, right) -> left - right, LOW));
         operators.put('*', new DoubleValueBinaryOperator((left, right) -> left * right, MEDIUM));
