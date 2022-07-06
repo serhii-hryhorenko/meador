@@ -1,16 +1,21 @@
 package com.teamdev.meador.compiler;
 
 public enum StatementType {
+    PROGRAM,
 
     VARIABLE_DECLARATION,
+    PROCEDURE,
+    SWITCH,
+
     EXPRESSION,
     NUMERIC_EXPRESSION,
     RELATIONAL_EXPRESSION,
+
+
     OPERAND,
     NUMBER,
     BRACKETS,
     FUNCTION,
-    PROCEDURE,
     VARIABLE_VALUE,
 
 }

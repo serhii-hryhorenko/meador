@@ -16,19 +16,7 @@ public class Compiler {
 
         StatementCompilerFactory factory = new StatementCompilerFactoryImpl();
 
-        var compiler = (StatementCompiler) compilerInput -> {
-            var commands = new ArrayList<Command>();
-
-            if (CompilerFSM.create(factory)
-                           .accept(compilerInput, commands)) {
-
-                return Optional.of(
-                        runtimeEnvironment -> commands.forEach(
-                                command -> command.execute(runtimeEnvironment)));
-            }
-
-            return Optional.empty();
-        };
+        var compiler = factory.create(StatementType.PROGRAM);
 
         return compiler.compile(inputSequence);
     }

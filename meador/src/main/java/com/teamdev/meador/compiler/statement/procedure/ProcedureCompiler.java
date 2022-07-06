@@ -28,7 +28,7 @@ public class ProcedureCompiler implements StatementCompiler {
     @Override
     public Optional<Command> compile(InputSequence input) throws CompilingException {
 
-        var functionFSM = FunctionFSM.<CompileFunctionContext, CompilingException>create(
+        var functionFSM = FunctionFSM. <CompileFunctionContext, CompilingException>create(
                 (inputSequence, outputSequence) -> {
 
                     var optionalCommand = compilerFactory.create(NUMERIC_EXPRESSION)
@@ -73,6 +73,7 @@ public class ProcedureCompiler implements StatementCompiler {
                 });
             }
 
+            System.out.println("Factory has not procedure: " + context.functionName());
             return Optional.empty();
         }
 

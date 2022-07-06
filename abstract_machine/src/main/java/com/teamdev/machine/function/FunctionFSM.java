@@ -73,6 +73,6 @@ public class FunctionFSM<O extends FunctionHolder, E extends Exception> extends 
                 .allowTransition(separatorState, argumentExpressionState)
                 .build();
 
-        return new FunctionFSM<O, E>(matrix, exceptionThrower);
+        return new FunctionFSM<>(matrix, exceptionThrower);
     }
 }

@@ -50,6 +50,13 @@ public class CompilerFSM extends FiniteStateMachine<List<Command>, CompilingExce
                 .setTemporary(true)
                 .build();
 
+        var switchOperator = new State.Builder<List<Command>, CompilingException>()
+                .setName("SWITCH")
+                .setAcceptor(new CompileStatementAcceptor<>(factory, StatementType.SWITCH, List::add))
+                .setFinite(true)
+                .setTemporary(true)
+                .build();
+
         var end = new State.Builder<List<Command>, CompilingException>()
                 .setName("COMPILATION END")
                 .setAcceptor((inputSequence, outputSequence) -> !inputSequence.canRead())
@@ -60,9 +67,10 @@ public class CompilerFSM extends FiniteStateMachine<List<Command>, CompilingExce
                                                                                             CompilingException>()
                 .withStartState(initial)
                 .allowTransition(initial, statement)
-                .allowTransition(statement, procedure, variable)
-                .allowTransition(variable, end, procedure, variable)
-                .allowTransition(procedure, end, procedure, variable)
+                .allowTransition(statement, switchOperator, procedure, variable)
+                .allowTransition(variable, end, switchOperator, procedure, variable)
+                .allowTransition(procedure, end, switchOperator, procedure, variable)
+                .allowTransition(switchOperator, end, switchOperator, procedure, variable)
                 .build();
 
         return new CompilerFSM(matrix);

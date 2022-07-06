@@ -31,7 +31,7 @@ public class ValidatedProcedureFactory {
         return procedures.get(Preconditions.checkNotNull(name));
     }
 
-    public boolean hasProcedure(String function) {
-        return procedures.containsKey(Preconditions.checkNotNull(function));
+    public boolean hasProcedure(String procedure) {
+        return procedures.containsKey(Preconditions.checkNotNull(procedure));
     }
 }

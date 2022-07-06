@@ -1,5 +1,6 @@
 package com.teamdev.meador.compiler;
 
+import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.ExceptionThrower;
 import com.teamdev.fsm.InputSequence;
@@ -13,18 +14,23 @@ import com.teamdev.machine.util.TextIdentifierFSM;
 import com.teamdev.machine.util.ValidatedFunctionFactoryImpl;
 import com.teamdev.math.MathBinaryOperatorFactoryImpl;
 import com.teamdev.math.type.Value;
+import com.teamdev.meador.compiler.fsmimpl.CompilerFSM;
 import com.teamdev.meador.compiler.fsmimpl.RelationalExpressionFSM;
+import com.teamdev.meador.compiler.fsmimpl.switch_operator.SwitchFSM;
 import com.teamdev.meador.compiler.statement.relative_expr.RelationalExpressionContext;
 import com.teamdev.meador.compiler.statement.function.FunctionCompiler;
 import com.teamdev.meador.compiler.statement.procedure.ProcedureCompiler;
+import com.teamdev.meador.compiler.statement.switch_operator.SwitchContext;
+import com.teamdev.meador.compiler.statement.switch_operator.SwitchOptionContext;
 import com.teamdev.meador.compiler.statement.variable.VariableFSM;
 import com.teamdev.meador.compiler.statement.variable.VariableHolder;
 import com.teamdev.meador.runtime.Command;
+import com.teamdev.meador.runtime.RuntimeEnvironment;
+import org.checkerframework.checker.units.qual.C;
 
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static com.teamdev.meador.compiler.StatementType.*;
 
@@ -33,7 +39,46 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
     private final Map<StatementType, StatementCompiler> compilers = new EnumMap<>(
             StatementType.class);
 
-    StatementCompilerFactoryImpl() {
+    public StatementCompilerFactoryImpl() {
+
+        compilers.put(PROGRAM, compilerInput -> {
+            var commands = new ArrayList<Command>();
+
+            if (CompilerFSM.create(this)
+                    .accept(compilerInput, commands)) {
+
+                return Optional.of(
+                        runtimeEnvironment -> commands.forEach(
+                                command -> command.execute(runtimeEnvironment)));
+            }
+
+            return Optional.empty();
+        });
+
+        compilers.put(SWITCH, inputSequence -> {
+            var context = new SwitchContext();
+
+            if (SwitchFSM.create(StatementCompilerFactoryImpl.this).accept(inputSequence, context)) {
+                return Optional.of(runtimeEnvironment -> {
+                    runtimeEnvironment.stack().create();
+                    context.value().execute(runtimeEnvironment);
+
+                    Value matchedValue = runtimeEnvironment.stack().pop().popResult();
+
+                    context.options().stream()
+                            .filter(switchOptionContext -> {
+                                Command condition = switchOptionContext.condition();
+                                runtimeEnvironment.stack().create();
+                                condition.execute(runtimeEnvironment);
+                                Value conditionValue = runtimeEnvironment.stack().pop().popResult();
+                                return matchedValue.equals(conditionValue);
+                            })
+                            .findFirst()
+                            .ifPresent(switchOptionContext -> switchOptionContext.statement().execute(runtimeEnvironment));
+                });
+            }
+            return Optional.empty();
+        });
 
         compilers.put(NUMBER, inputSequence ->
                 NumberFSM.execute(inputSequence, new ExceptionThrower<>(CompilingException::new))
@@ -47,7 +92,7 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
         compilers.put(EXPRESSION, new CommandListMachineCompiler(
                 OperandFSM.create(new TransitionOneOfMatrixBuilder<List<Command>, CompilingException>()
                                 .allowTransition(new CompileStatementAcceptor<>(this, RELATIONAL_EXPRESSION, List::add),
-                                        "RELATIONAL EXPRESSION")
+                                        "RELATIONAL EXPRESSION", true)
                                 .allowTransition(new CompileStatementAcceptor<>(this, NUMERIC_EXPRESSION, List::add),
                                 "NUMERIC EXPRESSION")
                                 .build(),
@@ -158,10 +203,9 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
                                          "MEADOR BRACKETS")
 
                         .allowTransition(new CompileStatementAcceptor<>(this, FUNCTION, List::add),
-                                         "MEADOR FUNCTION")
+                                         "MEADOR FUNCTION", true)
 
-                        .allowTransition(
-                                new CompileStatementAcceptor<>(this, VARIABLE_VALUE, List::add),
+                        .allowTransition(new CompileStatementAcceptor<>(this, VARIABLE_VALUE, List::add),
                                 "MEADOR VARIABLE")
                         .build(),
 

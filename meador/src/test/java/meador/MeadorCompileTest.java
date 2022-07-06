@@ -30,7 +30,22 @@ class MeadorCompileTest {
                 Arguments.of("a = pi(); b = a ^ 2 * 10; print(b);", "[" +
                         StrictMath.pow(Math.PI, 2) * 10 + ']'),
                 Arguments.of("pi = pi(); print(pi, pi());", "[" + Math.PI +", " + Math.PI + ']'),
-                Arguments.of("pi = pi(); print(pi, pi()); pi = 2 * pi;", "[" + Math.PI +", " + Math.PI + ']')
+                Arguments.of("pi = pi(); print(pi, pi()); pi = 2 * pi;", "[" + Math.PI +", " + Math.PI + ']'),
+
+                Arguments.of("""
+                        a = 5;
+                        switch (a) {
+                        case 5: { print(a); }
+                        case 2: { a = 5; }
+                        }
+                        """, "[5.0]"),
+                Arguments.of("""
+                        a = pi();
+                        switch (a) {
+                        case 0: { flush(); }
+                        case pi(): { print(3, 0.14); }
+                        }
+                        """, "[3.0, 0.14]")
         );
     }
 
