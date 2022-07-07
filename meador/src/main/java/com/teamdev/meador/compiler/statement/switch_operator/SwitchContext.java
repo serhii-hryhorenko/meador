@@ -8,15 +8,16 @@ import java.util.List;
 
 public class SwitchContext {
 
-    private Command value;
+    private Command valueToMatch;
     private final List<SwitchOptionContext> options = new ArrayList<>();
+    private Command defaultCommand;
 
     public Command value() {
-        return value;
+        return valueToMatch;
     }
 
-    public void setValue(Command value) {
-        this.value = value;
+    public void setValueToMatch(Command valueToMatch) {
+        this.valueToMatch = valueToMatch;
     }
 
     public List<SwitchOptionContext> options() {
@@ -25,5 +26,13 @@ public class SwitchContext {
 
     public void addOption(SwitchOptionContext option) {
         options.add(Preconditions.checkNotNull(option));
+    }
+
+    public Command defaultCommand() {
+        return defaultCommand;
+    }
+
+    public void setDefaultCommand(Command defaultCommand) {
+        this.defaultCommand = Preconditions.checkNotNull(defaultCommand);
     }
 }

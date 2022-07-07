@@ -34,7 +34,7 @@ public class SwitchFSM extends FiniteStateMachine<SwitchContext, CompilingExcept
 
         var expressionToMatch = new State.Builder<SwitchContext, CompilingException>()
                 .setName("EXPRESSION TO MATCH")
-                .setAcceptor(new CompileStatementAcceptor<>(factory, StatementType.NUMERIC_EXPRESSION, SwitchContext::setValue))
+                .setAcceptor(new CompileStatementAcceptor<>(factory, StatementType.NUMERIC_EXPRESSION, SwitchContext::setValueToMatch))
                 .build();
 
         var closeBracket = new State.Builder<SwitchContext, CompilingException>()
@@ -59,6 +59,12 @@ public class SwitchFSM extends FiniteStateMachine<SwitchContext, CompilingExcept
 
                     return false;
                 })
+                .setTemporary(true)
+                .build();
+
+        var defaultOption = new State.Builder<SwitchContext, CompilingException>()
+                .setName("DEFAULT OPTION")
+                .setAcceptor(DefaultOptionFSM.create(factory))
                 .build();
 
         var closeCurlyBracket = new State.Builder<SwitchContext, CompilingException>()
@@ -75,7 +81,8 @@ public class SwitchFSM extends FiniteStateMachine<SwitchContext, CompilingExcept
                 .allowTransition(expressionToMatch, closeBracket)
                 .allowTransition(closeBracket, openCurlyBracket)
                 .allowTransition(openCurlyBracket, caseOption)
-                .allowTransition(caseOption, caseOption, closeCurlyBracket)
+                .allowTransition(caseOption, caseOption, defaultOption)
+                .allowTransition(defaultOption, closeCurlyBracket)
                 .build();
 
         return new SwitchFSM(matrix, new ExceptionThrower<>(CompilingException::new));

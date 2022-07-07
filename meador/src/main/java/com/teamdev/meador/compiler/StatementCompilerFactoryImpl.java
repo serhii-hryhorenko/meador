@@ -74,7 +74,8 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
                                 return matchedValue.equals(conditionValue);
                             })
                             .findFirst()
-                            .ifPresent(switchOptionContext -> switchOptionContext.statement().execute(runtimeEnvironment));
+                            .ifPresentOrElse(switchOptionContext -> switchOptionContext.statement().execute(runtimeEnvironment),
+                                    () -> context.defaultCommand().execute(runtimeEnvironment));
                 });
             }
             return Optional.empty();

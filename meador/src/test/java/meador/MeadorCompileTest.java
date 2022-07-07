@@ -37,6 +37,7 @@ class MeadorCompileTest {
                         switch (a) {
                         case 5: { print(a); }
                         case 2: { a = 5; }
+                        default: { print(450); }
                         }
                         """, "[5.0]"),
                 Arguments.of("""
@@ -44,8 +45,16 @@ class MeadorCompileTest {
                         switch (a) {
                         case 0: { flush(); }
                         case pi(): { print(3, 0.14); }
+                        default: { print(450); }
                         }
-                        """, "[3.0, 0.14]")
+                        """, "[3.0, 0.14]"),
+                Arguments.of("""
+                        a = pi();
+                        switch (a) {
+                        case 0: { flush(); }
+                        default: { print(450); }
+                        }
+                        """, "[450.0]")
         );
     }
 
