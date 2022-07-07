@@ -3,6 +3,8 @@ package com.teamdev.meador.compiler;
 public enum StatementType {
     PROGRAM,
 
+    CODE_BLOCK,
+
     VARIABLE_DECLARATION,
     PROCEDURE,
     SWITCH,
@@ -17,5 +19,4 @@ public enum StatementType {
     BRACKETS,
     FUNCTION,
     VARIABLE_VALUE,
-
 }

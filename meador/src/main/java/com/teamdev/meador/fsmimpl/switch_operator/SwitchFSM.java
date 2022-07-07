@@ -1,4 +1,4 @@
-package com.teamdev.meador.compiler.fsmimpl.switch_operator;
+package com.teamdev.meador.fsmimpl.switch_operator;
 
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.*;
@@ -10,7 +10,30 @@ import com.teamdev.meador.compiler.StatementType;
 import com.teamdev.meador.compiler.statement.switch_operator.SwitchContext;
 import com.teamdev.meador.compiler.statement.switch_operator.SwitchOptionContext;
 
+/**
+ * {@link FiniteStateMachine} implementation for recognizing {@code switch} operator in Meador programs.
+ * <p>Grammar reference:
+ * {@code switch (variable) {
+ * <p>
+ * case option1: {list_of_statements}
+ * <p>
+ * case option2: {list_of_statements}
+ * <p>
+ * …
+ * <p>
+ * case optionN: {list_of_statements}
+ * <p>
+ * default: {list_of_statements}
+ * }
+ * }
+ * </p>
+ */
 public class SwitchFSM extends FiniteStateMachine<SwitchContext, CompilingException> {
+
+    private SwitchFSM(TransitionMatrix<SwitchContext, CompilingException> transitionMatrix,
+                      ExceptionThrower<CompilingException> thrower) {
+        super(transitionMatrix, thrower);
+    }
 
     public static SwitchFSM create(StatementCompilerFactory factory) {
         Preconditions.checkNotNull(factory);
@@ -34,7 +57,7 @@ public class SwitchFSM extends FiniteStateMachine<SwitchContext, CompilingExcept
 
         var expressionToMatch = new State.Builder<SwitchContext, CompilingException>()
                 .setName("EXPRESSION TO MATCH")
-                .setAcceptor(new CompileStatementAcceptor<>(factory, StatementType.NUMERIC_EXPRESSION, SwitchContext::setValueToMatch))
+                .setAcceptor(new CompileStatementAcceptor<>(factory, StatementType.VARIABLE_VALUE, SwitchContext::setValueToMatch))
                 .build();
 
         var closeBracket = new State.Builder<SwitchContext, CompilingException>()
@@ -86,10 +109,5 @@ public class SwitchFSM extends FiniteStateMachine<SwitchContext, CompilingExcept
                 .build();
 
         return new SwitchFSM(matrix, new ExceptionThrower<>(CompilingException::new));
-    }
-
-    private SwitchFSM(TransitionMatrix<SwitchContext, CompilingException> transitionMatrix,
-                      ExceptionThrower<CompilingException> thrower) {
-        super(transitionMatrix, thrower);
     }
 }

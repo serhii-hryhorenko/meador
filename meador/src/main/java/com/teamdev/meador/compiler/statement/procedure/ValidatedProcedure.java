@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
+/**
+ * Provides immutable validated procedures with determined number of required arguments.
+ * Immutability is achieved with {@link ValidatedProcedure.Builder}.
+ */
 public class ValidatedProcedure implements BiConsumer<List<Value>, RuntimeEnvironment> {
 
     private final BiConsumer<List<Value>, RuntimeEnvironment> action;

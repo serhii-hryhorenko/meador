@@ -7,8 +7,12 @@ import com.teamdev.meador.runtime.Command;
 
 import java.util.function.BiConsumer;
 
+/**
+ * {@link StateAcceptor} implementation for compiled statements
+ *
+ * @param <O> custom output chain
+ */
 public class CompileStatementAcceptor<O> implements StateAcceptor<O, CompilingException> {
-
     private final StatementCompilerFactory factory;
     private final StatementType type;
     private final BiConsumer<O, Command> resultConsumer;
@@ -16,14 +20,13 @@ public class CompileStatementAcceptor<O> implements StateAcceptor<O, CompilingEx
     public CompileStatementAcceptor(StatementCompilerFactory factory,
                                     StatementType type,
                                     BiConsumer<O, Command> resultConsumer) {
-
         this.factory = Preconditions.checkNotNull(factory);
         this.type = Preconditions.checkNotNull(type);
         this.resultConsumer = Preconditions.checkNotNull(resultConsumer);
     }
 
     @Override
-    public boolean accept(InputSequence inputSequence, O outputSequence) throws CompilingException{
+    public boolean accept(InputSequence inputSequence, O outputSequence) throws CompilingException {
         var compiler = factory.create(type);
 
         var optionalCommand = compiler.compile(inputSequence);

@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.teamdev.fsm.ExceptionThrower;
 import com.teamdev.fsm.InputSequence;
 import com.teamdev.machine.function.FunctionFSM;
+import com.teamdev.meador.ValidatedProcedureFactoryImpl;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompiler;
 import com.teamdev.meador.compiler.StatementCompilerFactory;
@@ -15,11 +16,15 @@ import java.util.stream.Collectors;
 
 import static com.teamdev.meador.compiler.StatementType.NUMERIC_EXPRESSION;
 
+/**
+ * {@link StatementCompiler} implementation for compiling procedure statements.
+ * Uses {@link FunctionFSM} for filling {@link CompileFunctionContext} output chain.
+ */
 public class ProcedureCompiler implements StatementCompiler {
 
     private final StatementCompilerFactory compilerFactory;
 
-    private final ValidatedProcedureFactory factory = new ValidatedProcedureFactory();
+    private final ValidatedProcedureFactory factory = new ValidatedProcedureFactoryImpl();
 
     public ProcedureCompiler(StatementCompilerFactory factory) {
         this.compilerFactory = Preconditions.checkNotNull(factory);
@@ -28,11 +33,11 @@ public class ProcedureCompiler implements StatementCompiler {
     @Override
     public Optional<Command> compile(InputSequence input) throws CompilingException {
 
-        var functionFSM = FunctionFSM. <CompileFunctionContext, CompilingException>create(
+        var functionFSM = FunctionFSM.<CompileFunctionContext, CompilingException>create(
                 (inputSequence, outputSequence) -> {
 
                     var optionalCommand = compilerFactory.create(NUMERIC_EXPRESSION)
-                                                         .compile(inputSequence);
+                            .compile(inputSequence);
 
                     optionalCommand.ifPresent(outputSequence::addCommand);
 
@@ -50,30 +55,29 @@ public class ProcedureCompiler implements StatementCompiler {
             var procedure = factory.create(context.functionName());
 
             if (context.commands()
-                       .size() >= procedure.minArguments()
+                    .size() >= procedure.minArguments()
                     && context.commands()
-                              .size() <= procedure.maxArguments()) {
+                    .size() <= procedure.maxArguments()) {
 
                 return Optional.of(runtimeEnvironment -> {
                     var values = context.commands()
-                                        .stream()
-                                        .map(value -> {
-                                            runtimeEnvironment.stack()
-                                                              .create();
+                            .stream()
+                            .map(value -> {
+                                runtimeEnvironment.stack()
+                                        .create();
 
-                                            value.execute(runtimeEnvironment);
+                                value.execute(runtimeEnvironment);
 
-                                            return runtimeEnvironment.stack()
-                                                                     .pop()
-                                                                     .popResult();
-                                        })
-                                        .collect(Collectors.toUnmodifiableList());
+                                return runtimeEnvironment.stack()
+                                        .pop()
+                                        .popResult();
+                            })
+                            .collect(Collectors.toUnmodifiableList());
 
                     procedure.accept(values, runtimeEnvironment);
                 });
             }
 
-            System.out.println("Factory has not procedure: " + context.functionName());
             return Optional.empty();
         }
 

@@ -6,22 +6,24 @@ import com.teamdev.meador.runtime.Command;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Output chain for {@link com.teamdev.meador.fsmimpl.switch_operator.SwitchFSM}.
+ */
 public class SwitchContext {
-
-    private Command valueToMatch;
     private final List<SwitchOptionContext> options = new ArrayList<>();
+    private Command valueToMatch;
     private Command defaultCommand;
 
     public Command value() {
-        return valueToMatch;
+        return Preconditions.checkNotNull(valueToMatch);
     }
 
     public void setValueToMatch(Command valueToMatch) {
-        this.valueToMatch = valueToMatch;
+        this.valueToMatch = Preconditions.checkNotNull(valueToMatch);
     }
 
     public List<SwitchOptionContext> options() {
-        return options;
+        return Preconditions.checkNotNull(options);
     }
 
     public void addOption(SwitchOptionContext option) {
@@ -29,7 +31,7 @@ public class SwitchContext {
     }
 
     public Command defaultCommand() {
-        return defaultCommand;
+        return Preconditions.checkNotNull(defaultCommand);
     }
 
     public void setDefaultCommand(Command defaultCommand) {
