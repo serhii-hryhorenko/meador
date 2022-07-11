@@ -118,7 +118,7 @@ public class SwitchOperatorTest extends MeadorTest {
                         a = pi();
                         switch(a) {
                             case pi(): { }
-                            default: { print(450); }         
+                            default: { print(450); } 
                         }
                         """, "", "Case option without expression was not accepted.")
 

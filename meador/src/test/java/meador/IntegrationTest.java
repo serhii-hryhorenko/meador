@@ -34,7 +34,7 @@ public class IntegrationTest extends MeadorTest {
     static Stream<Arguments> negativeCases() {
         return Stream.of(of("var a; b = a + 5;", "Variable declaration with var was accepted."),
                 of("println(42, b);", "Undeclared variable call was ignored."),
-                of("a = 5 + b12;", "Bad operand syntax was ignored"),
+                of("a = 5 + b12;", "Bad operand syntax was ignored."),
                 of("a = 5", "Semicolon absence was ignored."));
     }
 }

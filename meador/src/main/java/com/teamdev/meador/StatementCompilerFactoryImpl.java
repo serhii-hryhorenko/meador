@@ -71,11 +71,8 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
 
         compilers.put(RELATIONAL_EXPRESSION, new RelationalExpressionCompiler(this));
 
-        compilers.put(BRACKETS,
-                new DetachedStackStatementCompiler(BracketsFSM.create(createNumericExpressionMachine(),
-                        new ExceptionThrower<>(CompilingException::new))
-                )
-        );
+        compilers.put(BRACKETS, new DetachedStackStatementCompiler(BracketsFSM.create(createNumericExpressionMachine(),
+                new ExceptionThrower<>(CompilingException::new))));
 
         compilers.put(OPERAND, new DetachedStackStatementCompiler(createOperandMachine()));
 
