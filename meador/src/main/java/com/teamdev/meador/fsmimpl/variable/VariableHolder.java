@@ -23,11 +23,13 @@ public class VariableHolder {
         return command;
     }
 
-    void setName(String name) {
+    public VariableHolder setName(String name) {
         this.name = Preconditions.checkNotNull(name);
+        return this;
     }
 
-    public void setCommand(Command command) {
+    public VariableHolder setCommand(Command command) {
         this.command = command;
+        return this;
     }
 }

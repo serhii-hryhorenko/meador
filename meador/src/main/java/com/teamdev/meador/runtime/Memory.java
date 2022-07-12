@@ -5,6 +5,7 @@ import com.teamdev.math.type.Value;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * A part of a {@link RuntimeEnvironment} that provides access to variables.
@@ -13,8 +14,8 @@ public final class Memory {
 
     private final Map<String, Value> variables = new HashMap<>();
 
-    public Value getVariable(String name) {
-        return variables.get(Preconditions.checkNotNull(name));
+    public Optional<Value> getVariable(String name) {
+        return Optional.ofNullable(variables.get(Preconditions.checkNotNull(name)));
     }
 
     public void putVariable(String name, Value value) {

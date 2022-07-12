@@ -2,7 +2,6 @@ package com.teamdev.math;
 
 import com.google.common.base.Preconditions;
 import com.teamdev.math.bioperator.AbstractBinaryOperator;
-import com.teamdev.math.bioperator.DoubleValueBinaryOperator;
 import com.teamdev.math.type.Value;
 
 import java.util.ArrayDeque;
@@ -26,7 +25,7 @@ public class ShuntingYard {
     public void pushOperator(AbstractBinaryOperator operator) {
 
         while (!operatorStack.isEmpty() && operatorStack.peek()
-                                                        .compareTo(operator) >= 0) {
+                .compareTo(operator) >= 0) {
             applyOperand();
         }
 
@@ -36,7 +35,7 @@ public class ShuntingYard {
     public Value popResult() {
         applyOperand();
         Preconditions.checkState(operandStack.size() == 1,
-                                 "Stack contains more than 1 operand at the end of calculation.");
+                "Stack contains more than 1 operand at the end of calculation.");
 
         return operandStack.pop();
     }

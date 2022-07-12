@@ -58,10 +58,6 @@ public class VariableDeclarationCompiler implements StatementCompiler {
         return Optional.empty();
     }
 
-    public StatementCompilerFactory factory() {
-        return factory;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (obj == this) return true;

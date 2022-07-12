@@ -23,7 +23,8 @@ public class DefaultOptionFSM extends FiniteStateMachine<SwitchContext, Compilin
         var defaultKeyword = new State.Builder<SwitchContext, CompilingException>()
                 .setName("DEFAULT OPTION")
                 .setAcceptor((inputSequence, outputSequence) -> {
-                    var optionalWord = TextIdentifierFSM.execute(inputSequence, new ExceptionThrower<>(CompilingException::new));
+                    var optionalWord = TextIdentifierFSM.execute(inputSequence,
+                            new ExceptionThrower<>(CompilingException::new));
                     return optionalWord.isPresent() && optionalWord.get().equals("default");
                 })
                 .build();

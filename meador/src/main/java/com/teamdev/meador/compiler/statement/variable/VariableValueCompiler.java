@@ -7,6 +7,7 @@ import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompiler;
 import com.teamdev.meador.runtime.Command;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class VariableValueCompiler implements StatementCompiler {
@@ -19,12 +20,17 @@ public class VariableValueCompiler implements StatementCompiler {
                 .accept(inputSequence, variableName)) {
 
             return Optional.of(runtimeEnvironment -> {
-                var value = runtimeEnvironment.memory().getVariable(variableName.toString());
-                runtimeEnvironment.stack()
-                        .peek()
-                        .pushOperand(value);
-            });
+                var optionalValue = runtimeEnvironment.memory().getVariable(variableName.toString());
 
+                optionalValue.ifPresentOrElse(
+                        value -> runtimeEnvironment.stack()
+                                .peek()
+                                .pushOperand(value),
+                        () -> {
+                            throw new NoSuchElementException();
+                        }
+                );
+            });
         }
 
         return Optional.empty();

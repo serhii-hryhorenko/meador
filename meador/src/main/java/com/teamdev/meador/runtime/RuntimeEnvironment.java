@@ -1,7 +1,7 @@
 package com.teamdev.meador.runtime;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.meador.compiler.fsmimpl.datastructure.DataStructureTemplate;
+import com.teamdev.meador.fsmimpl.datastructure.DataStructureTemplate;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
@@ -19,8 +19,6 @@ public class RuntimeEnvironment {
     private final Memory memory = new Memory();
 
     private final SystemStack stack = new SystemStack();
-
-    private final Set<DataStructureTemplate> dataStructures = new HashSet<>();
 
     private final ByteArrayOutputStream byteArrayOut = new ByteArrayOutputStream();
 
@@ -41,6 +39,8 @@ public class RuntimeEnvironment {
     public OutputStream console() {
         return byteArrayOut;
     }
+
+    private final Set<DataStructureTemplate> dataStructures = new HashSet<>();
 
     public void addStructureTemplate(DataStructureTemplate dataStructure) {
         dataStructures.add(Preconditions.checkNotNull(dataStructure));

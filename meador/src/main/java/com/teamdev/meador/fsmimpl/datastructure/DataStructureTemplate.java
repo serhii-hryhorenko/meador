@@ -1,4 +1,4 @@
-package com.teamdev.meador.compiler.fsmimpl.datastructure;
+package com.teamdev.meador.fsmimpl.datastructure;
 
 import com.google.common.base.Preconditions;
 
@@ -15,11 +15,11 @@ public class DataStructureTemplate {
         return name;
     }
 
-    void setName(String name) {
+    public void setName(String name) {
         this.name = Preconditions.checkNotNull(name);
     }
 
-    void addField(String field) {
+    public void addField(String field) {
         fields.add(Preconditions.checkNotNull(field));
     }
 

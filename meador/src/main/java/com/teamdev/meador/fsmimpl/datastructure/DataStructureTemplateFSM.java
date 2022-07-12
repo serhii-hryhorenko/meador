@@ -1,4 +1,4 @@
-package com.teamdev.meador.compiler.fsmimpl.datastructure;
+package com.teamdev.meador.fsmimpl.datastructure;
 
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.*;
@@ -6,9 +6,9 @@ import com.teamdev.machine.util.TextIdentifierFSM;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompilerFactory;
 
-public class DataStructureDeclarationFSM extends FiniteStateMachine<DataStructureTemplate, CompilingException> {
+public class DataStructureTemplateFSM extends FiniteStateMachine<DataStructureTemplate, CompilingException> {
 
-    public static DataStructureDeclarationFSM create(StatementCompilerFactory factory) {
+    public static DataStructureTemplateFSM create(StatementCompilerFactory factory) {
         Preconditions.checkNotNull(factory);
 
         var initial = State.<DataStructureTemplate, CompilingException>initialState();
@@ -24,7 +24,7 @@ public class DataStructureDeclarationFSM extends FiniteStateMachine<DataStructur
                 })
                 .build();
 
-        var openCurlyBracket = new State.Builder<DataStructureTemplate,
+        var openCurlyBrace = new State.Builder<DataStructureTemplate,
                 CompilingException>()
                 .setName("DATA STRUCTURE DECLARATION OPEN BRACKET")
                 .setAcceptor(StateAcceptor.acceptChar('{'))
@@ -46,10 +46,15 @@ public class DataStructureDeclarationFSM extends FiniteStateMachine<DataStructur
                 .setAcceptor(StateAcceptor.acceptChar(','))
                 .build();
 
-        var closeCurlyBracket = new State.Builder<DataStructureTemplate,
+        var closeCurlyBrace = new State.Builder<DataStructureTemplate,
                 CompilingException>()
                 .setName("DATA STRUCTURE DECLARATION CLOSE BRACKET")
                 .setAcceptor(StateAcceptor.acceptChar('}'))
+                .build();
+
+        var semicolon = new State.Builder<DataStructureTemplate, CompilingException>()
+                .setName("DATA STRUCTURE SEMICOLON")
+                .setAcceptor(StateAcceptor.acceptChar(';'))
                 .setFinite(true)
                 .build();
 
@@ -57,17 +62,18 @@ public class DataStructureDeclarationFSM extends FiniteStateMachine<DataStructur
                 CompilingException>()
                 .withStartState(initial)
                 .allowTransition(initial, structureName)
-                .allowTransition(structureName, openCurlyBracket)
-                .allowTransition(openCurlyBracket, fieldName)
-                .allowTransition(fieldName, closeCurlyBracket, comma)
+                .allowTransition(structureName, openCurlyBrace)
+                .allowTransition(openCurlyBrace, fieldName)
+                .allowTransition(fieldName, closeCurlyBrace, comma)
                 .allowTransition(comma, fieldName)
+                .allowTransition(closeCurlyBrace, semicolon)
                 .build();
 
-        return new DataStructureDeclarationFSM(matrix, new ExceptionThrower<>(CompilingException::new));
+        return new DataStructureTemplateFSM(matrix, new ExceptionThrower<>(CompilingException::new));
     }
 
-    private DataStructureDeclarationFSM(TransitionMatrix<DataStructureTemplate, CompilingException> transitionMatrix,
-                                        ExceptionThrower<CompilingException> thrower) {
+    private DataStructureTemplateFSM(TransitionMatrix<DataStructureTemplate, CompilingException> transitionMatrix,
+                                     ExceptionThrower<CompilingException> thrower) {
         super(transitionMatrix, thrower);
     }
 }

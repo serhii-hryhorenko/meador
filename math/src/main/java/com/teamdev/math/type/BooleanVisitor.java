@@ -5,13 +5,13 @@ public class BooleanVisitor implements ValueVisitor {
     private boolean value;
 
     @Override
-    public void visit(DoubleValue value) {
-        throw new IllegalArgumentException("Type mismatch. Expected: Boolean.");
+    public void visit(BooleanValue value) {
+        this.value = value.value();
     }
 
     @Override
-    public void visit(BooleanValue value) {
-        this.value = value.value();
+    public void visit(DoubleValue value) {
+        throw new IllegalArgumentException("Type mismatch. Expected: Boolean.");
     }
 
     public boolean value() {

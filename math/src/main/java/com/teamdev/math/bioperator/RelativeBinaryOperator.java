@@ -6,7 +6,6 @@ import com.teamdev.math.type.DoubleValue;
 import com.teamdev.math.type.DoubleValueVisitor;
 import com.teamdev.math.type.Value;
 
-import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
 /**
