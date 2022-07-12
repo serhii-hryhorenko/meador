@@ -4,15 +4,21 @@ import com.teamdev.meador.compiler.Compiler;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.runtime.RuntimeEnvironment;
 
+/**
+ * Entry point for Meador user. Takes users {@link Program} and returns a system output as a result of executing.
+ */
 public class Meador {
-
-    public Output execute(Program program) throws CompilingException {
+    public Output execute(Program program) throws InvalidProgramException {
 
         var compiler = new Compiler();
         var environment = new RuntimeEnvironment();
 
-        compiler.compile(program)
-            .ifPresent(command -> command.execute(environment));
+        try {
+            compiler.compile(program)
+                    .ifPresent(command -> command.execute(environment));
+        } catch (CompilingException e) {
+            throw new InvalidProgramException();
+        }
 
         return new Output(environment.console());
     }

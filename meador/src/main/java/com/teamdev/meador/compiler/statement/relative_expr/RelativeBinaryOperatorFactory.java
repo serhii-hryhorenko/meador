@@ -9,8 +9,11 @@ import java.util.Map;
 
 import static com.teamdev.math.bioperator.AbstractBinaryOperator.Priority.LOW;
 
+/**
+ * {@link AbstractBinaryOperatorFactory} implementation for boolean binary operators
+ * that are a part of relational expressions.
+ */
 public class RelativeBinaryOperatorFactory implements AbstractBinaryOperatorFactory {
-
     private final Map<Character, RelativeBinaryOperator> relativeOperators = new HashMap<>();
 
     public RelativeBinaryOperatorFactory() {

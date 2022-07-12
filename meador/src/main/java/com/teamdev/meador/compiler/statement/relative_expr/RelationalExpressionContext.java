@@ -4,35 +4,39 @@ import com.google.common.base.Preconditions;
 import com.teamdev.math.bioperator.AbstractBinaryOperator;
 import com.teamdev.meador.runtime.Command;
 
+import java.util.Objects;
+
+/**
+ * Output chain for {@link com.teamdev.meador.fsmimpl.util.RelationalExpressionFSM}.
+ */
 public class RelationalExpressionContext {
     private Command left;
     private Command right;
     private AbstractBinaryOperator operator;
 
     public Command left() {
+        Preconditions.checkState(Objects.nonNull(left));
         return left;
     }
 
-    public RelationalExpressionContext setLeft(Command left) {
+    public void setLeft(Command left) {
         this.left = Preconditions.checkNotNull(left);
-        return this;
     }
 
     public Command right() {
+        Preconditions.checkState(Objects.nonNull(right));
         return right;
     }
 
-    public RelationalExpressionContext setRight(Command right) {
+    public void setRight(Command right) {
         this.right = Preconditions.checkNotNull(right);
-        return this;
     }
 
     public AbstractBinaryOperator operator() {
         return operator;
     }
 
-    public RelationalExpressionContext setOperator(AbstractBinaryOperator operator) {
+    public void setOperator(AbstractBinaryOperator operator) {
         this.operator = Preconditions.checkNotNull(operator);
-        return this;
     }
 }

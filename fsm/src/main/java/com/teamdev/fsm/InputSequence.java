@@ -47,7 +47,7 @@ public class InputSequence {
     }
 
     private boolean isSpaceChar() {
-        return Character.isSpaceChar(read());
+        return Character.isSpaceChar(read()) || String.valueOf(read()).equals(System.lineSeparator());
     }
 
     public int getPosition() {

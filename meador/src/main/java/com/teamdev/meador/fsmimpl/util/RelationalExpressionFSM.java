@@ -1,4 +1,4 @@
-package com.teamdev.meador.compiler.fsmimpl;
+package com.teamdev.meador.fsmimpl.util;
 
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.ExceptionThrower;
@@ -13,7 +13,15 @@ import com.teamdev.meador.compiler.StatementType;
 import com.teamdev.meador.compiler.statement.relative_expr.RelationalExpressionContext;
 import com.teamdev.meador.compiler.statement.relative_expr.RelativeBinaryOperatorFactory;
 
+/**
+ * {@link FiniteStateMachine} implementation for recognizing relational expressions in Meador programs.
+ */
 public class RelationalExpressionFSM extends FiniteStateMachine<RelationalExpressionContext, CompilingException> {
+
+    protected RelationalExpressionFSM(TransitionMatrix<RelationalExpressionContext, CompilingException> transitionMatrix,
+                                      ExceptionThrower<CompilingException> thrower) {
+        super(transitionMatrix, thrower);
+    }
 
     public static RelationalExpressionFSM create(StatementCompilerFactory factory) {
         Preconditions.checkNotNull(factory);
@@ -42,10 +50,5 @@ public class RelationalExpressionFSM extends FiniteStateMachine<RelationalExpres
         var matrix =
                 TransitionMatrix.chainedTransitions(left, relationOperator, right);
         return new RelationalExpressionFSM(matrix, new ExceptionThrower<>(CompilingException::new));
-    }
-
-    protected RelationalExpressionFSM(TransitionMatrix<RelationalExpressionContext, CompilingException> transitionMatrix,
-                                      ExceptionThrower<CompilingException> thrower) {
-        super(transitionMatrix, thrower);
     }
 }

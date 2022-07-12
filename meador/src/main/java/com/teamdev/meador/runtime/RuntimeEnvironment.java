@@ -10,6 +10,10 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * Environment where a program is executed.
+ * Provides an access to {@link Memory}, {@link SystemStack}, and IO.
+ */
 public class RuntimeEnvironment {
 
     private final Memory memory = new Memory();
