@@ -4,6 +4,8 @@ import com.teamdev.fsm.InputSequence;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompiler;
 import com.teamdev.meador.compiler.StatementCompilerFactory;
+import com.teamdev.meador.fsmimpl.variable.VariableDeclarationFSM;
+import com.teamdev.meador.fsmimpl.variable.VariableHolder;
 import com.teamdev.meador.runtime.Command;
 
 import java.util.Objects;

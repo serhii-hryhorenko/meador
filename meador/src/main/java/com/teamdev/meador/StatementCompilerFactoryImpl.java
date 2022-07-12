@@ -37,9 +37,7 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
             if (CompilerFSM.create(this)
                     .accept(compilerInput, commands)) {
 
-                return Optional.of(
-                        runtimeEnvironment -> commands.forEach(
-                                command -> command.execute(runtimeEnvironment)));
+                return Optional.of(environment -> commands.forEach(command -> command.execute(environment)));
             }
 
             return Optional.empty();
@@ -49,11 +47,9 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
 
         compilers.put(NUMBER, inputSequence ->
                 NumberFSM.execute(inputSequence, new ExceptionThrower<>(CompilingException::new))
-                        .map(value -> runtimeEnvironment ->
-                                runtimeEnvironment.stack()
-                                        .peek()
-                                        .pushOperand(value))
-
+                        .map(value -> environment -> environment.stack()
+                                .peek()
+                                .pushOperand(value))
         );
 
         compilers.put(EXPRESSION, new DetachedStackStatementCompiler(
@@ -89,10 +85,9 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
         return ExpressionFSM.create(
                 new CompileStatementAcceptor<>(this, OPERAND, List::add),
                 new MathBinaryOperatorFactoryImpl(),
-                (commands, operator) -> commands.add(
-                        runtimeEnvironment -> runtimeEnvironment.stack()
-                                .peek()
-                                .pushOperator(operator)),
+                (commands, operator) -> commands.add(environment -> environment.stack()
+                        .peek()
+                        .pushOperator(operator)),
                 new ExceptionThrower<>(CompilingException::new)
         );
     }

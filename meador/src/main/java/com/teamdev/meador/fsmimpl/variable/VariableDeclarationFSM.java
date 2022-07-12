@@ -1,4 +1,4 @@
-package com.teamdev.meador.compiler.statement.variable;
+package com.teamdev.meador.fsmimpl.variable;
 
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.*;
