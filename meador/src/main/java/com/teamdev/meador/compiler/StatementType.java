@@ -12,5 +12,6 @@ public enum StatementType {
     FUNCTION,
     PROCEDURE,
     VARIABLE_VALUE,
+    DATA_STRUCTURE_DECLARATION
 
 }

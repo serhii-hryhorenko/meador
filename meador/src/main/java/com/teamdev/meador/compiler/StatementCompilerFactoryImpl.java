@@ -14,9 +14,11 @@ import com.teamdev.machine.util.ValidatedFunctionFactoryImpl;
 import com.teamdev.math.MathBinaryOperatorFactoryImpl;
 import com.teamdev.math.type.Value;
 import com.teamdev.meador.compiler.fsmimpl.RelationalExpressionFSM;
-import com.teamdev.meador.compiler.statement.relative_expr.RelationalExpressionContext;
+import com.teamdev.meador.compiler.fsmimpl.datastructure.DataStructureDeclarationFSM;
+import com.teamdev.meador.compiler.fsmimpl.datastructure.DataStructureTemplate;
 import com.teamdev.meador.compiler.statement.function.FunctionCompiler;
 import com.teamdev.meador.compiler.statement.procedure.ProcedureCompiler;
+import com.teamdev.meador.compiler.statement.relative_expr.RelationalExpressionContext;
 import com.teamdev.meador.compiler.statement.variable.VariableFSM;
 import com.teamdev.meador.compiler.statement.variable.VariableHolder;
 import com.teamdev.meador.runtime.Command;
@@ -37,19 +39,28 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
 
         compilers.put(NUMBER, inputSequence ->
                 NumberFSM.execute(inputSequence, new ExceptionThrower<>(CompilingException::new))
-                         .map(value -> runtimeEnvironment ->
-                                 runtimeEnvironment.stack()
-                                                   .peek()
-                                                   .pushOperand(value))
+                        .map(value -> runtimeEnvironment ->
+                                runtimeEnvironment.stack()
+                                        .peek()
+                                        .pushOperand(value))
 
         );
+
+        compilers.put(DATA_STRUCTURE_DECLARATION, inputSequence -> {
+            var holder = new DataStructureTemplate();
+            if (DataStructureDeclarationFSM.create(StatementCompilerFactoryImpl.this).accept(inputSequence, holder)) {
+                return Optional.of(runtimeEnvironment -> runtimeEnvironment.addStructureTemplate(holder));
+            }
+
+            return Optional.empty();
+        });
 
         compilers.put(EXPRESSION, new CommandListMachineCompiler(
                 OperandFSM.create(new TransitionOneOfMatrixBuilder<List<Command>, CompilingException>()
                                 .allowTransition(new CompileStatementAcceptor<>(this, RELATIONAL_EXPRESSION, List::add),
                                         "RELATIONAL EXPRESSION")
                                 .allowTransition(new CompileStatementAcceptor<>(this, NUMERIC_EXPRESSION, List::add),
-                                "NUMERIC EXPRESSION")
+                                        "NUMERIC EXPRESSION")
                                 .build(),
                         new ExceptionThrower<>(CompilingException::new)
                 ),
@@ -57,10 +68,10 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
         ));
 
         compilers.put(NUMERIC_EXPRESSION, new CommandListMachineCompiler(createNumericExpressionMachine(),
-                                                                 (environment, value) ->
-                                                                         environment.stack()
-                                                                                    .peek()
-                                                                                    .pushOperand(value)));
+                (environment, value) ->
+                        environment.stack()
+                                .peek()
+                                .pushOperand(value)));
 
         compilers.put(RELATIONAL_EXPRESSION, inputSequence -> {
             var relationalExpressionFSM = RelationalExpressionFSM.create(this);
@@ -95,22 +106,22 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
         });
 
         compilers.put(BRACKETS,
-                      new CommandListMachineCompiler(BracketsFSM.create(createNumericExpressionMachine(),
-                                                                        new ExceptionThrower<>(
-                                                                                CompilingException::new)),
-                                                     (environment, value) ->
-                                                             environment.stack()
-                                                                        .peek()
-                                                                        .pushOperand(value)));
+                new CommandListMachineCompiler(BracketsFSM.create(createNumericExpressionMachine(),
+                        new ExceptionThrower<>(
+                                CompilingException::new)),
+                        (environment, value) ->
+                                environment.stack()
+                                        .peek()
+                                        .pushOperand(value)));
 
         compilers.put(OPERAND, new CommandListMachineCompiler(createOperandMachine(),
-                                                              (environment, value) ->
-                                                                      environment.stack()
-                                                                                 .peek()
-                                                                                 .pushOperand(value)));
+                (environment, value) ->
+                        environment.stack()
+                                .peek()
+                                .pushOperand(value)));
 
         compilers.put(FUNCTION, new FunctionCompiler(this,
-                                                     new ValidatedFunctionFactoryImpl()));
+                new ValidatedFunctionFactoryImpl()));
 
         compilers.put(PROCEDURE, new ProcedureCompiler(this));
 
@@ -120,13 +131,13 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
 
             var variableName = new StringBuilder(16);
             if (TextIdentifierFSM.create(new ExceptionThrower<>(CompilingException::new))
-                                 .accept(inputSequence, variableName)) {
+                    .accept(inputSequence, variableName)) {
 
                 return Optional.of(runtimeEnvironment -> {
                     var value = runtimeEnvironment.memory().getVariable(variableName.toString());
                     runtimeEnvironment.stack()
-                                      .peek()
-                                      .pushOperand(value);
+                            .peek()
+                            .pushOperand(value);
                 });
 
             }
@@ -141,8 +152,8 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
                 new MathBinaryOperatorFactoryImpl(),
                 (commands, operator) -> commands.add(
                         runtimeEnvironment -> runtimeEnvironment.stack()
-                                                                .peek()
-                                                                .pushOperator(operator)),
+                                .peek()
+                                .pushOperator(operator)),
                 new ExceptionThrower<>(CompilingException::new)
         );
     }
@@ -152,13 +163,13 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
                 new TransitionOneOfMatrixBuilder<List<Command>, CompilingException>()
 
                         .allowTransition(new CompileStatementAcceptor<>(this, NUMBER, List::add),
-                                         "MEADOR NUMBER")
+                                "MEADOR NUMBER")
 
                         .allowTransition(new CompileStatementAcceptor<>(this, BRACKETS, List::add),
-                                         "MEADOR BRACKETS")
+                                "MEADOR BRACKETS")
 
                         .allowTransition(new CompileStatementAcceptor<>(this, FUNCTION, List::add),
-                                         "MEADOR FUNCTION")
+                                "MEADOR FUNCTION")
 
                         .allowTransition(
                                 new CompileStatementAcceptor<>(this, VARIABLE_VALUE, List::add),
@@ -189,7 +200,7 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
             var variable = VariableFSM.create((inputSequence, outputSequence) -> {
 
                 var optionalCommand = factory.create(EXPRESSION)
-                                             .compile(inputSequence);
+                        .compile(inputSequence);
 
                 optionalCommand.ifPresent(outputSequence::setCommand);
 
@@ -202,16 +213,16 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
                 return Optional.of(runtimeEnvironment -> {
 
                     runtimeEnvironment.stack()
-                                      .create();
+                            .create();
 
                     builder.command()
-                           .execute(runtimeEnvironment);
+                            .execute(runtimeEnvironment);
 
                     runtimeEnvironment.memory()
-                                      .putVariable(builder.name(),
-                                                   runtimeEnvironment.stack()
-                                                                     .pop()
-                                                                     .popResult());
+                            .putVariable(builder.name(),
+                                    runtimeEnvironment.stack()
+                                            .pop()
+                                            .popResult());
                 });
             }
 
