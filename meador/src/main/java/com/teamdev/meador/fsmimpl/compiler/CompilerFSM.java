@@ -1,11 +1,6 @@
-package com.teamdev.meador.compiler.fsmimpl;
+package com.teamdev.meador.fsmimpl.compiler;
 
-import com.teamdev.fsm.ExceptionThrower;
-import com.teamdev.fsm.FiniteStateMachine;
-import com.teamdev.fsm.State;
-import com.teamdev.fsm.StateAcceptor;
-import com.teamdev.fsm.TransitionMatrix;
-import com.teamdev.fsm.TransitionMatrixBuilder;
+import com.teamdev.fsm.*;
 import com.teamdev.meador.compiler.CompileStatementAcceptor;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompilerFactory;
@@ -14,6 +9,9 @@ import com.teamdev.meador.runtime.Command;
 
 import java.util.List;
 
+/**
+ * Provides {@link com.teamdev.meador.Meador} general language elements recognition.
+ */
 public class CompilerFSM extends FiniteStateMachine<List<Command>, CompilingException> {
 
     private CompilerFSM(TransitionMatrix<List<Command>, CompilingException> transitionMatrix) {
@@ -32,37 +30,38 @@ public class CompilerFSM extends FiniteStateMachine<List<Command>, CompilingExce
         var variable = new State.Builder<List<Command>, CompilingException>()
                 .setName("VARIABLE")
                 .setAcceptor(new CompileStatementAcceptor<>(factory,
-                                                            StatementType.VARIABLE_DECLARATION,
-                                                            List::add))
+                        StatementType.VARIABLE_DECLARATION,
+                        List::add))
                 .setFinite(true)
                 .setTemporary(true)
                 .build();
 
         var procedure = new State.Builder<List<Command>,
-                                                                            CompilingException>()
+                CompilingException>()
                 .setName("PROCEDURE")
                 .setAcceptor(new CompileStatementAcceptor<List<Command>>(factory,
-                                                                         StatementType.PROCEDURE,
-                                                                         List::add)
-                                     .and(StateAcceptor.acceptChar(';'))
+                        StatementType.PROCEDURE,
+                        List::add)
+                        .and(StateAcceptor.acceptChar(';'))
                 )
                 .setFinite(true)
                 .setTemporary(true)
                 .build();
 
-        var end = new State.Builder<List<Command>, CompilingException>()
-                .setName("COMPILATION END")
-                .setAcceptor((inputSequence, outputSequence) -> !inputSequence.canRead())
+        var switchOperator = new State.Builder<List<Command>, CompilingException>()
+                .setName("SWITCH")
+                .setAcceptor(new CompileStatementAcceptor<>(factory, StatementType.SWITCH, List::add))
                 .setFinite(true)
+                .setTemporary(true)
                 .build();
 
-        var matrix = new TransitionMatrixBuilder<List<Command>,
-                                                                                            CompilingException>()
+        var matrix = new TransitionMatrixBuilder<List<Command>, CompilingException>()
                 .withStartState(initial)
                 .allowTransition(initial, statement)
-                .allowTransition(statement, procedure, variable)
-                .allowTransition(variable, end, procedure, variable)
-                .allowTransition(procedure, end, procedure, variable)
+                .allowTransition(statement, switchOperator, procedure, variable)
+                .allowTransition(variable, switchOperator, procedure, variable)
+                .allowTransition(procedure, switchOperator, procedure, variable)
+                .allowTransition(switchOperator, switchOperator, procedure, variable)
                 .build();
 
         return new CompilerFSM(matrix);

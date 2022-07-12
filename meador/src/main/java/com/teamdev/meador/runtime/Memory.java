@@ -6,6 +6,9 @@ import com.teamdev.math.type.Value;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A part of a {@link RuntimeEnvironment} that provides access to variables.
+ */
 public final class Memory {
 
     private final Map<String, Value> variables = new HashMap<>();

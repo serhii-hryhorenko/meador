@@ -4,6 +4,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
+/**
+ * Environment where a program is executed.
+ * Provides an access to {@link Memory}, {@link SystemStack}, and IO.
+ */
 public class RuntimeEnvironment {
 
     private final Memory memory = new Memory();

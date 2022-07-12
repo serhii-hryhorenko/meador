@@ -34,7 +34,7 @@ public class FunctionCompiler implements StatementCompiler {
                 (inputSequence, outputSequence) -> {
 
                     var optionalCommand = compilerFactory.create(NUMERIC_EXPRESSION)
-                                                         .compile(inputSequence);
+                            .compile(inputSequence);
 
                     optionalCommand.ifPresent(outputSequence::addCommand);
 
@@ -52,22 +52,22 @@ public class FunctionCompiler implements StatementCompiler {
             var function = functionFactory.create(context.functionName());
 
             if (context.arguments()
-                             .size() >= function.getMinArguments()
+                    .size() >= function.getMinArguments()
                     && context.arguments()
-                                    .size() <= function.getMaxArguments()) {
+                    .size() <= function.getMaxArguments()) {
 
                 return Optional.of(runtimeEnvironment -> {
 
                     var doubles = context.commands()
-                                                        .stream()
-                                                        .map(value -> {
-                                                            runtimeEnvironment.stack().create();
+                            .stream()
+                            .map(value -> {
+                                runtimeEnvironment.stack().create();
 
-                                                            value.execute(runtimeEnvironment);
+                                value.execute(runtimeEnvironment);
 
-                                                            return runtimeEnvironment.stack().pop().popResult();
-                                                        })
-                                                        .collect(Collectors.toUnmodifiableList());
+                                return runtimeEnvironment.stack().pop().popResult();
+                            })
+                            .collect(Collectors.toUnmodifiableList());
 
                     runtimeEnvironment.stack().peek().pushOperand(function.apply(doubles));
                 });

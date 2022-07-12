@@ -6,8 +6,10 @@ import com.teamdev.math.ShuntingYard;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+/**
+ * A stack of {@link ShuntingYard} where {@link Command} is evaluated.
+ */
 public final class SystemStack {
-
     private final Deque<ShuntingYard> stack = new ArrayDeque<>();
 
     SystemStack() {

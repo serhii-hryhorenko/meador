@@ -3,25 +3,21 @@ package com.teamdev.meador.compiler;
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.InputSequence;
 import com.teamdev.fsm.StateAcceptor;
-import com.teamdev.math.type.Value;
 import com.teamdev.meador.runtime.Command;
-import com.teamdev.meador.runtime.RuntimeEnvironment;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 
-public class CommandListMachineCompiler implements StatementCompiler {
-
+/**
+ * Compiles a certain Meador statement on detached {@link com.teamdev.math.ShuntingYard} and puts a result
+ * of computation on a top stack.
+ */
+public class DetachedStackStatementCompiler implements StatementCompiler {
     private final StateAcceptor<List<Command>, CompilingException> machine;
-    private final BiConsumer<RuntimeEnvironment, Value> resultApplier;
 
-    CommandListMachineCompiler(StateAcceptor<List<Command>, CompilingException> machine,
-                               BiConsumer<RuntimeEnvironment, Value> resultApplier) {
-
+    public DetachedStackStatementCompiler(StateAcceptor<List<Command>, CompilingException> machine) {
         this.machine = Preconditions.checkNotNull(machine);
-        this.resultApplier = Preconditions.checkNotNull(resultApplier);
     }
 
     @Override
@@ -36,9 +32,9 @@ public class CommandListMachineCompiler implements StatementCompiler {
 
                 outputSequence.forEach(command -> command.execute(runtimeEnvironment));
 
-                var yard = runtimeEnvironment.stack().pop();
+                var result = runtimeEnvironment.stack().pop().popResult();
 
-                resultApplier.accept(runtimeEnvironment, yard.popResult());
+                runtimeEnvironment.stack().peek().pushOperand(result);
             });
         }
 
