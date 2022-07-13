@@ -9,7 +9,7 @@ import java.util.Set;
 public class DataStructureTemplate {
 
     private String name;
-    private final Set<String> fields = new LinkedHashSet<>();
+    private final Set<String> fieldNames = new LinkedHashSet<>();
 
     public String name() {
         return name;
@@ -19,12 +19,12 @@ public class DataStructureTemplate {
         this.name = Preconditions.checkNotNull(name);
     }
 
-    public void addField(String field) {
-        fields.add(Preconditions.checkNotNull(field));
+    public void addFieldName(String field) {
+        fieldNames.add(Preconditions.checkNotNull(field));
     }
 
-    public Set<String> fields() {
-        return Collections.unmodifiableSet(fields);
+    public Set<String> fieldNames() {
+        return Collections.unmodifiableSet(fieldNames);
     }
 
     @Override

@@ -15,7 +15,7 @@ public class DataStructureHolder {
     private final Set<VariableHolder> fields = new HashSet<>();
 
     public DataStructureHolder(DataStructureTemplate template) {
-        this.fieldIterator = Preconditions.checkNotNull(template).fields().iterator();
+        this.fieldIterator = Preconditions.checkNotNull(template).fieldNames().iterator();
     }
 
     public void assignFieldValue(Command value) {

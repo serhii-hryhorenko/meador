@@ -36,7 +36,7 @@ public class DataStructureTemplateFSM extends FiniteStateMachine<DataStructureTe
                 .setAcceptor((inputSequence, outputSequence) -> {
                     var optionalString = TextIdentifierFSM.execute(inputSequence,
                             new ExceptionThrower<>(CompilingException::new));
-                    optionalString.ifPresent(outputSequence::addField);
+                    optionalString.ifPresent(outputSequence::addFieldName);
                     return optionalString.isPresent();
                 })
                 .build();
