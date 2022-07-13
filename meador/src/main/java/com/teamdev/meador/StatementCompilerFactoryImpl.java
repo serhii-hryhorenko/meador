@@ -103,7 +103,7 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
                                 "MEADOR BRACKETS")
 
                         .allowTransition(new CompileStatementAcceptor<>(this, FUNCTION, List::add),
-                                "MEADOR FUNCTION", true)
+                                "MEADOR FUNCTION")
 
                         .allowTransition(new CompileStatementAcceptor<>(this, VARIABLE_VALUE, List::add),
                                 "MEADOR VARIABLE")
