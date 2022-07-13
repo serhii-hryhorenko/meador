@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import com.teamdev.fsm.InputSequence;
 import com.teamdev.meador.Program;
 import com.teamdev.meador.StatementCompilerFactoryImpl;
-import com.teamdev.meador.runtime.Command;
+import com.teamdev.runtime.Command;
 
 import java.util.Optional;
 

@@ -3,10 +3,11 @@ package com.teamdev.machine.expression;
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.InputSequence;
 import com.teamdev.fsm.StateAcceptor;
-import com.teamdev.math.bioperator.AbstractBinaryOperator;
-import com.teamdev.math.bioperator.AbstractBinaryOperatorFactory;
+import com.teamdev.runtime.value.bioperator.AbstractBinaryOperator;
+import com.teamdev.runtime.value.bioperator.AbstractBinaryOperatorFactory;
 
 import java.util.function.BiConsumer;
+
 
 /**
  * {@link StateAcceptor} implementation for recognizing binary operators and providing

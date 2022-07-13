@@ -1,21 +1,18 @@
-package com.teamdev.math;
+package com.teamdev.runtime.value;
 
-import com.teamdev.math.bioperator.DoubleValueBinaryOperator;
-import com.teamdev.math.bioperator.AbstractBinaryOperatorFactory;
+import com.teamdev.runtime.value.bioperator.AbstractBinaryOperator;
+import com.teamdev.runtime.value.bioperator.AbstractBinaryOperatorFactory;
+import com.teamdev.runtime.value.bioperator.DoubleValueBinaryOperator;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.teamdev.math.bioperator.AbstractBinaryOperator.Priority.HIGH;
-import static com.teamdev.math.bioperator.AbstractBinaryOperator.Priority.LOW;
-import static com.teamdev.math.bioperator.AbstractBinaryOperator.Priority.MEDIUM;
-
 /**
  * {@link AbstractBinaryOperatorFactory} implementation with prepared objects inside a Map.
- *
+ * <p>
  * Before trying to create an operator strictly recommended to check presence of an operator in
  * implementation.
- *
+ * <p>
  * {@code
  * PrioritizedBinaryOperatorFactory factory = new PrioritizedBinaryOperatorFactoryImpl();
  * if (factory.hasOperator(char) {
@@ -28,11 +25,11 @@ public class MathBinaryOperatorFactoryImpl implements AbstractBinaryOperatorFact
     private final Map<Character, DoubleValueBinaryOperator> operators = new HashMap<>();
 
     public MathBinaryOperatorFactoryImpl() {
-        operators.put('+', new DoubleValueBinaryOperator(Double::sum, LOW));
-        operators.put('-', new DoubleValueBinaryOperator((left, right) -> left - right, LOW));
-        operators.put('*', new DoubleValueBinaryOperator((left, right) -> left * right, MEDIUM));
-        operators.put('/', new DoubleValueBinaryOperator((left, right) -> left / right, MEDIUM));
-        operators.put('^', new DoubleValueBinaryOperator(Math::pow, HIGH));
+        operators.put('+', new DoubleValueBinaryOperator(Double::sum, AbstractBinaryOperator.Priority.LOW));
+        operators.put('-', new DoubleValueBinaryOperator((left, right) -> left - right, AbstractBinaryOperator.Priority.LOW));
+        operators.put('*', new DoubleValueBinaryOperator((left, right) -> left * right, AbstractBinaryOperator.Priority.MEDIUM));
+        operators.put('/', new DoubleValueBinaryOperator((left, right) -> left / right, AbstractBinaryOperator.Priority.MEDIUM));
+        operators.put('^', new DoubleValueBinaryOperator(Math::pow, AbstractBinaryOperator.Priority.HIGH));
     }
 
     @Override

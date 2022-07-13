@@ -1,12 +1,12 @@
-package com.teamdev.meador.fsmimpl.variable;
+package com.teamdev.runtime.variable;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.meador.runtime.Command;
+import com.teamdev.runtime.Command;
 
 import java.util.Objects;
 
 /**
- * Output chain for {@link VariableDeclarationFSM}.
+ * Runtime holder for a Meador variable.
  */
 public class VariableHolder {
 
@@ -23,7 +23,7 @@ public class VariableHolder {
         return command;
     }
 
-    void setName(String name) {
+    public void setName(String name) {
         this.name = Preconditions.checkNotNull(name);
     }
 

@@ -1,7 +1,7 @@
 package com.teamdev.machine.function;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.math.type.Value;
+import com.teamdev.runtime.value.type.Value;
 
 import java.util.ArrayList;
 import java.util.Collections;

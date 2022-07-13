@@ -2,7 +2,7 @@ package com.teamdev.meador.compiler.statement.function;
 
 import com.google.common.base.Preconditions;
 import com.teamdev.machine.function.FunctionHolder;
-import com.teamdev.meador.runtime.Command;
+import com.teamdev.runtime.Command;
 
 import java.util.ArrayList;
 import java.util.Collections;

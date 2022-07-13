@@ -1,12 +1,10 @@
-package com.teamdev.math.bioperator;
+package com.teamdev.runtime.value.bioperator;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.math.type.BooleanValue;
-import com.teamdev.math.type.DoubleValue;
-import com.teamdev.math.type.DoubleValueVisitor;
-import com.teamdev.math.type.Value;
+import com.teamdev.runtime.value.type.BooleanValue;
+import com.teamdev.runtime.value.type.DoubleValueVisitor;
+import com.teamdev.runtime.value.type.Value;
 
-import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
 /**

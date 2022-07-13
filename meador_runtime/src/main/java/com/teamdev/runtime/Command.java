@@ -1,4 +1,4 @@
-package com.teamdev.meador.runtime;
+package com.teamdev.runtime;
 
 /**
  * Runtime command which is created in compile time and evaluated on a runtime.

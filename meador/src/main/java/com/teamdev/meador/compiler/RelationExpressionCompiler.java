@@ -2,7 +2,7 @@ package com.teamdev.meador.compiler;
 
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.InputSequence;
-import com.teamdev.meador.runtime.Command;
+import com.teamdev.runtime.Command;
 
 import java.util.Optional;
 

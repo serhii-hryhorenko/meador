@@ -6,7 +6,7 @@ import com.teamdev.meador.compiler.CompileStatementAcceptor;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompilerFactory;
 import com.teamdev.meador.compiler.StatementType;
-import com.teamdev.meador.runtime.Command;
+import com.teamdev.runtime.Command;
 
 import java.util.function.BiConsumer;
 

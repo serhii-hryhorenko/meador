@@ -1,4 +1,4 @@
-package com.teamdev.math.type;
+package com.teamdev.runtime.value.type;
 
 public class DoubleValueVisitor implements ValueVisitor {
 

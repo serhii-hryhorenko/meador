@@ -2,7 +2,7 @@ package com.teamdev.calculator_api.resolver;
 
 import com.teamdev.calculator_api.MathElementResolverFactoryImpl;
 import com.teamdev.fsm.InputSequence;
-import com.teamdev.math.type.Value;
+import com.teamdev.runtime.value.type.Value;
 
 import java.util.Optional;
 

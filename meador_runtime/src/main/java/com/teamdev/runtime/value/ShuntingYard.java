@@ -1,17 +1,16 @@
-package com.teamdev.math;
+package com.teamdev.runtime.value;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.math.bioperator.AbstractBinaryOperator;
-import com.teamdev.math.bioperator.DoubleValueBinaryOperator;
-import com.teamdev.math.type.Value;
+import com.teamdev.runtime.value.bioperator.AbstractBinaryOperator;
+import com.teamdev.runtime.value.type.Value;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
 
 /**
- * Double stack data structure for realization of reverse polish notation and evaluating
- * expressions.
- * {@linktourl https://en.wikipedia.org/wiki/Reverse_Polish_notation}
+ * Double stack data structure for realization of
+ * <a href="https://en.wikipedia.org/wiki/Reverse_Polish_notation"> reverse polish notation </a>
+ * and evaluating expressions.
  */
 
 public class ShuntingYard {
@@ -26,7 +25,7 @@ public class ShuntingYard {
     public void pushOperator(AbstractBinaryOperator operator) {
 
         while (!operatorStack.isEmpty() && operatorStack.peek()
-                                                        .compareTo(operator) >= 0) {
+                .compareTo(operator) >= 0) {
             applyOperand();
         }
 
@@ -36,7 +35,7 @@ public class ShuntingYard {
     public Value popResult() {
         applyOperand();
         Preconditions.checkState(operandStack.size() == 1,
-                                 "Stack contains more than 1 operand at the end of calculation.");
+                "Stack contains more than 1 operand at the end of calculation.");
 
         return operandStack.pop();
     }

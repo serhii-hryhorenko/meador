@@ -1,8 +1,8 @@
 package com.teamdev.meador.compiler.statement.procedure;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.math.type.Value;
-import com.teamdev.meador.runtime.RuntimeEnvironment;
+import com.teamdev.runtime.RuntimeEnvironment;
+import com.teamdev.runtime.value.type.Value;
 
 import java.util.List;
 import java.util.Objects;

@@ -9,7 +9,6 @@ import com.teamdev.machine.expression.ExpressionFSM;
 import com.teamdev.machine.number.NumberFSM;
 import com.teamdev.machine.operand.OperandFSM;
 import com.teamdev.machine.util.ValidatedFunctionFactoryImpl;
-import com.teamdev.math.MathBinaryOperatorFactoryImpl;
 import com.teamdev.meador.compiler.*;
 import com.teamdev.meador.compiler.statement.function.FunctionCompiler;
 import com.teamdev.meador.compiler.statement.procedure.ProcedureCompiler;
@@ -18,7 +17,8 @@ import com.teamdev.meador.compiler.statement.switch_operator.SwitchOperatorCompi
 import com.teamdev.meador.compiler.statement.variable.VariableDeclarationCompiler;
 import com.teamdev.meador.compiler.statement.variable.VariableValueCompiler;
 import com.teamdev.meador.fsmimpl.compiler.CompilerFSM;
-import com.teamdev.meador.runtime.Command;
+import com.teamdev.runtime.Command;
+import com.teamdev.runtime.value.MathBinaryOperatorFactoryImpl;
 
 import java.util.*;
 

@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.teamdev.fsm.*;
 import com.teamdev.machine.util.TextIdentifierFSM;
 import com.teamdev.meador.compiler.CompilingException;
+import com.teamdev.runtime.variable.VariableHolder;
 
 /**
  * {@link FiniteStateMachine} implementation for recognizing variable declarations in Meador programs.

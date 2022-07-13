@@ -2,7 +2,7 @@ package com.teamdev.meador;
 
 import com.teamdev.meador.compiler.Compiler;
 import com.teamdev.meador.compiler.CompilingException;
-import com.teamdev.meador.runtime.RuntimeEnvironment;
+import com.teamdev.runtime.RuntimeEnvironment;
 
 /**
  * Entry point for Meador user. Takes users {@link Program} and returns a system output as a result of executing.

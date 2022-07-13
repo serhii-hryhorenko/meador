@@ -3,14 +3,15 @@ package com.teamdev.meador.compiler;
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.InputSequence;
 import com.teamdev.fsm.StateAcceptor;
-import com.teamdev.meador.runtime.Command;
+import com.teamdev.runtime.Command;
+import com.teamdev.runtime.value.ShuntingYard;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Compiles a certain Meador statement on detached {@link com.teamdev.math.ShuntingYard} and puts a result
+ * Compiles a certain Meador statement on detached {@link ShuntingYard} and puts a result
  * of computation on a top stack.
  */
 public class DetachedStackStatementCompiler implements StatementCompiler {

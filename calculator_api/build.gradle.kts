@@ -10,9 +10,9 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":fsm"))
-    implementation(project(":math"))
+    implementation(project(":meador_runtime"))
     implementation(project(":abstract_machine"))
+    implementation(project(":fsm"))
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
     testImplementation("com.google.guava:guava-testlib:31.1-jre")

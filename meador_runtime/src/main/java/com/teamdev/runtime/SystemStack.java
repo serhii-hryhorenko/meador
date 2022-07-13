@@ -1,7 +1,7 @@
-package com.teamdev.meador.runtime;
+package com.teamdev.runtime;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.math.ShuntingYard;
+import com.teamdev.runtime.value.ShuntingYard;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
