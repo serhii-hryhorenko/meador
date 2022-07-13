@@ -1,8 +1,8 @@
 package com.teamdev.meador.compiler.statement.relative_expr;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.math.bioperator.AbstractBinaryOperator;
-import com.teamdev.meador.runtime.Command;
+import com.teamdev.runtime.Command;
+import com.teamdev.runtime.value.bioperator.AbstractBinaryOperator;
 
 import java.util.Objects;
 

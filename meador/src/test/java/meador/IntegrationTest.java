@@ -20,6 +20,9 @@ public class IntegrationTest extends MeadorTest {
                         "Procedure parameters aren't recognized in a proper way."),
                 of("abc = (2 + 2) * 2; bcd = (abc + 1) * 2; print(bcd);", "[18.0]",
                         "Variables are broken."),
+                of("print(pi() > 3);", "[true]", "No argument functions as relational operand are broken."),
+                of("print(pi());", "[" + Math.PI + ']', "No argument functions as relational operand are broken."),
+                of("print(sum(1, 2, 3));", "[6.0]", "Functions are broken."),
                 of("a = pi(); b = a ^ 2 * 10; print(b);",
                         "[" + StrictMath.pow(Math.PI, 2) * 10 + ']', "Function values are broken."),
                 of("pi = pi(); print(pi, pi());", "[" + Math.PI + ", " + Math.PI + ']',
@@ -27,7 +30,10 @@ public class IntegrationTest extends MeadorTest {
                 of("pi = pi(); print(pi, pi()); pi = 2 * pi;", "[" + Math.PI + ", " + Math.PI + ']',
                         "Variable could not refer itself."),
                 of("a = 5; switch(a) { case 5: { b = pi(); } default: { print(1); } } print(b);", "[" + Math.PI + ']',
-                        "Variable was not created inside switch operator.")
+                        "Variable was not created inside switch operator."),
+                of("a = average(1, 2, 3) > 1; print(a);", "[true]",
+                        "Functions as left relational operand are not recognized."),
+                of("print(1+2+3);", "[6.0]", "Three operands expression is broken.")
         );
     }
 

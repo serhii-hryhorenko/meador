@@ -10,8 +10,8 @@ import com.teamdev.machine.function.FunctionHolder;
 import com.teamdev.machine.number.NumberFSM;
 import com.teamdev.machine.operand.OperandFSM;
 import com.teamdev.machine.util.ValidatedFunctionFactoryImpl;
-import com.teamdev.math.MathBinaryOperatorFactoryImpl;
-import com.teamdev.math.ShuntingYard;
+import com.teamdev.runtime.value.MathBinaryOperatorFactoryImpl;
+import com.teamdev.runtime.value.ShuntingYard;
 
 import java.util.EnumMap;
 import java.util.Map;

@@ -5,6 +5,7 @@ import com.teamdev.fsm.*;
 import com.teamdev.machine.util.TextIdentifierFSM;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompilerFactory;
+import com.teamdev.runtime.datastructure.DataStructureTemplate;
 
 public class DataStructureTemplateFSM extends FiniteStateMachine<DataStructureTemplate, CompilingException> {
 
@@ -13,9 +14,14 @@ public class DataStructureTemplateFSM extends FiniteStateMachine<DataStructureTe
 
         var initial = State.<DataStructureTemplate, CompilingException>initialState();
 
+//        var begin = new State.Builder<DataStructureTemplate, CompilingException>()
+//                .setName("BEGIN DECLARATION")
+//                .setAcceptor((inputSequence, outputSequence) -> true)
+//                .build();
+
         var structureName = new State.Builder<DataStructureTemplate,
                 CompilingException>()
-                .setName("DATA STRUCTURE DECLARATION NAME")
+                .setName("DATA STRUCTURE NAME")
                 .setAcceptor((inputSequence, outputSequence) -> {
                     var optionalString = TextIdentifierFSM.execute(inputSequence,
                             new ExceptionThrower<>(CompilingException::new));
@@ -26,10 +32,9 @@ public class DataStructureTemplateFSM extends FiniteStateMachine<DataStructureTe
 
         var openCurlyBrace = new State.Builder<DataStructureTemplate,
                 CompilingException>()
-                .setName("DATA STRUCTURE DECLARATION OPEN BRACKET")
+                .setName("OPEN BRACE")
                 .setAcceptor(StateAcceptor.acceptChar('{'))
                 .build();
-
 
         var fieldName = new State.Builder<DataStructureTemplate, CompilingException>()
                 .setName("DATA STRUCTURE FIELD")
@@ -48,12 +53,12 @@ public class DataStructureTemplateFSM extends FiniteStateMachine<DataStructureTe
 
         var closeCurlyBrace = new State.Builder<DataStructureTemplate,
                 CompilingException>()
-                .setName("DATA STRUCTURE DECLARATION CLOSE BRACKET")
+                .setName("CLOSE BRACE")
                 .setAcceptor(StateAcceptor.acceptChar('}'))
                 .build();
 
         var semicolon = new State.Builder<DataStructureTemplate, CompilingException>()
-                .setName("DATA STRUCTURE SEMICOLON")
+                .setName("END DECLARATION")
                 .setAcceptor(StateAcceptor.acceptChar(';'))
                 .setFinite(true)
                 .build();

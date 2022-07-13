@@ -1,13 +1,14 @@
 package com.teamdev.meador.compiler.statement.relative_expr;
 
-import com.teamdev.math.bioperator.AbstractBinaryOperator;
-import com.teamdev.math.bioperator.AbstractBinaryOperatorFactory;
-import com.teamdev.math.bioperator.RelativeBinaryOperator;
+import com.teamdev.runtime.value.bioperator.AbstractBinaryOperator;
+import com.teamdev.runtime.value.bioperator.AbstractBinaryOperatorFactory;
+import com.teamdev.runtime.value.bioperator.RelativeBinaryOperator;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.teamdev.math.bioperator.AbstractBinaryOperator.Priority.LOW;
+import static com.teamdev.runtime.value.bioperator.AbstractBinaryOperator.Priority.LOW;
+
 
 /**
  * {@link AbstractBinaryOperatorFactory} implementation for boolean binary operators

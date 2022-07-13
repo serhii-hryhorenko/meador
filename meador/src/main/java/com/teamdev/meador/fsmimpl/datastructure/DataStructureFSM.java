@@ -18,11 +18,12 @@ public class DataStructureFSM extends FiniteStateMachine<DataStructureContext, C
                 .setName("TEMPLATE NAME")
                 .setAcceptor((inputSequence, outputSequence) -> {
                     var optionalTemplateName = TextIdentifierFSM.execute(inputSequence,
-                            new ExceptionThrower<>(ClassCastException::new));
+                            new ExceptionThrower<>(CompilingException::new));
 
                     optionalTemplateName.ifPresent(outputSequence::setTemplateName);
                     return optionalTemplateName.isPresent();
                 })
+                .setTemporary(true)
                 .build();
 
         var openCurlyBrace = new State.Builder<DataStructureContext, CompilingException>()
@@ -47,11 +48,6 @@ public class DataStructureFSM extends FiniteStateMachine<DataStructureContext, C
         var closeCurlyBrace = new State.Builder<DataStructureContext, CompilingException>()
                 .setName("CLOSE CURLY BRACE")
                 .setAcceptor(StateAcceptor.acceptChar('}'))
-                .build();
-
-        var semicolon = new State.Builder<DataStructureContext, CompilingException>()
-                .setName("SEMICOLON")
-                .setAcceptor(StateAcceptor.acceptChar(';'))
                 .setFinite(true)
                 .build();
 
@@ -62,7 +58,6 @@ public class DataStructureFSM extends FiniteStateMachine<DataStructureContext, C
                 .allowTransition(openCurlyBrace, structureField)
                 .allowTransition(structureField, closeCurlyBrace, comma)
                 .allowTransition(comma, structureField)
-                .allowTransition(closeCurlyBrace, semicolon)
                 .build();
 
         return new DataStructureFSM(matrix, new ExceptionThrower<>(CompilingException::new));

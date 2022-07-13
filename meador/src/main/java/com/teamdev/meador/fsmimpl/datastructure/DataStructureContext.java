@@ -1,7 +1,7 @@
 package com.teamdev.meador.fsmimpl.datastructure;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.meador.runtime.Command;
+import com.teamdev.runtime.Command;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -19,8 +19,8 @@ public class ValidatedFunctionFactoryImpl implements ValidatedFunctionFactory {
     public ValidatedFunctionFactoryImpl() {
         functions.put("sum", new ValidatedFunction.Builder()
                 .setFunction(doubles -> doubles.stream()
-                                               .mapToDouble(d -> d)
-                                               .sum())
+                        .mapToDouble(d -> d)
+                        .sum())
                 .setMinimumArguments(2)
                 .setMaximumArguments(MAX_ARGUMENTS)
                 .build()
@@ -30,8 +30,8 @@ public class ValidatedFunctionFactoryImpl implements ValidatedFunctionFactory {
                 .setFunction(
                         doubles -> {
                             var sum = doubles.stream()
-                                             .mapToDouble(d -> d)
-                                             .sum();
+                                    .mapToDouble(d -> d)
+                                    .sum();
                             return sum / doubles.size();
                         })
                 .setMinimumArguments(2)

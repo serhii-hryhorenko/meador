@@ -9,8 +9,11 @@ import com.teamdev.machine.expression.ExpressionFSM;
 import com.teamdev.machine.number.NumberFSM;
 import com.teamdev.machine.operand.OperandFSM;
 import com.teamdev.machine.util.ValidatedFunctionFactoryImpl;
-import com.teamdev.math.MathBinaryOperatorFactoryImpl;
 import com.teamdev.meador.compiler.*;
+import com.teamdev.meador.compiler.statement.datastructure.DataStructureCompiler;
+import com.teamdev.meador.compiler.statement.datastructure.DataStructureTemplateCompiler;
+import com.teamdev.meador.compiler.statement.datastructure.FieldAssignmentCompiler;
+import com.teamdev.meador.compiler.statement.datastructure.FieldValueCompiler;
 import com.teamdev.meador.compiler.statement.function.FunctionCompiler;
 import com.teamdev.meador.compiler.statement.procedure.ProcedureCompiler;
 import com.teamdev.meador.compiler.statement.relative_expr.RelationalExpressionCompiler;
@@ -18,7 +21,8 @@ import com.teamdev.meador.compiler.statement.switch_operator.SwitchOperatorCompi
 import com.teamdev.meador.compiler.statement.variable.VariableDeclarationCompiler;
 import com.teamdev.meador.compiler.statement.variable.VariableValueCompiler;
 import com.teamdev.meador.fsmimpl.compiler.CompilerFSM;
-import com.teamdev.meador.runtime.Command;
+import com.teamdev.runtime.Command;
+import com.teamdev.runtime.value.MathBinaryOperatorFactoryImpl;
 
 import java.util.*;
 
@@ -45,6 +49,8 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
 
         compilers.put(SWITCH, new SwitchOperatorCompiler(this));
 
+        compilers.put(DATA_STRUCTURE_DECLARATION, new DataStructureTemplateCompiler(this));
+
         compilers.put(NUMBER, inputSequence ->
                 NumberFSM.execute(inputSequence, new ExceptionThrower<>(CompilingException::new))
                         .map(value -> environment -> environment.stack()
@@ -54,6 +60,8 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
 
         compilers.put(EXPRESSION, new DetachedStackStatementCompiler(
                 OperandFSM.create(new TransitionOneOfMatrixBuilder<List<Command>, CompilingException>()
+                                .allowTransition(new CompileStatementAcceptor<>(this, DATA_STRUCTURE_INSTANCE, List::add),
+                                        "DATA STRUCTURE INSTANCE")
                                 .allowTransition(new CompileStatementAcceptor<>(this, RELATIONAL_EXPRESSION, List::add),
                                         "RELATIONAL EXPRESSION", true)
                                 .allowTransition(new CompileStatementAcceptor<>(this, NUMERIC_EXPRESSION, List::add),
@@ -67,6 +75,8 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
 
         compilers.put(RELATIONAL_EXPRESSION, new RelationalExpressionCompiler(this));
 
+        compilers.put(DATA_STRUCTURE_INSTANCE, new DataStructureCompiler(this));
+
         compilers.put(BRACKETS, new DetachedStackStatementCompiler(BracketsFSM.create(createNumericExpressionMachine(),
                 new ExceptionThrower<>(CompilingException::new))));
 
@@ -75,6 +85,10 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
         compilers.put(FUNCTION, new FunctionCompiler(this, new ValidatedFunctionFactoryImpl()));
 
         compilers.put(PROCEDURE, new ProcedureCompiler(this));
+
+        compilers.put(FIELD_ASSIGNMENT, new FieldAssignmentCompiler(this));
+
+        compilers.put(FIELD_VALUE, new FieldValueCompiler());
 
         compilers.put(VARIABLE_DECLARATION, new VariableDeclarationCompiler(this));
 
@@ -88,6 +102,7 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
                 (commands, operator) -> commands.add(environment -> environment.stack()
                         .peek()
                         .pushOperator(operator)),
+
                 new ExceptionThrower<>(CompilingException::new)
         );
     }
@@ -103,7 +118,10 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
                                 "MEADOR BRACKETS")
 
                         .allowTransition(new CompileStatementAcceptor<>(this, FUNCTION, List::add),
-                                "MEADOR FUNCTION", true)
+                                "MEADOR FUNCTION")
+
+                        .allowTransition(new CompileStatementAcceptor<>(this, FIELD_VALUE, List::add),
+                                "MEADOR FIELD VALUE")
 
                         .allowTransition(new CompileStatementAcceptor<>(this, VARIABLE_VALUE, List::add),
                                 "MEADOR VARIABLE")

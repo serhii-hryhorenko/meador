@@ -1,15 +1,10 @@
 package com.teamdev.machine.expression;
 
 import com.google.common.base.Preconditions;
+import com.teamdev.fsm.*;
 import com.teamdev.machine.operand.OperandFSM;
-import com.teamdev.fsm.ExceptionThrower;
-import com.teamdev.fsm.FiniteStateMachine;
-import com.teamdev.fsm.State;
-import com.teamdev.fsm.StateAcceptor;
-import com.teamdev.fsm.TransitionMatrix;
-import com.teamdev.fsm.TransitionMatrixBuilder;
-import com.teamdev.math.bioperator.AbstractBinaryOperator;
-import com.teamdev.math.bioperator.AbstractBinaryOperatorFactory;
+import com.teamdev.runtime.value.bioperator.AbstractBinaryOperator;
+import com.teamdev.runtime.value.bioperator.AbstractBinaryOperatorFactory;
 
 import java.util.function.BiConsumer;
 

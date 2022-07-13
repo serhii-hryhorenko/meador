@@ -21,6 +21,7 @@ public class TransitionOneOfMatrixBuilder<O, E extends Exception> {
                 .setName(stateName)
                 .setAcceptor(acceptor)
                 .setFinite(true)
+                .setTemporary(false)
                 .build();
 
         transitions.add(state);

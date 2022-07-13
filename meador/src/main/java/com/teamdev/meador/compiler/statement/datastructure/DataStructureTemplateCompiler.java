@@ -5,9 +5,9 @@ import com.teamdev.fsm.InputSequence;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompiler;
 import com.teamdev.meador.compiler.StatementCompilerFactory;
-import com.teamdev.meador.fsmimpl.datastructure.DataStructureTemplate;
 import com.teamdev.meador.fsmimpl.datastructure.DataStructureTemplateFSM;
-import com.teamdev.meador.runtime.Command;
+import com.teamdev.runtime.Command;
+import com.teamdev.runtime.datastructure.DataStructureTemplate;
 
 import java.util.Optional;
 

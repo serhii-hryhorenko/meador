@@ -5,10 +5,9 @@ import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompiler;
 import com.teamdev.meador.compiler.StatementCompilerFactory;
 import com.teamdev.meador.fsmimpl.variable.VariableDeclarationFSM;
-import com.teamdev.meador.fsmimpl.variable.VariableHolder;
-import com.teamdev.meador.runtime.Command;
+import com.teamdev.runtime.Command;
+import com.teamdev.runtime.variable.VariableHolder;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import static com.teamdev.meador.compiler.StatementType.EXPRESSION;
@@ -26,29 +25,28 @@ public class VariableDeclarationCompiler implements StatementCompiler {
 
     @Override
     public Optional<Command> compile(InputSequence input) throws CompilingException {
-        var variable = VariableDeclarationFSM.create((inputSequence, outputSequence) -> {
+        var variableFSM = VariableDeclarationFSM.create((inputSequence, outputSequence) -> {
 
-            var optionalCommand = factory.create(EXPRESSION)
-                    .compile(inputSequence);
+            var optionalCommand = factory.create(EXPRESSION).compile(inputSequence);
 
             optionalCommand.ifPresent(outputSequence::setCommand);
 
             return optionalCommand.isPresent();
         });
 
-        var builder = new VariableHolder();
+        var variable = new VariableHolder();
 
-        if (variable.accept(input, builder)) {
+        if (variableFSM.accept(input, variable)) {
             return Optional.of(runtimeEnvironment -> {
 
                 runtimeEnvironment.stack()
                         .create();
 
-                builder.command()
+                variable.command()
                         .execute(runtimeEnvironment);
 
                 runtimeEnvironment.memory()
-                        .putVariable(builder.name(),
+                        .putVariable(variable.name(),
                                 runtimeEnvironment.stack()
                                         .pop()
                                         .popResult());
@@ -57,24 +55,4 @@ public class VariableDeclarationCompiler implements StatementCompiler {
 
         return Optional.empty();
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if (obj == null || obj.getClass() != this.getClass()) return false;
-        var that = (VariableDeclarationCompiler) obj;
-        return Objects.equals(this.factory, that.factory);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(factory);
-    }
-
-    @Override
-    public String toString() {
-        return "VariableDeclarationCompiler[" +
-                "factory=" + factory + ']';
-    }
-
 }

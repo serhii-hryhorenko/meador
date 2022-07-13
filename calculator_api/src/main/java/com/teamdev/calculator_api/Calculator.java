@@ -4,9 +4,9 @@ import com.google.common.base.Preconditions;
 import com.teamdev.calculator_api.resolver.MathElementResolverFactory;
 import com.teamdev.calculator_api.resolver.ResolvingException;
 import com.teamdev.fsm.InputSequence;
-import com.teamdev.math.ShuntingYard;
-import com.teamdev.math.type.DoubleValueVisitor;
-import com.teamdev.math.type.Value;
+import com.teamdev.runtime.value.ShuntingYard;
+import com.teamdev.runtime.value.type.DoubleValueVisitor;
+import com.teamdev.runtime.value.type.Value;
 
 /**
  * An API for resolving of math expressions. Math expression may contain:
@@ -30,7 +30,7 @@ public class Calculator {
 
     private static void raiseException(InputSequence inputChain) throws InvalidExpressionException {
         throw new InvalidExpressionException("Wrong mathematical expression",
-                                             inputChain.getPosition());
+                inputChain.getPosition());
     }
 
     public Output calculate(MathExpression expression) throws InvalidExpressionException {

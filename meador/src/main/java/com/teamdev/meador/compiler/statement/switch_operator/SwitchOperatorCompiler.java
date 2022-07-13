@@ -2,12 +2,12 @@ package com.teamdev.meador.compiler.statement.switch_operator;
 
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.InputSequence;
-import com.teamdev.math.type.Value;
 import com.teamdev.meador.StatementCompilerFactoryImpl;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompiler;
 import com.teamdev.meador.fsmimpl.switch_operator.SwitchFSM;
-import com.teamdev.meador.runtime.Command;
+import com.teamdev.runtime.Command;
+import com.teamdev.runtime.value.type.Value;
 
 import java.util.Optional;
 

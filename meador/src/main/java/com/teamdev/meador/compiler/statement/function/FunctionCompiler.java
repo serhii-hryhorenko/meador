@@ -8,7 +8,7 @@ import com.teamdev.machine.function.ValidatedFunctionFactory;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompiler;
 import com.teamdev.meador.compiler.StatementCompilerFactory;
-import com.teamdev.meador.runtime.Command;
+import com.teamdev.runtime.Command;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -51,19 +51,19 @@ public class FunctionCompiler implements StatementCompiler {
 
             var function = functionFactory.create(context.functionName());
 
-            if (context.arguments()
+            if (context.commands()
                     .size() >= function.getMinArguments()
-                    && context.arguments()
+                    && context.commands()
                     .size() <= function.getMaxArguments()) {
 
                 return Optional.of(runtimeEnvironment -> {
 
                     var doubles = context.commands()
                             .stream()
-                            .map(value -> {
+                            .map(argument -> {
                                 runtimeEnvironment.stack().create();
 
-                                value.execute(runtimeEnvironment);
+                                argument.execute(runtimeEnvironment);
 
                                 return runtimeEnvironment.stack().pop().popResult();
                             })

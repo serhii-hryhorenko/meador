@@ -7,9 +7,9 @@ import com.teamdev.meador.compiler.StatementCompiler;
 import com.teamdev.meador.compiler.StatementCompilerFactory;
 import com.teamdev.meador.fsmimpl.datastructure.DataStructureContext;
 import com.teamdev.meador.fsmimpl.datastructure.DataStructureFSM;
-import com.teamdev.meador.fsmimpl.datastructure.DataStructureHolder;
-import com.teamdev.meador.runtime.Command;
-import com.teamdev.meador.runtime.RuntimeEnvironment;
+import com.teamdev.runtime.Command;
+import com.teamdev.runtime.datastructure.DataStructureHolder;
+import com.teamdev.runtime.value.type.DataStructureValue;
 
 import java.util.Optional;
 
@@ -26,17 +26,14 @@ public class DataStructureCompiler implements StatementCompiler {
         var dataStructureContext = new DataStructureContext();
 
         if (DataStructureFSM.create(factory).accept(inputSequence, dataStructureContext)) {
-            return Optional.of(new Command() {
-                @Override
-                public void execute(RuntimeEnvironment runtimeEnvironment) {
-                    var template = runtimeEnvironment.getStructureTemplate(dataStructureContext.templateName());
+            return Optional.of(runtimeEnvironment -> {
+                var template = runtimeEnvironment.getStructureTemplate(dataStructureContext.templateName());
 
-                    var implementation = new DataStructureHolder(template.orElseThrow());
+                var implementation = new DataStructureHolder(template.orElseThrow());
 
-                    dataStructureContext.fieldValues().forEach(implementation::assignFieldValue);
+                dataStructureContext.fieldValues().forEach(implementation::assignFieldValue);
 
-                    runtimeEnvironment.stack().peek().pushOperand(null);
-                }
+                runtimeEnvironment.stack().peek().pushOperand(new DataStructureValue(implementation));
             });
         }
         return Optional.empty();

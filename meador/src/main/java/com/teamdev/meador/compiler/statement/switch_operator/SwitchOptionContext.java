@@ -1,7 +1,7 @@
 package com.teamdev.meador.compiler.statement.switch_operator;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.meador.runtime.Command;
+import com.teamdev.runtime.Command;
 
 public class SwitchOptionContext {
 

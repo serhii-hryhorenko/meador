@@ -4,15 +4,12 @@ import com.google.common.base.Preconditions;
 import com.teamdev.fsm.*;
 import com.teamdev.machine.util.TextIdentifierFSM;
 import com.teamdev.meador.compiler.CompilingException;
+import com.teamdev.runtime.variable.VariableHolder;
 
 /**
  * {@link FiniteStateMachine} implementation for recognizing variable declarations in Meador programs.
  */
 public class VariableDeclarationFSM extends FiniteStateMachine<VariableHolder, CompilingException> {
-
-    private VariableDeclarationFSM(TransitionMatrix<VariableHolder, CompilingException> transitionMatrix) {
-        super(transitionMatrix, new ExceptionThrower<>(CompilingException::new));
-    }
 
     public static VariableDeclarationFSM create(StateAcceptor<VariableHolder, CompilingException> expressionAcceptor) {
 
@@ -31,6 +28,7 @@ public class VariableDeclarationFSM extends FiniteStateMachine<VariableHolder, C
 
                     return false;
                 })
+                .setTemporary(true)
                 .build();
 
         var assignOperator = new State.Builder<VariableHolder, CompilingException>()
@@ -50,9 +48,12 @@ public class VariableDeclarationFSM extends FiniteStateMachine<VariableHolder, C
                 .build();
 
         var matrix =
-                TransitionMatrix.chainedTransitions(variableName, assignOperator, expression,
-                        semicolon);
+                TransitionMatrix.chainedTransitions(variableName, assignOperator, expression, semicolon);
 
         return new VariableDeclarationFSM(matrix);
+    }
+
+    private VariableDeclarationFSM(TransitionMatrix<VariableHolder, CompilingException> transitionMatrix) {
+        super(transitionMatrix, new ExceptionThrower<>(CompilingException::new));
     }
 }

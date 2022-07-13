@@ -1,15 +1,10 @@
 package com.teamdev.machine.number;
 
 import com.google.common.base.Preconditions;
+import com.teamdev.fsm.*;
 import com.teamdev.machine.util.SymbolAcceptor;
-import com.teamdev.fsm.ExceptionThrower;
-import com.teamdev.fsm.FiniteStateMachine;
-import com.teamdev.fsm.InputSequence;
-import com.teamdev.fsm.State;
-import com.teamdev.fsm.TransitionMatrix;
-import com.teamdev.fsm.TransitionMatrixBuilder;
-import com.teamdev.math.type.DoubleValue;
-import com.teamdev.math.type.Value;
+import com.teamdev.runtime.value.type.DoubleValue;
+import com.teamdev.runtime.value.type.Value;
 
 import java.util.Optional;
 
@@ -28,12 +23,11 @@ public class NumberFSM<E extends Exception> extends FiniteStateMachine<StringBui
 
     public static <E extends Exception> Optional<Value> execute(InputSequence inputSequence,
                                                                 ExceptionThrower<E> exceptionThrower) throws
-                                                                                                       E {
+            E {
         var number = create(Preconditions.checkNotNull(exceptionThrower));
         var outputSequence = new StringBuilder();
 
         if (number.accept(inputSequence, outputSequence)) {
-
             return Optional.of(new DoubleValue(Double.parseDouble(outputSequence.toString())));
         }
 
