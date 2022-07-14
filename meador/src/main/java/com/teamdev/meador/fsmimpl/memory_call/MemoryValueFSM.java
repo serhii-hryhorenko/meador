@@ -1,4 +1,4 @@
-package com.teamdev.meador.fsmimpl.datastructure;
+package com.teamdev.meador.fsmimpl.memory_call;
 
 import com.teamdev.fsm.*;
 import com.teamdev.machine.util.TextIdentifierFSM;

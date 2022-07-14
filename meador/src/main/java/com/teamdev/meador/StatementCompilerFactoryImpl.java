@@ -13,8 +13,8 @@ import com.teamdev.meador.compiler.*;
 import com.teamdev.meador.compiler.statement.datastructure.DataStructureCompiler;
 import com.teamdev.meador.compiler.statement.datastructure.DataStructureTemplateCompiler;
 import com.teamdev.meador.compiler.statement.datastructure.FieldAssignmentCompiler;
-import com.teamdev.meador.compiler.statement.datastructure.MemoryValueCompiler;
 import com.teamdev.meador.compiler.statement.function.FunctionCompiler;
+import com.teamdev.meador.compiler.statement.memory_call.MemoryValueCompiler;
 import com.teamdev.meador.compiler.statement.procedure.ProcedureCompiler;
 import com.teamdev.meador.compiler.statement.relative_expr.RelationalExpressionCompiler;
 import com.teamdev.meador.compiler.statement.switch_operator.SwitchOperatorCompiler;
@@ -90,8 +90,6 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
         compilers.put(MEMORY_VALUE, new MemoryValueCompiler());
 
         compilers.put(VARIABLE_DECLARATION, new VariableDeclarationCompiler(this));
-
-//        compilers.put(VARIABLE_VALUE, new VariableValueCompiler());
     }
 
     private StateAcceptor<List<Command>, CompilingException> createNumericExpressionMachine() {
@@ -121,12 +119,6 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
 
                         .allowTransition(new CompileStatementAcceptor<>(this, MEMORY_VALUE, List::add),
                                 "MEADOR MEMORY VALUE")
-
-//                        .allowTransition(new CompileStatementAcceptor<>(this, FIELD_VALUE, List::add),
-//                                "MEADOR FIELD VALUE")
-//
-//                        .allowTransition(new CompileStatementAcceptor<>(this, VARIABLE_VALUE, List::add),
-//                                "MEADOR VARIABLE")
                         .build(),
 
                 new ExceptionThrower<>(CompilingException::new)

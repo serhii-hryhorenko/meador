@@ -5,7 +5,7 @@ import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompiler;
 import com.teamdev.meador.compiler.StatementCompilerFactory;
 import com.teamdev.meador.fsmimpl.datastructure.FieldAssignmentFSM;
-import com.teamdev.meador.fsmimpl.datastructure.MemoryValueContext;
+import com.teamdev.meador.fsmimpl.memory_call.MemoryValueContext;
 import com.teamdev.runtime.Command;
 import com.teamdev.runtime.value.type.DataStructureVisitor;
 

@@ -92,7 +92,20 @@ public class DataStructureTest extends MeadorTest {
                                 print(a.x, a.y);
                                 """,
                         "[true, 2.0]",
-                        "Field weak typing is broken."));
+                        "Field weak typing is broken."),
+                of("""
+                                Point{x,y};
+                                a = Point{0, 0};
+                                b = Point{a, Point{1, 1}};
+                                ap = b.x;
+                                ax = ap.x;
+                                bp = b.y;
+                                by = bp.y;
+                                print(ax, by);
+                                """,
+                        "[0.0, 1.0]",
+                        "Structures are not accessible to copy from fields.")
+        );
     }
 
     static Stream<Arguments> negativeCases() {
@@ -116,6 +129,17 @@ public class DataStructureTest extends MeadorTest {
                                 Coordinate{x, y};
                                 a = Coordinate{1};
                                 """,
-                        "Invalid constructor usage was ignored."));
+                        "Invalid constructor usage was ignored."),
+                of("""
+                                Coordinate{x, y};
+                                a = Coordinate{1, 2, 3};
+                                """,
+                        "Invalid constructor usage was ignored."),
+                of("""
+                                Coordinate{x, y};
+                                a.x = Coordinate{1, 2, 3};
+                                """,
+                        "Invalid field call was ignored.")
+        );
     }
 }

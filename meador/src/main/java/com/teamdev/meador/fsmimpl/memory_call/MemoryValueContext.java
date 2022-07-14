@@ -1,4 +1,4 @@
-package com.teamdev.meador.fsmimpl.datastructure;
+package com.teamdev.meador.fsmimpl.memory_call;
 
 import com.google.common.base.Preconditions;
 import com.teamdev.runtime.Command;
@@ -6,8 +6,8 @@ import com.teamdev.runtime.Command;
 public class MemoryValueContext {
 
     private String variableName;
-    private String fieldName;
 
+    private String fieldName;
     private Command fieldValue;
 
     public String variableName() {

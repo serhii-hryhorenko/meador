@@ -6,6 +6,7 @@ import com.teamdev.machine.util.TextIdentifierFSM;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompilerFactory;
 import com.teamdev.meador.compiler.StatementType;
+import com.teamdev.meador.fsmimpl.memory_call.MemoryValueContext;
 
 public class FieldAssignmentFSM extends FiniteStateMachine<MemoryValueContext, CompilingException> {
 

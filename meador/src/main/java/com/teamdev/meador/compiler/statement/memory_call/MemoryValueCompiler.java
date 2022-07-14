@@ -1,10 +1,10 @@
-package com.teamdev.meador.compiler.statement.datastructure;
+package com.teamdev.meador.compiler.statement.memory_call;
 
 import com.teamdev.fsm.InputSequence;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompiler;
-import com.teamdev.meador.fsmimpl.datastructure.MemoryValueContext;
-import com.teamdev.meador.fsmimpl.datastructure.MemoryValueFSM;
+import com.teamdev.meador.fsmimpl.memory_call.MemoryValueContext;
+import com.teamdev.meador.fsmimpl.memory_call.MemoryValueFSM;
 import com.teamdev.runtime.Command;
 import com.teamdev.runtime.value.type.DataStructureVisitor;
 
