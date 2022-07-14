@@ -4,6 +4,9 @@ import com.teamdev.fsm.*;
 import com.teamdev.machine.util.TextIdentifierFSM;
 import com.teamdev.meador.compiler.CompilingException;
 
+/**
+ * {@link FiniteStateMachine} implementation for recognizing calls for values stored in memory in Meador programs.
+ */
 public class MemoryValueFSM extends FiniteStateMachine<MemoryValueContext, CompilingException> {
 
     public static MemoryValueFSM create() {
@@ -24,7 +27,7 @@ public class MemoryValueFSM extends FiniteStateMachine<MemoryValueContext, Compi
                 .build();
 
         var fieldName = new State.Builder<MemoryValueContext, CompilingException>()
-                .setName("STRUCTURE NAME")
+                .setName("FIELD NAME")
                 .setAcceptor((inputSequence, outputSequence) -> {
                     var optionalName = TextIdentifierFSM.execute(inputSequence,
                             new ExceptionThrower<>(CompilingException::new));

@@ -1,11 +1,12 @@
 package com.teamdev.runtime.value;
 
-import com.teamdev.runtime.value.bioperator.AbstractBinaryOperator;
 import com.teamdev.runtime.value.bioperator.AbstractBinaryOperatorFactory;
 import com.teamdev.runtime.value.bioperator.DoubleValueBinaryOperator;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.teamdev.runtime.value.bioperator.AbstractBinaryOperator.Priority.*;
 
 /**
  * {@link AbstractBinaryOperatorFactory} implementation with prepared objects inside a Map.
@@ -25,11 +26,11 @@ public class MathBinaryOperatorFactoryImpl implements AbstractBinaryOperatorFact
     private final Map<Character, DoubleValueBinaryOperator> operators = new HashMap<>();
 
     public MathBinaryOperatorFactoryImpl() {
-        operators.put('+', new DoubleValueBinaryOperator(Double::sum, AbstractBinaryOperator.Priority.LOW));
-        operators.put('-', new DoubleValueBinaryOperator((left, right) -> left - right, AbstractBinaryOperator.Priority.LOW));
-        operators.put('*', new DoubleValueBinaryOperator((left, right) -> left * right, AbstractBinaryOperator.Priority.MEDIUM));
-        operators.put('/', new DoubleValueBinaryOperator((left, right) -> left / right, AbstractBinaryOperator.Priority.MEDIUM));
-        operators.put('^', new DoubleValueBinaryOperator(Math::pow, AbstractBinaryOperator.Priority.HIGH));
+        operators.put('+', new DoubleValueBinaryOperator(Double::sum, LOW));
+        operators.put('-', new DoubleValueBinaryOperator((left, right) -> left - right, LOW));
+        operators.put('*', new DoubleValueBinaryOperator((left, right) -> left * right, MEDIUM));
+        operators.put('/', new DoubleValueBinaryOperator((left, right) -> left / right, MEDIUM));
+        operators.put('^', new DoubleValueBinaryOperator(Math::pow, HIGH));
     }
 
     @Override

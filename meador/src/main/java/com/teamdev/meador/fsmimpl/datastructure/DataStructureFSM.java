@@ -7,6 +7,9 @@ import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompilerFactory;
 import com.teamdev.meador.compiler.StatementType;
 
+/**
+ * {@link FiniteStateMachine} implementation for recognizing data structures implementations in Meador programs.
+ */
 public class DataStructureFSM extends FiniteStateMachine<DataStructureContext, CompilingException> {
 
     public static DataStructureFSM create(StatementCompilerFactory factory) {

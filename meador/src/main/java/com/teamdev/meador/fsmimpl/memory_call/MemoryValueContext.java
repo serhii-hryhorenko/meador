@@ -3,6 +3,9 @@ package com.teamdev.meador.fsmimpl.memory_call;
 import com.google.common.base.Preconditions;
 import com.teamdev.runtime.Command;
 
+/**
+ * Output chain for {@link MemoryValueFSM}.
+ */
 public class MemoryValueContext {
 
     private String variableName;

@@ -8,6 +8,9 @@ import com.teamdev.meador.compiler.StatementCompilerFactory;
 import com.teamdev.meador.compiler.StatementType;
 import com.teamdev.meador.fsmimpl.memory_call.MemoryValueContext;
 
+/**
+ * {@link FiniteStateMachine} implementation for recognizing reassigning data structure fields.
+ */
 public class FieldAssignmentFSM extends FiniteStateMachine<MemoryValueContext, CompilingException> {
 
     public static FieldAssignmentFSM create(StatementCompilerFactory factory) {
