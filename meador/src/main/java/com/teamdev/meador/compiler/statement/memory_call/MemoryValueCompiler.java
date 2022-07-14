@@ -12,6 +12,11 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * {@link StatementCompiler} implementation for compiling memory call statements.
+ * Works for both variables and data structure fields.
+ * Uses {@link MemoryValueFSM} and {@link MemoryValueContext} for parsing.
+ */
 public class MemoryValueCompiler implements StatementCompiler {
 
     @Override

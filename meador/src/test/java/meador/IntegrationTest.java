@@ -33,7 +33,24 @@ public class IntegrationTest extends MeadorTest {
                         "Variable was not created inside switch operator."),
                 of("a = average(1, 2, 3) > 1; print(a);", "[true]",
                         "Functions as left relational operand are not recognized."),
-                of("print(1+2+3);", "[6.0]", "Three operands expression is broken.")
+                of("print(1+2+3);", "[6.0]", "Three operands expression is broken."),
+                of("""
+                                Vector{x, y};
+                                a = Vector{1, 0};
+                                condition = a.x > a.y;
+                                switch(condition) {
+                                    case 1 > 0: {
+                                        a.x = 0;
+                                        a.y = 1;
+                                        print(a.x, a.y);
+                                    }
+                                    default: {
+                                        print(a.x, a.y);
+                                    }
+                                }
+                                """,
+                        "[0.0, 1.0]",
+                        "Data structure fields aren't accessible from switch operator.")
         );
     }
 

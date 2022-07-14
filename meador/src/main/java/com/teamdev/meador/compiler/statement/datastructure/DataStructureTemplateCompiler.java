@@ -11,6 +11,9 @@ import com.teamdev.runtime.datastructure.DataStructureTemplate;
 
 import java.util.Optional;
 
+/**
+ * {@link StatementCompiler} implementation for compiling structure declaration statements.
+ */
 public class DataStructureTemplateCompiler implements StatementCompiler {
 
     private final StatementCompilerFactory factory;

@@ -13,6 +13,9 @@ import com.teamdev.runtime.value.type.DataStructureValue;
 
 import java.util.Optional;
 
+/**
+ * {@link StatementCompiler} implementation for compiling data structure instantiating statements.
+ */
 public class DataStructureCompiler implements StatementCompiler {
 
     private final StatementCompilerFactory factory;

@@ -15,6 +15,9 @@ public class FieldAssignmentCompiler implements StatementCompiler {
 
     private final StatementCompilerFactory factory;
 
+    /**
+     * {@link StatementCompiler} implementation for compiling field value assignment statements.
+     */
     public FieldAssignmentCompiler(StatementCompilerFactory factory) {
         this.factory = factory;
     }

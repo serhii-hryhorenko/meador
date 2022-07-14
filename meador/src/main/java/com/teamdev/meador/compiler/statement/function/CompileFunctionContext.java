@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Output chain for {@link com.teamdev.machine.function.FunctionFSM}.
+ */
 public class CompileFunctionContext extends FunctionHolder {
 
     private final List<Command> commands = new ArrayList<>();

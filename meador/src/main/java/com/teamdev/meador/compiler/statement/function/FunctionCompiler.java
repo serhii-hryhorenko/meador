@@ -15,6 +15,10 @@ import java.util.stream.Collectors;
 
 import static com.teamdev.meador.compiler.StatementType.NUMERIC_EXPRESSION;
 
+/**
+ * {@link StatementCompiler} implementation for compiling math function statements.
+ * Uses {@link FunctionFSM} for filling {@link CompileFunctionContext} output chain.
+ */
 public class FunctionCompiler implements StatementCompiler {
 
     private final StatementCompilerFactory compilerFactory;
