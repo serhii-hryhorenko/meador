@@ -4,8 +4,8 @@ import com.teamdev.fsm.InputSequence;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompiler;
 import com.teamdev.meador.compiler.StatementCompilerFactory;
-import com.teamdev.meador.fsmimpl.datastructure.FieldAssignmentContext;
 import com.teamdev.meador.fsmimpl.datastructure.FieldAssignmentFSM;
+import com.teamdev.meador.fsmimpl.datastructure.MemoryValueContext;
 import com.teamdev.runtime.Command;
 import com.teamdev.runtime.value.type.DataStructureVisitor;
 
@@ -21,10 +21,10 @@ public class FieldAssignmentCompiler implements StatementCompiler {
 
     @Override
     public Optional<Command> compile(InputSequence inputSequence) throws CompilingException {
-        var context = new FieldAssignmentContext();
+        var context = new MemoryValueContext();
         if (FieldAssignmentFSM.create(factory).accept(inputSequence, context)) {
             return Optional.of(runtimeEnvironment -> {
-                var optionalValue = runtimeEnvironment.memory().getVariable(context.structureName());
+                var optionalValue = runtimeEnvironment.memory().getVariable(context.variableName());
 
                 var visitor = new DataStructureVisitor();
                 optionalValue.orElseThrow().acceptVisitor(visitor);

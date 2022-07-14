@@ -7,28 +7,28 @@ import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompilerFactory;
 import com.teamdev.meador.compiler.StatementType;
 
-public class FieldAssignmentFSM extends FiniteStateMachine<FieldAssignmentContext, CompilingException> {
+public class FieldAssignmentFSM extends FiniteStateMachine<MemoryValueContext, CompilingException> {
 
     public static FieldAssignmentFSM create(StatementCompilerFactory factory) {
         Preconditions.checkNotNull(factory);
 
-        var structureName = new State.Builder<FieldAssignmentContext, CompilingException>()
+        var structureName = new State.Builder<MemoryValueContext, CompilingException>()
                 .setName("STRUCTURE NAME")
                 .setAcceptor((inputSequence, outputSequence) -> {
                     var optionalName = TextIdentifierFSM.execute(inputSequence,
                             new ExceptionThrower<>(CompilingException::new));
-                    optionalName.ifPresent(outputSequence::setStructureName);
+                    optionalName.ifPresent(outputSequence::setVariableName);
                     return optionalName.isPresent();
                 })
                 .setTemporary(true)
                 .build();
 
-        var dot = new State.Builder<FieldAssignmentContext, CompilingException>()
+        var dot = new State.Builder<MemoryValueContext, CompilingException>()
                 .setName("FIELD REFERENCE OPERATOR")
                 .setAcceptor(StateAcceptor.acceptChar('.'))
                 .build();
 
-        var fieldName = new State.Builder<FieldAssignmentContext, CompilingException>()
+        var fieldName = new State.Builder<MemoryValueContext, CompilingException>()
                 .setName("FIELD NAME")
                 .setAcceptor((inputSequence, outputSequence) -> {
                     var optionalName = TextIdentifierFSM.execute(inputSequence,
@@ -38,21 +38,21 @@ public class FieldAssignmentFSM extends FiniteStateMachine<FieldAssignmentContex
                 })
                 .build();
 
-        var assignOperator = new State.Builder<FieldAssignmentContext, CompilingException>()
+        var assignOperator = new State.Builder<MemoryValueContext, CompilingException>()
                 .setName("ASSIGN OPERATOR")
                 .setAcceptor(StateAcceptor.acceptChar('='))
                 .build();
 
-        var value = new State.Builder<FieldAssignmentContext, CompilingException>()
+        var value = new State.Builder<MemoryValueContext, CompilingException>()
                 .setName("NEW FIELD VALUE")
                 .setAcceptor((inputSequence, outputSequence) -> {
                     var optionalCommand = factory.create(StatementType.EXPRESSION).compile(inputSequence);
-                    optionalCommand.ifPresent(outputSequence::setValue);
+                    optionalCommand.ifPresent(outputSequence::setFieldValue);
                     return optionalCommand.isPresent();
                 })
                 .build();
 
-        var semicolon = new State.Builder<FieldAssignmentContext, CompilingException>()
+        var semicolon = new State.Builder<MemoryValueContext, CompilingException>()
                 .setName("FIELD ASSIGNMENT END")
                 .setAcceptor(StateAcceptor.acceptChar(';'))
                 .setFinite(true)
@@ -64,7 +64,7 @@ public class FieldAssignmentFSM extends FiniteStateMachine<FieldAssignmentContex
         return new FieldAssignmentFSM(matrix, new ExceptionThrower<>(CompilingException::new));
     }
 
-    private FieldAssignmentFSM(TransitionMatrix<FieldAssignmentContext, CompilingException> transitionMatrix,
+    private FieldAssignmentFSM(TransitionMatrix<MemoryValueContext, CompilingException> transitionMatrix,
                                ExceptionThrower<CompilingException> thrower) {
         super(transitionMatrix, thrower);
     }

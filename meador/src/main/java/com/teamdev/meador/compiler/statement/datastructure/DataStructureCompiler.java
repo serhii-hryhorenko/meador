@@ -27,9 +27,16 @@ public class DataStructureCompiler implements StatementCompiler {
 
         if (DataStructureFSM.create(factory).accept(inputSequence, dataStructureContext)) {
             return Optional.of(runtimeEnvironment -> {
-                var template = runtimeEnvironment.getStructureTemplate(dataStructureContext.templateName());
+                var optionalTemplate = runtimeEnvironment
+                        .getStructureTemplate(dataStructureContext.templateName());
 
-                var implementation = new DataStructureHolder(template.orElseThrow());
+                var template = optionalTemplate.orElseThrow();
+
+                if (template.fieldNumber() != dataStructureContext.fieldValues().size()) {
+                    throw new RuntimeException();
+                }
+
+                var implementation = new DataStructureHolder(template);
 
                 dataStructureContext.fieldValues().forEach(implementation::assignFieldValue);
 

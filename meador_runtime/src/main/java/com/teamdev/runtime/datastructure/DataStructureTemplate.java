@@ -27,6 +27,10 @@ public class DataStructureTemplate {
         return Collections.unmodifiableSet(fieldNames);
     }
 
+    public int fieldNumber() {
+        return fieldNames.size();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

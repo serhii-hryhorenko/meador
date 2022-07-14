@@ -48,8 +48,7 @@ public class DataStructureTest extends MeadorTest {
                                     print(a.y + b.x);
                                 """,
                         "[4.0]",
-                        "Structures' field values are not interpreted in a proper way as a procedure parameter."),
-                of("""
+                        "Structures' field values are not interpreted in a proper way as a procedure parameter."), of("""
                                     Point{x,y};
                                     Vector{a, b};
                                                             
@@ -62,26 +61,23 @@ public class DataStructureTest extends MeadorTest {
                         "[1.0, -1.0]",
                         "Structures' field values are not interpreted in a proper way as a construction parameter."),
                 of("""  
-                                        Point{x,y};
-                                        a = Point{0, 0};
-                                        a.x = 1;
-                                        a.y = -1;
-                                        print(a.x + a.y);
+                                    Point{x,y};
+                                    a = Point{0, 0};
+                                    a.x = 1;
+                                    a.y = -1;
+                                    print(a.x + a.y);
                                 """,
                         "[0.0]",
                         "Field assignment is broken."),
                 of("""  
-                                    pi = pi();
-                                    Vector{x,y,z};
-                                    a = Vector{0, 0, 0};
-                                    a.x = 6;
-                                    a.y = a.x + pi();
-                                    a.z = average(a.x, pi);
-                                    print(a.x, a.y, a.z);
-                                    print(a.x + a.y + a.z);
-                                """,
-                        "[" + (6 + 6 + Math.PI + ((6 + Math.PI) / 2)) + ']',
-                        "Field assignment is broken."),
+                            pi = pi();
+                            Vector{x,y,z};
+                            a = Vector{0, 0, 0};
+                            a.x = 6;
+                            a.y = a.x + pi();
+                            a.z = average(a.x, pi);
+                            print(a.x + a.y + a.z);
+                        """, "[" + (6 + 6 + Math.PI + ((6 + Math.PI) / 2)) + ']', "Field assignment is broken."),
                 of("""
                                 Point{x,y};
                                 a = Point{1, 2};
@@ -96,21 +92,30 @@ public class DataStructureTest extends MeadorTest {
                                 print(a.x, a.y);
                                 """,
                         "[true, 2.0]",
-                        "Field weak typing is broken.")
-        );
+                        "Field weak typing is broken."));
     }
 
     static Stream<Arguments> negativeCases() {
         return Stream.of(
                 of("""
-                        Point { x, y }
-                        print(450);
-                        """, "Semicolon absence was ignored."),
+                                Point { x, y }
+                                print(450);
+                                """,
+                        "Semicolon absence was ignored."),
                 of("""
-                        Point { x, y };
-                        a = Point{0, 0};
-                        print(a.z);
-                        """, "Invalid field name call was ignored.")
-        );
+                                Point { x, y };
+                                a = Point{0, 0};
+                                print(a.z);
+                                """,
+                        "Invalid field name call was ignored."),
+                of("""
+                                a = Point{1, 2};
+                                """,
+                        "Structure instantiating was accepted without template declaration."),
+                of("""
+                                Coordinate{x, y};
+                                a = Coordinate{1};
+                                """,
+                        "Invalid constructor usage was ignored."));
     }
 }

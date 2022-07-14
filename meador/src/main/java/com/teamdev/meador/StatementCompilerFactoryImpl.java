@@ -13,13 +13,12 @@ import com.teamdev.meador.compiler.*;
 import com.teamdev.meador.compiler.statement.datastructure.DataStructureCompiler;
 import com.teamdev.meador.compiler.statement.datastructure.DataStructureTemplateCompiler;
 import com.teamdev.meador.compiler.statement.datastructure.FieldAssignmentCompiler;
-import com.teamdev.meador.compiler.statement.datastructure.FieldValueCompiler;
+import com.teamdev.meador.compiler.statement.datastructure.MemoryValueCompiler;
 import com.teamdev.meador.compiler.statement.function.FunctionCompiler;
 import com.teamdev.meador.compiler.statement.procedure.ProcedureCompiler;
 import com.teamdev.meador.compiler.statement.relative_expr.RelationalExpressionCompiler;
 import com.teamdev.meador.compiler.statement.switch_operator.SwitchOperatorCompiler;
 import com.teamdev.meador.compiler.statement.variable.VariableDeclarationCompiler;
-import com.teamdev.meador.compiler.statement.variable.VariableValueCompiler;
 import com.teamdev.meador.fsmimpl.compiler.CompilerFSM;
 import com.teamdev.runtime.Command;
 import com.teamdev.runtime.value.MathBinaryOperatorFactoryImpl;
@@ -88,11 +87,11 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
 
         compilers.put(FIELD_ASSIGNMENT, new FieldAssignmentCompiler(this));
 
-        compilers.put(FIELD_VALUE, new FieldValueCompiler());
+        compilers.put(MEMORY_VALUE, new MemoryValueCompiler());
 
         compilers.put(VARIABLE_DECLARATION, new VariableDeclarationCompiler(this));
 
-        compilers.put(VARIABLE_VALUE, new VariableValueCompiler());
+//        compilers.put(VARIABLE_VALUE, new VariableValueCompiler());
     }
 
     private StateAcceptor<List<Command>, CompilingException> createNumericExpressionMachine() {
@@ -120,11 +119,14 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
                         .allowTransition(new CompileStatementAcceptor<>(this, FUNCTION, List::add),
                                 "MEADOR FUNCTION")
 
-                        .allowTransition(new CompileStatementAcceptor<>(this, FIELD_VALUE, List::add),
-                                "MEADOR FIELD VALUE")
+                        .allowTransition(new CompileStatementAcceptor<>(this, MEMORY_VALUE, List::add),
+                                "MEADOR MEMORY VALUE")
 
-                        .allowTransition(new CompileStatementAcceptor<>(this, VARIABLE_VALUE, List::add),
-                                "MEADOR VARIABLE")
+//                        .allowTransition(new CompileStatementAcceptor<>(this, FIELD_VALUE, List::add),
+//                                "MEADOR FIELD VALUE")
+//
+//                        .allowTransition(new CompileStatementAcceptor<>(this, VARIABLE_VALUE, List::add),
+//                                "MEADOR VARIABLE")
                         .build(),
 
                 new ExceptionThrower<>(CompilingException::new)

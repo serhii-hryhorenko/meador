@@ -27,12 +27,12 @@ public class DataStructureFSM extends FiniteStateMachine<DataStructureContext, C
                 .build();
 
         var openCurlyBrace = new State.Builder<DataStructureContext, CompilingException>()
-                .setName("OPEN CURLY BRACE")
+                .setName("OPEN CURLY BRACKET")
                 .setAcceptor(StateAcceptor.acceptChar('{'))
                 .build();
 
         var structureField = new State.Builder<DataStructureContext, CompilingException>()
-                .setName("IMPLEMENTED STRUCTURE FIELD")
+                .setName("STRUCTURE FIELD")
                 .setAcceptor((inputSequence, outputSequence) -> {
                     var optionalCommand = factory.create(StatementType.EXPRESSION).compile(inputSequence);
                     optionalCommand.ifPresent(outputSequence::addValue);
@@ -46,7 +46,7 @@ public class DataStructureFSM extends FiniteStateMachine<DataStructureContext, C
                 .build();
 
         var closeCurlyBrace = new State.Builder<DataStructureContext, CompilingException>()
-                .setName("CLOSE CURLY BRACE")
+                .setName("CLOSE CURLY BRACKET")
                 .setAcceptor(StateAcceptor.acceptChar('}'))
                 .setFinite(true)
                 .build();

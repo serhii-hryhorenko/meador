@@ -21,24 +21,29 @@ public class DataStructureHolder {
         this.fieldIterator = Preconditions.checkNotNull(template).fieldNames().iterator();
     }
 
-    public void assignFieldValue(Command value) {
+    public boolean assignFieldValue(Command value) {
         if (fieldIterator.hasNext()) {
             fields.add(new VariableHolder()
                     .setName(fieldIterator.next())
                     .setCommand(Preconditions.checkNotNull(value)));
+            return true;
         }
+
+        return false;
     }
 
-    public void assignFieldValue(String fieldName, Command value) {
+    public boolean assignFieldValue(String fieldName, Command value) {
         Preconditions.checkNotNull(fieldName, value);
 
         var optionalVariable = getField(fieldName);
 
         optionalVariable.ifPresent(variable -> variable.setCommand(value));
+
+        return optionalVariable.isPresent();
     }
 
-    public boolean isFieldPresent(String fieldName) {
-        return getField(fieldName).isPresent();
+    public boolean isConstructed() {
+        return !fieldIterator.hasNext();
     }
 
     public Optional<Command> getFieldValue(String fieldName) {

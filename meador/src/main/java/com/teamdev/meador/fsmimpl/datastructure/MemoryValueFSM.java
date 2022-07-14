@@ -4,26 +4,26 @@ import com.teamdev.fsm.*;
 import com.teamdev.machine.util.TextIdentifierFSM;
 import com.teamdev.meador.compiler.CompilingException;
 
-public class FieldValueFSM extends FiniteStateMachine<FieldAssignmentContext, CompilingException> {
+public class MemoryValueFSM extends FiniteStateMachine<MemoryValueContext, CompilingException> {
 
-    public static FieldValueFSM create() {
-        var structureName = new State.Builder<FieldAssignmentContext, CompilingException>()
-                .setName("STRUCTURE NAME")
+    public static MemoryValueFSM create() {
+        var variableName = new State.Builder<MemoryValueContext, CompilingException>()
+                .setName("VARIABLE NAME")
                 .setAcceptor((inputSequence, outputSequence) -> {
                     var optionalName = TextIdentifierFSM.execute(inputSequence,
                             new ExceptionThrower<>(CompilingException::new));
-                    optionalName.ifPresent(outputSequence::setStructureName);
+                    optionalName.ifPresent(outputSequence::setVariableName);
                     return optionalName.isPresent();
                 })
-                .setTemporary(true)
+                .setFinite(true)
                 .build();
 
-        var dot = new State.Builder<FieldAssignmentContext, CompilingException>()
+        var dot = new State.Builder<MemoryValueContext, CompilingException>()
                 .setName("FIELD REFERENCE OPERATOR")
                 .setAcceptor(StateAcceptor.acceptChar('.'))
                 .build();
 
-        var fieldName = new State.Builder<FieldAssignmentContext, CompilingException>()
+        var fieldName = new State.Builder<MemoryValueContext, CompilingException>()
                 .setName("STRUCTURE NAME")
                 .setAcceptor((inputSequence, outputSequence) -> {
                     var optionalName = TextIdentifierFSM.execute(inputSequence,
@@ -34,13 +34,13 @@ public class FieldValueFSM extends FiniteStateMachine<FieldAssignmentContext, Co
                 .setFinite(true)
                 .build();
 
-        var matrix = TransitionMatrix.chainedTransitions(structureName, dot, fieldName);
+        var matrix = TransitionMatrix.chainedTransitions(variableName, dot, fieldName);
 
-        return new FieldValueFSM(matrix, new ExceptionThrower<>(CompilingException::new));
+        return new MemoryValueFSM(matrix, new ExceptionThrower<>(CompilingException::new));
     }
 
-    private FieldValueFSM(TransitionMatrix<FieldAssignmentContext, CompilingException> transitionMatrix,
-                          ExceptionThrower<CompilingException> thrower) {
+    private MemoryValueFSM(TransitionMatrix<MemoryValueContext, CompilingException> transitionMatrix,
+                           ExceptionThrower<CompilingException> thrower) {
         super(transitionMatrix, thrower);
     }
 }
