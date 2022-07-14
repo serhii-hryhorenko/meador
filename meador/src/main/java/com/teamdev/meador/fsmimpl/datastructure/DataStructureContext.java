@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Output chain for {@link com.teamdev.runtime.datastructure.DataStructureTemplate} implementation.
+ */
 public class DataStructureContext {
 
     private String templateName;

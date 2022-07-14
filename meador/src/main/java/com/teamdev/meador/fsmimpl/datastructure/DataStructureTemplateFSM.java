@@ -7,17 +7,15 @@ import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompilerFactory;
 import com.teamdev.runtime.datastructure.DataStructureTemplate;
 
+/**
+ * {@link FiniteStateMachine} implementation for recognizing data structure declarations.
+ */
 public class DataStructureTemplateFSM extends FiniteStateMachine<DataStructureTemplate, CompilingException> {
 
     public static DataStructureTemplateFSM create(StatementCompilerFactory factory) {
         Preconditions.checkNotNull(factory);
 
         var initial = State.<DataStructureTemplate, CompilingException>initialState();
-
-//        var begin = new State.Builder<DataStructureTemplate, CompilingException>()
-//                .setName("BEGIN DECLARATION")
-//                .setAcceptor((inputSequence, outputSequence) -> true)
-//                .build();
 
         var structureName = new State.Builder<DataStructureTemplate,
                 CompilingException>()
@@ -32,7 +30,7 @@ public class DataStructureTemplateFSM extends FiniteStateMachine<DataStructureTe
 
         var openCurlyBrace = new State.Builder<DataStructureTemplate,
                 CompilingException>()
-                .setName("OPEN BRACE")
+                .setName("OPEN CURLY BRACKET")
                 .setAcceptor(StateAcceptor.acceptChar('{'))
                 .build();
 
@@ -53,7 +51,7 @@ public class DataStructureTemplateFSM extends FiniteStateMachine<DataStructureTe
 
         var closeCurlyBrace = new State.Builder<DataStructureTemplate,
                 CompilingException>()
-                .setName("CLOSE BRACE")
+                .setName("CLOSE CURLY BRACKET")
                 .setAcceptor(StateAcceptor.acceptChar('}'))
                 .build();
 

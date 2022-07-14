@@ -6,6 +6,9 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/**
+ * Parsed data structure declaration. Being used for storing field names and quantity of constructor parameters.
+ */
 public class DataStructureTemplate {
 
     private String name;
