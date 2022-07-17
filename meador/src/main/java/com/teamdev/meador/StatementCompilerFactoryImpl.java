@@ -30,7 +30,6 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
             StatementType.class);
 
     public StatementCompilerFactoryImpl() {
-
         compilers.put(PROGRAM, compilerInput -> {
             var commands = new ArrayList<Command>();
 

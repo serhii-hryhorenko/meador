@@ -10,7 +10,7 @@ import java.util.Optional;
 
 /**
  * {@link  FiniteStateMachine} implementation for recognizing integer and float numbers.
- * Requires no whitespaces from {@link InputSequence}.
+ * Requires no whitespaces from {@link InputSequenceReader}.
  */
 
 public class NumberFSM<E extends Exception> extends FiniteStateMachine<StringBuilder, E> {
@@ -21,7 +21,7 @@ public class NumberFSM<E extends Exception> extends FiniteStateMachine<StringBui
         super(transitionMatrix, exceptionThrower, skip);
     }
 
-    public static <E extends Exception> Optional<Value> execute(InputSequence inputSequence,
+    public static <E extends Exception> Optional<Value> execute(InputSequenceReader inputSequence,
                                                                 ExceptionThrower<E> exceptionThrower) throws
             E {
         var number = create(Preconditions.checkNotNull(exceptionThrower));

@@ -1,14 +1,14 @@
 package com.teamdev.machine.util;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.fsm.InputSequence;
+import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.fsm.StateAcceptor;
 
 import java.util.List;
 import java.util.function.Predicate;
 
 /**
- * Util state acceptor implementation for reading from {@link InputSequence} and writing to buffer.
+ * Util state acceptor implementation for reading from {@link InputSequenceReader} and writing to buffer.
  */
 public class SymbolAcceptor<E extends Exception> implements StateAcceptor<StringBuilder, E> {
 
@@ -18,7 +18,7 @@ public class SymbolAcceptor<E extends Exception> implements StateAcceptor<String
         Preconditions.checkNotNull(chars);
 
         this.condition = character -> List.of(chars)
-                                          .contains(character);
+                .contains(character);
     }
 
     public SymbolAcceptor(Predicate<Character> condition) {
@@ -27,7 +27,7 @@ public class SymbolAcceptor<E extends Exception> implements StateAcceptor<String
     }
 
     @Override
-    public boolean accept(InputSequence inputChain, StringBuilder outputChain) {
+    public boolean accept(InputSequenceReader inputChain, StringBuilder outputChain) {
         Preconditions.checkNotNull(inputChain, outputChain);
 
         if (inputChain.canRead() && condition.test(inputChain.read())) {

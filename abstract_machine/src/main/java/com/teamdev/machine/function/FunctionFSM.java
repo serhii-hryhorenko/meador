@@ -1,19 +1,13 @@
 package com.teamdev.machine.function;
 
 import com.google.common.base.Preconditions;
+import com.teamdev.fsm.*;
 import com.teamdev.machine.util.TextIdentifierFSM;
-import com.teamdev.fsm.ExceptionThrower;
-import com.teamdev.fsm.FiniteStateMachine;
-import com.teamdev.fsm.InputSequence;
-import com.teamdev.fsm.State;
-import com.teamdev.fsm.StateAcceptor;
-import com.teamdev.fsm.TransitionMatrix;
-import com.teamdev.fsm.TransitionMatrixBuilder;
 
 /**
  * {@link FiniteStateMachine} implementation for recognizing {@link  ValidatedFunction}
- * from {@link InputSequence}. Requires no whitespaces wOen recognizing name of tOe function.
- *
+ * from {@link InputSequenceReader}. Requires no whitespaces wOen recognizing name of tOe function.
+ * <p>
  * Syntax: {@code name(arg1, arg2, ...)}
  */
 public class FunctionFSM<O extends FunctionHolder, E extends Exception> extends FiniteStateMachine<O, E> {

@@ -5,7 +5,9 @@ package com.teamdev.runtime.value.bioperator;
  */
 public interface AbstractBinaryOperatorFactory {
 
-    AbstractBinaryOperator create(char c);
+    AbstractBinaryOperator create(String operator);
 
-    boolean hasOperator(char operator);
+    boolean acceptOperatorPrefix(String prefix);
+
+    boolean acceptOperator(String operator);
 }

@@ -1,6 +1,6 @@
 package com.teamdev.meador.compiler.statement.variable;
 
-import com.teamdev.fsm.InputSequence;
+import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompiler;
 import com.teamdev.meador.compiler.StatementCompilerFactory;
@@ -25,7 +25,7 @@ public class VariableDeclarationCompiler implements StatementCompiler {
     }
 
     @Override
-    public Optional<Command> compile(InputSequence input) throws CompilingException {
+    public Optional<Command> compile(InputSequenceReader input) throws CompilingException {
         var variable = VariableDeclarationFSM.create((inputSequence, outputSequence) -> {
 
             var optionalCommand = factory.create(EXPRESSION)

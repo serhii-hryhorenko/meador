@@ -1,7 +1,7 @@
 package com.teamdev.machine.function;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.fsm.InputSequence;
+import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.runtime.value.type.DoubleValue;
 import com.teamdev.runtime.value.type.DoubleValueVisitor;
 import com.teamdev.runtime.value.type.Value;
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 /**
  * Internal representation of math functions.
  * Implementation has {@code minimalArguments}, {@code minimalArguments} fields which
- * determine requested number of arguments from {@link InputSequence}.
+ * determine requested number of arguments from {@link InputSequenceReader}.
  */
 public class ValidatedFunction implements Function<List<Value>, Value> {
 

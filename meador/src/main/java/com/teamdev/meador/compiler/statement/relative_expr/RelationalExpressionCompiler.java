@@ -1,6 +1,6 @@
 package com.teamdev.meador.compiler.statement.relative_expr;
 
-import com.teamdev.fsm.InputSequence;
+import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.meador.StatementCompilerFactoryImpl;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompiler;
@@ -21,7 +21,7 @@ public class RelationalExpressionCompiler implements StatementCompiler {
     }
 
     @Override
-    public Optional<Command> compile(InputSequence inputSequence) throws CompilingException {
+    public Optional<Command> compile(InputSequenceReader inputSequence) throws CompilingException {
         var relationalExpressionFSM = RelationalExpressionFSM.create(compilerFactory);
 
         var context = new RelationalExpressionContext();

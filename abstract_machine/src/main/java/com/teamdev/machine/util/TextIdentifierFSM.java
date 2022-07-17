@@ -8,13 +8,13 @@ import java.util.Optional;
 
 /**
  * {@link FiniteStateMachine} implementation for recognizing names of {@link ValidatedFunction}.
- *
- * Requires no whitespaces from {@link InputSequence}.
+ * <p>
+ * Requires no whitespaces from {@link InputSequenceReader}.
  */
 
 public class TextIdentifierFSM<E extends Exception> extends FiniteStateMachine<StringBuilder, E> {
 
-    public static <E extends Exception> Optional<String> execute(InputSequence inputSequence,
+    public static <E extends Exception> Optional<String> execute(InputSequenceReader inputSequence,
                                                                  ExceptionThrower<E> exceptionThrower) throws E {
         var identifier = new StringBuilder();
         return create(exceptionThrower).accept(inputSequence, identifier) ?
@@ -42,12 +42,12 @@ public class TextIdentifierFSM<E extends Exception> extends FiniteStateMachine<S
         return new TextIdentifierFSM<>(matrix, exceptionThrower, false);
     }
 
-    public boolean acceptName(InputSequence inputSequence, String name) throws E {
+    public boolean acceptName(InputSequenceReader inputSequence, String name) throws E {
         Preconditions.checkNotNull(name);
 
         var outputSequence = new StringBuilder(16);
         return accept(inputSequence, outputSequence) && outputSequence.toString()
-                                                                      .equals(name);
+                .equals(name);
     }
 
     private TextIdentifierFSM(TransitionMatrix<StringBuilder, E> transitionMatrix,

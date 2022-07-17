@@ -1,7 +1,7 @@
 package com.teamdev.meador.compiler;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.fsm.InputSequence;
+import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.fsm.StateAcceptor;
 import com.teamdev.runtime.Command;
 import com.teamdev.runtime.value.ShuntingYard;
@@ -22,7 +22,7 @@ public class DetachedStackStatementCompiler implements StatementCompiler {
     }
 
     @Override
-    public Optional<Command> compile(InputSequence inputSequence) throws CompilingException {
+    public Optional<Command> compile(InputSequenceReader inputSequence) throws CompilingException {
 
         List<Command> outputSequence = new ArrayList<>();
 

@@ -1,7 +1,7 @@
 package com.teamdev.meador.compiler;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.fsm.InputSequence;
+import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.fsm.StateAcceptor;
 import com.teamdev.runtime.Command;
 
@@ -26,7 +26,7 @@ public class CompileStatementAcceptor<O> implements StateAcceptor<O, CompilingEx
     }
 
     @Override
-    public boolean accept(InputSequence inputSequence, O outputSequence) throws CompilingException {
+    public boolean accept(InputSequenceReader inputSequence, O outputSequence) throws CompilingException {
         var compiler = factory.create(type);
 
         var optionalCommand = compiler.compile(inputSequence);

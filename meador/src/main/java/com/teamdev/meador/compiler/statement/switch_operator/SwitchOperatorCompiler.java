@@ -1,7 +1,7 @@
 package com.teamdev.meador.compiler.statement.switch_operator;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.fsm.InputSequence;
+import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.meador.StatementCompilerFactoryImpl;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompiler;
@@ -22,7 +22,7 @@ public final class SwitchOperatorCompiler implements StatementCompiler {
     }
 
     @Override
-    public Optional<Command> compile(InputSequence inputSequence) throws CompilingException {
+    public Optional<Command> compile(InputSequenceReader inputSequence) throws CompilingException {
         var context = new SwitchContext();
 
         if (SwitchFSM.create(compilerFactory).accept(inputSequence, context)) {

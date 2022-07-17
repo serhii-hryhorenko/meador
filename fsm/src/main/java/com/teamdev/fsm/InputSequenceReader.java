@@ -9,13 +9,13 @@ import java.util.Deque;
  * Readable string from Turing machine operated by {@code StateAcceptor}.
  */
 
-public class InputSequence {
+public class InputSequenceReader {
 
     private final char[] source;
     private final Deque<Integer> savedPositions = new ArrayDeque<>();
     private int readingPosition;
 
-    public InputSequence(String value) {
+    public InputSequenceReader(String value) {
         this.source = value.toCharArray();
     }
 
@@ -56,7 +56,7 @@ public class InputSequence {
 
     public String getSequence() {
         return String.valueOf(source)
-                     .substring(readingPosition);
+                .substring(readingPosition);
     }
 
     @Override

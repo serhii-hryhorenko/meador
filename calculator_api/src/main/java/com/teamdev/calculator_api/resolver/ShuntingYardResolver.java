@@ -1,7 +1,7 @@
 package com.teamdev.calculator_api.resolver;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.fsm.InputSequence;
+import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.fsm.StateAcceptor;
 import com.teamdev.runtime.value.ShuntingYard;
 import com.teamdev.runtime.value.type.Value;
@@ -17,7 +17,7 @@ public final class ShuntingYardResolver implements MathElementResolver {
     }
 
     @Override
-    public Optional<Value> resolve(InputSequence input) throws ResolvingException {
+    public Optional<Value> resolve(InputSequenceReader input) throws ResolvingException {
         var yard = new ShuntingYard();
 
         if (shuntingYardStateAcceptor.accept(input, yard)) {

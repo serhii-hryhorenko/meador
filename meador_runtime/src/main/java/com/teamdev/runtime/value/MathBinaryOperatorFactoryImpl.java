@@ -22,23 +22,28 @@ import java.util.Map;
  */
 public class MathBinaryOperatorFactoryImpl implements AbstractBinaryOperatorFactory {
 
-    private final Map<Character, DoubleValueBinaryOperator> operators = new HashMap<>();
+    private final Map<String, DoubleValueBinaryOperator> mathOperators = new HashMap<>();
 
     public MathBinaryOperatorFactoryImpl() {
-        operators.put('+', new DoubleValueBinaryOperator(Double::sum, AbstractBinaryOperator.Priority.LOW));
-        operators.put('-', new DoubleValueBinaryOperator((left, right) -> left - right, AbstractBinaryOperator.Priority.LOW));
-        operators.put('*', new DoubleValueBinaryOperator((left, right) -> left * right, AbstractBinaryOperator.Priority.MEDIUM));
-        operators.put('/', new DoubleValueBinaryOperator((left, right) -> left / right, AbstractBinaryOperator.Priority.MEDIUM));
-        operators.put('^', new DoubleValueBinaryOperator(Math::pow, AbstractBinaryOperator.Priority.HIGH));
+        mathOperators.put("+", new DoubleValueBinaryOperator(Double::sum, AbstractBinaryOperator.Priority.LOW));
+        mathOperators.put("-", new DoubleValueBinaryOperator((left, right) -> left - right, AbstractBinaryOperator.Priority.LOW));
+        mathOperators.put("*", new DoubleValueBinaryOperator((left, right) -> left * right, AbstractBinaryOperator.Priority.MEDIUM));
+        mathOperators.put("/", new DoubleValueBinaryOperator((left, right) -> left / right, AbstractBinaryOperator.Priority.MEDIUM));
+        mathOperators.put("^", new DoubleValueBinaryOperator(Math::pow, AbstractBinaryOperator.Priority.HIGH));
     }
 
     @Override
-    public DoubleValueBinaryOperator create(char c) {
-        return operators.get(c);
+    public AbstractBinaryOperator create(String operator) {
+        return mathOperators.get(operator);
     }
 
     @Override
-    public boolean hasOperator(char operator) {
-        return operators.containsKey(operator);
+    public boolean acceptOperatorPrefix(String prefix) {
+        return mathOperators.keySet().stream().anyMatch(operator -> operator.startsWith(prefix));
+    }
+
+    @Override
+    public boolean acceptOperator(String operator) {
+        return mathOperators.keySet().stream().anyMatch(mathOperator -> mathOperator.equals(operator));
     }
 }

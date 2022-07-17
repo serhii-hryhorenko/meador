@@ -1,7 +1,7 @@
 package com.teamdev.meador.compiler;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.fsm.InputSequence;
+import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.meador.Program;
 import com.teamdev.meador.StatementCompilerFactoryImpl;
 import com.teamdev.runtime.Command;
@@ -14,7 +14,7 @@ import java.util.Optional;
 public class Compiler {
     public Optional<Command> compile(Program program) throws CompilingException {
 
-        var inputSequence = new InputSequence(Preconditions.checkNotNull(program).getCode());
+        var inputSequence = new InputSequenceReader(Preconditions.checkNotNull(program).getCode());
 
         StatementCompilerFactory factory = new StatementCompilerFactoryImpl();
 

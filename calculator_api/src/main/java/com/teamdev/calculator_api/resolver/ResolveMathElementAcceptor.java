@@ -1,7 +1,7 @@
 package com.teamdev.calculator_api.resolver;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.fsm.InputSequence;
+import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.fsm.StateAcceptor;
 import com.teamdev.runtime.value.type.Value;
 
@@ -26,7 +26,7 @@ public class ResolveMathElementAcceptor<O> implements StateAcceptor<O, Resolving
     }
 
     @Override
-    public boolean accept(InputSequence inputSequence, O outputSequence) throws ResolvingException {
+    public boolean accept(InputSequenceReader inputSequence, O outputSequence) throws ResolvingException {
         var resolver = factory.create(element);
 
         var optionalResult = resolver.resolve(inputSequence);

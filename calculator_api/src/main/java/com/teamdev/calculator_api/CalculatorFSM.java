@@ -11,7 +11,7 @@ import static com.teamdev.calculator_api.resolver.MathElement.EXPRESSION;
 
 /**
  * {@link  FiniteStateMachine} implementation used as an entry point for starting evaluation.
- * Ensures that {@link InputSequence} is fully interpreted.
+ * Ensures that {@link InputSequenceReader} is fully interpreted.
  */
 class CalculatorFSM extends FiniteStateMachine<ShuntingYard, ResolvingException> {
 

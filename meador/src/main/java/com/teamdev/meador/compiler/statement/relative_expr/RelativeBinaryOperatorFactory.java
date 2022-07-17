@@ -15,20 +15,25 @@ import static com.teamdev.runtime.value.bioperator.AbstractBinaryOperator.Priori
  * that are a part of relational expressions.
  */
 public class RelativeBinaryOperatorFactory implements AbstractBinaryOperatorFactory {
-    private final Map<Character, RelativeBinaryOperator> relativeOperators = new HashMap<>();
+    private final Map<String, RelativeBinaryOperator> relativeOperators = new HashMap<>();
 
     public RelativeBinaryOperatorFactory() {
-        relativeOperators.put('>', new RelativeBinaryOperator((left, right) -> left > right, LOW));
-        relativeOperators.put('<', new RelativeBinaryOperator((left, right) -> left < right, LOW));
+        relativeOperators.put(">", new RelativeBinaryOperator((left, right) -> left > right, LOW));
+        relativeOperators.put("<", new RelativeBinaryOperator((left, right) -> left < right, LOW));
     }
 
     @Override
-    public AbstractBinaryOperator create(char c) {
-        return relativeOperators.get(c);
+    public AbstractBinaryOperator create(String operator) {
+        return relativeOperators.get(operator);
     }
 
     @Override
-    public boolean hasOperator(char operator) {
-        return relativeOperators.containsKey(operator);
+    public boolean acceptOperatorPrefix(String prefix) {
+        return relativeOperators.keySet().stream().anyMatch(operator -> operator.startsWith(prefix));
+    }
+
+    @Override
+    public boolean acceptOperator(String operator) {
+        return relativeOperators.keySet().stream().anyMatch(relativeOperator -> relativeOperator.equals(operator));
     }
 }

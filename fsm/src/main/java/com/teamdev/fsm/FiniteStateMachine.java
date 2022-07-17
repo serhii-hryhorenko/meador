@@ -41,7 +41,7 @@ public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor
     }
 
     @Override
-    public boolean accept(InputSequence input, O output) throws E {
+    public boolean accept(InputSequenceReader input, O output) throws E {
         Preconditions.checkNotNull(input, output);
 
         if (logger.isInfoEnabled()) {
@@ -92,7 +92,7 @@ public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor
         }
     }
 
-    private void restore(InputSequence input, State<O, E> state) {
+    private void restore(InputSequenceReader input, State<O, E> state) {
         if (state.isTemporary()) {
             input.restorePosition();
 
@@ -102,7 +102,7 @@ public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor
         }
     }
 
-    private Optional<State<O, E>> getNextState(State<O, E> currentState, InputSequence input, O output) throws E {
+    private Optional<State<O, E>> getNextState(State<O, E> currentState, InputSequenceReader input, O output) throws E {
 
         var allowedStates = Optional.ofNullable(transitionMatrix.getAllowedStates(currentState));
 

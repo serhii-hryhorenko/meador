@@ -1,7 +1,7 @@
 package com.teamdev.machine.expression;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.fsm.InputSequence;
+import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.fsm.StateAcceptor;
 import com.teamdev.runtime.value.bioperator.AbstractBinaryOperator;
 import com.teamdev.runtime.value.bioperator.AbstractBinaryOperatorFactory;
@@ -26,14 +26,20 @@ public class BinaryOperatorAcceptor<O, E extends Exception> implements StateAcce
     }
 
     @Override
-    public boolean accept(InputSequence inputSequence, O outputSequence) {
+    public boolean accept(InputSequenceReader inputSequence, O outputSequence) {
+        var operator = new StringBuilder();
 
-        if (inputSequence.canRead() &&
-                factory.hasOperator(inputSequence.read())) {
+        while (inputSequence.canRead()) {
+            if (factory.acceptOperatorPrefix(operator.toString() + inputSequence.read())) {
+                operator.append(inputSequence.read());
+                inputSequence.next();
+            } else {
+                break;
+            }
+        }
 
-            var operator = factory.create(inputSequence.read());
-            resultConsumer.accept(outputSequence, operator);
-            inputSequence.next();
+        if (factory.acceptOperator(operator.toString())) {
+            resultConsumer.accept(outputSequence, factory.create(operator.toString()));
             return true;
         }
 

@@ -3,7 +3,7 @@ package com.teamdev.calculator_api;
 import com.google.common.base.Preconditions;
 import com.teamdev.calculator_api.resolver.MathElementResolverFactory;
 import com.teamdev.calculator_api.resolver.ResolvingException;
-import com.teamdev.fsm.InputSequence;
+import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.runtime.value.ShuntingYard;
 import com.teamdev.runtime.value.type.DoubleValueVisitor;
 import com.teamdev.runtime.value.type.Value;
@@ -28,7 +28,7 @@ public class Calculator {
 
     private final MathElementResolverFactory factory = new MathElementResolverFactoryImpl();
 
-    private static void raiseException(InputSequence inputChain) throws InvalidExpressionException {
+    private static void raiseException(InputSequenceReader inputChain) throws InvalidExpressionException {
         throw new InvalidExpressionException("Wrong mathematical expression",
                 inputChain.getPosition());
     }
@@ -37,7 +37,7 @@ public class Calculator {
         Preconditions.checkNotNull(expression);
         var calculatorFSM = CalculatorFSM.create(factory);
 
-        var inputChain = new InputSequence(expression.getSource());
+        var inputChain = new InputSequenceReader(expression.getSource());
         var outputChain = new ShuntingYard();
 
         try {

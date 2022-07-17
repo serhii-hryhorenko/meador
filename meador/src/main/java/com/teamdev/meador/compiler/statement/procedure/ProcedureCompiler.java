@@ -2,7 +2,7 @@ package com.teamdev.meador.compiler.statement.procedure;
 
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.ExceptionThrower;
-import com.teamdev.fsm.InputSequence;
+import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.machine.function.FunctionFSM;
 import com.teamdev.meador.ValidatedProcedureFactoryImpl;
 import com.teamdev.meador.compiler.CompilingException;
@@ -31,7 +31,7 @@ public class ProcedureCompiler implements StatementCompiler {
     }
 
     @Override
-    public Optional<Command> compile(InputSequence input) throws CompilingException {
+    public Optional<Command> compile(InputSequenceReader input) throws CompilingException {
 
         var functionFSM = FunctionFSM.<CompileFunctionContext, CompilingException>create(
                 (inputSequence, outputSequence) -> {
