@@ -12,9 +12,9 @@ public class IntegrationTest extends MeadorTest {
         return Stream.of(
                 of("a = 5; print(a);", "[5.0]",
                         "Numeric value wasn't printed."),
-                of("a = 5 > 2; print(a);", "[true]",
+                of("a = 2 >= 2; print(a);", "[true]",
                         "Boolean value wasn't printed."),
-                of("a = 5 > 2 ^ 2 * 2; print(a);", "[false]",
+                of("a = 7 > 2 ^ 2 * 2; print(a);", "[false]",
                         "Relational expression evaluation is broken."),
                 of("a = 5; b = a + 5; print(a+b, a);", "[15.0, 5.0]",
                         "Procedure parameters aren't recognized in a proper way."),

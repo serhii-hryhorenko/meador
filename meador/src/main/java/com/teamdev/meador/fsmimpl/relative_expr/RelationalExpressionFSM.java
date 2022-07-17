@@ -1,4 +1,4 @@
-package com.teamdev.meador.fsmimpl.util;
+package com.teamdev.meador.fsmimpl.relative_expr;
 
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.ExceptionThrower;
@@ -10,8 +10,7 @@ import com.teamdev.meador.compiler.CompileStatementAcceptor;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompilerFactory;
 import com.teamdev.meador.compiler.StatementType;
-import com.teamdev.meador.compiler.statement.relative_expr.RelationalExpressionContext;
-import com.teamdev.meador.compiler.statement.relative_expr.RelativeBinaryOperatorFactory;
+import com.teamdev.runtime.value.RelativeBinaryOperatorFactory;
 
 /**
  * {@link FiniteStateMachine} implementation for recognizing relational expressions in Meador programs.

@@ -1,4 +1,4 @@
-package com.teamdev.meador.compiler.statement.relative_expr;
+package com.teamdev.meador.fsmimpl.relative_expr;
 
 import com.google.common.base.Preconditions;
 import com.teamdev.runtime.Command;
@@ -7,7 +7,7 @@ import com.teamdev.runtime.value.bioperator.AbstractBinaryOperator;
 import java.util.Objects;
 
 /**
- * Output chain for {@link com.teamdev.meador.fsmimpl.util.RelationalExpressionFSM}.
+ * Output chain for {@link RelationalExpressionFSM}.
  */
 public class RelationalExpressionContext {
     private Command left;

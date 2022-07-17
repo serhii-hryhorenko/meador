@@ -1,4 +1,4 @@
-package com.teamdev.meador.compiler.statement.relative_expr;
+package com.teamdev.runtime.value;
 
 import com.teamdev.runtime.value.bioperator.AbstractBinaryOperator;
 import com.teamdev.runtime.value.bioperator.AbstractBinaryOperatorFactory;
@@ -6,6 +6,7 @@ import com.teamdev.runtime.value.bioperator.RelativeBinaryOperator;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.teamdev.runtime.value.bioperator.AbstractBinaryOperator.Priority.LOW;
 
@@ -20,6 +21,10 @@ public class RelativeBinaryOperatorFactory implements AbstractBinaryOperatorFact
     public RelativeBinaryOperatorFactory() {
         relativeOperators.put(">", new RelativeBinaryOperator((left, right) -> left > right, LOW));
         relativeOperators.put("<", new RelativeBinaryOperator((left, right) -> left < right, LOW));
+        relativeOperators.put(">=", new RelativeBinaryOperator((left, right) -> left >= right, LOW));
+        relativeOperators.put("<=", new RelativeBinaryOperator((left, right) -> left <= right, LOW));
+        relativeOperators.put("==", new RelativeBinaryOperator(Double::equals, LOW));
+        relativeOperators.put("!=", new RelativeBinaryOperator((left, right) -> !Objects.equals(left, right), LOW));
     }
 
     @Override
