@@ -17,6 +17,7 @@ public class BooleanBinaryOperatorFactory implements AbstractBinaryOperatorFacto
     public BooleanBinaryOperatorFactory() {
         booleanOperators.put("&&", new BooleanValueBinaryOperator((left, right) -> left && right, LOW));
         booleanOperators.put("||", new BooleanValueBinaryOperator((left, right) -> left || right, LOW));
+        booleanOperators.put("^", new BooleanValueBinaryOperator((left, right) -> left ^ right, LOW));
     }
 
     @Override

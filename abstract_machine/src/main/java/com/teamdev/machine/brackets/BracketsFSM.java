@@ -1,11 +1,7 @@
 package com.teamdev.machine.brackets;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.fsm.ExceptionThrower;
-import com.teamdev.fsm.FiniteStateMachine;
-import com.teamdev.fsm.State;
-import com.teamdev.fsm.StateAcceptor;
-import com.teamdev.fsm.TransitionMatrix;
+import com.teamdev.fsm.*;
 
 /**
  * {@link FiniteStateMachine} implementation that recognizes expressions
@@ -28,7 +24,7 @@ public class BracketsFSM<O, E extends Exception> extends FiniteStateMachine<O, E
                 .build();
 
         var expressionState = new State.Builder<O, E>()
-                .setName("MATH EXPRESSION")
+                .setName("NESTED EXPRESSION")
                 .setAcceptor(expression)
                 .build();
 

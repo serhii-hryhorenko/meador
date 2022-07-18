@@ -54,15 +54,22 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
         );
 
         compilers.put(EXPRESSION, new DetachedStackStatementCompiler(
-                OperandFSM.create(new TransitionOneOfMatrixBuilder<List<Command>, CompilingException>()
-                                .allowTransition(new CompileStatementAcceptor<>(this, BOOLEAN_EXPRESSION, List::add),
-                                        "BOOLEAN EXPRESSION", true)
-                                .allowTransition(new CompileStatementAcceptor<>(this, NUMERIC_EXPRESSION, List::add),
-                                        "NUMERIC EXPRESSION")
-                                .build(),
-                        new ExceptionThrower<>(CompilingException::new)
-                )
-        ));
+                (inputSequence, outputSequence) -> {
+                    var booleanCompiler = new CompileStatementAcceptor<List<Command>>(StatementCompilerFactoryImpl.this,
+                            BOOLEAN_EXPRESSION,
+                            List::add);
+
+                    var numericCompiler = new CompileStatementAcceptor<List<Command>>(StatementCompilerFactoryImpl.this,
+                            NUMERIC_EXPRESSION,
+                            List::add);
+
+                    int parsedBoolean = booleanCompiler.parseInDepth(inputSequence, ArrayList::new);
+                    int parsedNumeric = numericCompiler.parseInDepth(inputSequence, ArrayList::new);
+
+                    return parsedBoolean >= parsedNumeric ?
+                            booleanCompiler.accept(inputSequence, outputSequence) : numericCompiler.accept(inputSequence, outputSequence);
+                })
+        );
 
         compilers.put(BOOLEAN_LITERAL, new BooleanLiteralCompiler());
 
@@ -126,10 +133,13 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
     private StateAcceptor<List<Command>, CompilingException> createBooleanExpressionMachine() {
         return ExpressionFSM.create(
                 new CompileStatementAcceptor<>(this, BOOLEAN_OPERAND, List::add),
+
                 new BooleanBinaryOperatorFactory(),
+
                 (commands, operator) -> commands.add(environment -> environment.stack()
                         .peek()
                         .pushOperator(operator)),
+
                 new ExceptionThrower<>(CompilingException::new)
         );
     }
