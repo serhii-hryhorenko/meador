@@ -12,6 +12,8 @@ public class IntegrationTest extends MeadorTest {
         return Stream.of(
                 of("a = 5; print(a);", "[5.0]",
                         "Numeric value wasn't printed."),
+                of("a = true; print(a);", "[true]",
+                        "Boolean literals are not recognized."),
                 of("a = 2 >= 2; print(a);", "[true]",
                         "Boolean value wasn't printed."),
                 of("a = 7 > 2 ^ 2 * 2; print(a);", "[false]",
