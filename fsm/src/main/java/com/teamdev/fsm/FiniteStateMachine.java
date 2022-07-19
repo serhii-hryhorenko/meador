@@ -45,11 +45,12 @@ public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor
                                                                           ExceptionThrower<E> exceptionThrower) {
 
         Preconditions.checkNotNull(matrixBuilder, exceptionThrower);
+        Preconditions.checkNotNull(name);
 
         return new FiniteStateMachine<>(matrixBuilder.build(), exceptionThrower) {
             @Override
             public String toString() {
-                return Preconditions.checkNotNull(name);
+                return name;
             }
         };
     }
@@ -59,7 +60,7 @@ public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor
         Preconditions.checkNotNull(input, output);
 
         if (logger.isInfoEnabled()) {
-            logger.info("[{}] runs with [{}] input sequence", this.getClass().getSimpleName(), input.getSequence());
+            logger.info("[{}] runs with [{}] input sequence", this, input.getSequence());
         }
 
         var currentState = transitionMatrix.getStartState();
@@ -74,7 +75,7 @@ public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor
             if (nextState.isEmpty()) {
                 if (transitionMatrix.getStartState().equals(currentState)) {
                     if (logger.isInfoEnabled()) {
-                        logger.info("[{}] is failed to start.", this.getClass().getSimpleName());
+                        logger.info("[{}] is failed to start.", this);
                     }
 
                     return false;
@@ -84,7 +85,7 @@ public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor
                 if (currentState.isFinite()) {
 
                     if (logger.isInfoEnabled()) {
-                        logger.info("[{}]: finished successfully in [{}]", this.getClass().getSimpleName(), currentState);
+                        logger.info("[{}]: finished successfully in [{}]", this, currentState);
                     }
 
                     return true;
@@ -96,7 +97,7 @@ public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor
                 }
 
                 if (logger.isErrorEnabled()) {
-                    logger.error("[{}] got into deadlock when [{}]", this.getClass().getSimpleName(), currentState);
+                    logger.error("[{}] got into deadlock when [{}]", this, currentState);
                 }
 
                 exceptionThrower.throwException();
@@ -111,7 +112,7 @@ public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor
             input.restorePosition();
 
             if (logger.isInfoEnabled()) {
-                logger.info("[{}] restored to [{}], index: {}.", getClass().getSimpleName(), input.getSequence(), input.getPosition());
+                logger.info("[{}] restored to [{}], index: {}.", this, input.getSequence(), input.getPosition());
             }
         }
     }
@@ -127,7 +128,7 @@ public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor
                     input.savePosition();
 
                     if (logger.isInfoEnabled()) {
-                        logger.info("[{}] saved InputSequence at position [{}], index: {}.", getClass().getSimpleName(), input.getSequence(), input.getPosition());
+                        logger.info("[{}] saved InputSequence at position [{}], index: {}.", this, input.getSequence(), input.getPosition());
                     }
                 }
 

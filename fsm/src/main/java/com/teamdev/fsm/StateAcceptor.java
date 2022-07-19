@@ -29,6 +29,7 @@ public interface StateAcceptor<O, E extends Exception> {
     boolean accept(InputSequenceReader inputSequence, O outputSequence) throws E;
 
     default StateAcceptor<O, E> named(String name) {
+        Preconditions.checkNotNull(name);
         var old = this;
 
         return new StateAcceptor<>() {
@@ -39,7 +40,7 @@ public interface StateAcceptor<O, E extends Exception> {
 
             @Override
             public String toString() {
-                return Preconditions.checkNotNull(name);
+                return name;
             }
         };
     }

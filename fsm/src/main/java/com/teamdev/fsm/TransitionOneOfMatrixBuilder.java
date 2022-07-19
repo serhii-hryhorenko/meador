@@ -13,12 +13,10 @@ public class TransitionOneOfMatrixBuilder<O, E extends Exception> {
 
     private final TransitionMatrixBuilder<O, E> builder = new TransitionMatrixBuilder<>();
 
-    public final TransitionOneOfMatrixBuilder<O, E> allowTransition(StateAcceptor<O, E> acceptor,
-                                                                    String stateName) {
-        Preconditions.checkNotNull(acceptor, stateName);
+    public final TransitionOneOfMatrixBuilder<O, E> allowTransition(StateAcceptor<O, E> acceptor) {
+        Preconditions.checkNotNull(acceptor);
 
         var state = new State.Builder<O, E>()
-                .setName(stateName)
                 .setAcceptor(acceptor)
                 .setFinite(true)
                 .build();
@@ -27,13 +25,10 @@ public class TransitionOneOfMatrixBuilder<O, E extends Exception> {
         return this;
     }
 
-    public final TransitionOneOfMatrixBuilder<O, E> allowTransition(StateAcceptor<O, E> acceptor,
-                                                                    String stateName,
-                                                                    boolean isTemporary) {
-        Preconditions.checkNotNull(acceptor, stateName);
+    public final TransitionOneOfMatrixBuilder<O, E> allowTransition(StateAcceptor<O, E> acceptor, boolean isTemporary) {
+        Preconditions.checkNotNull(acceptor);
 
         var state = new State.Builder<O, E>()
-                .setName(stateName)
                 .setAcceptor(acceptor)
                 .setFinite(true)
                 .setTemporary(isTemporary)

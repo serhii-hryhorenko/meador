@@ -8,7 +8,6 @@ import com.teamdev.meador.fsmimpl.variable.VariableDeclarationFSM;
 import com.teamdev.runtime.Command;
 import com.teamdev.runtime.variable.VariableHolder;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import static com.teamdev.meador.compiler.StatementType.EXPRESSION;
@@ -19,22 +18,23 @@ import static com.teamdev.meador.compiler.StatementType.EXPRESSION;
 public class VariableDeclarationCompiler implements StatementCompiler {
     private final StatementCompilerFactory factory;
 
-    public VariableDeclarationCompiler(
-            StatementCompilerFactory factory) {
+    public VariableDeclarationCompiler(StatementCompilerFactory factory) {
         this.factory = factory;
     }
 
     @Override
     public Optional<Command> compile(InputSequenceReader input) throws CompilingException {
-        var variable = VariableDeclarationFSM.create((inputSequence, outputSequence) -> {
+        var variable = VariableDeclarationFSM.create(
+                (inputSequence, outputSequence) -> {
 
-            var optionalCommand = factory.create(EXPRESSION)
-                    .compile(inputSequence);
+                    var optionalCommand = factory.create(EXPRESSION)
+                            .compile(inputSequence);
 
-            optionalCommand.ifPresent(outputSequence::setCommand);
+                    optionalCommand.ifPresent(outputSequence::setCommand);
 
-            return optionalCommand.isPresent();
-        });
+                    return optionalCommand.isPresent();
+                }
+        );
 
         var builder = new VariableHolder();
 
@@ -57,28 +57,4 @@ public class VariableDeclarationCompiler implements StatementCompiler {
 
         return Optional.empty();
     }
-
-    public StatementCompilerFactory factory() {
-        return factory;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if (obj == null || obj.getClass() != this.getClass()) return false;
-        var that = (VariableDeclarationCompiler) obj;
-        return Objects.equals(this.factory, that.factory);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(factory);
-    }
-
-    @Override
-    public String toString() {
-        return "VariableDeclarationCompiler[" +
-                "factory=" + factory + ']';
-    }
-
 }

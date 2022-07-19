@@ -2,12 +2,12 @@ package com.teamdev.meador;
 
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.ExceptionThrower;
+import com.teamdev.fsm.FiniteStateMachine;
 import com.teamdev.fsm.StateAcceptor;
 import com.teamdev.fsm.TransitionOneOfMatrixBuilder;
 import com.teamdev.machine.brackets.BracketsFSM;
 import com.teamdev.machine.expression.ExpressionFSM;
 import com.teamdev.machine.number.NumberFSM;
-import com.teamdev.machine.operand.OperandFSM;
 import com.teamdev.machine.util.ValidatedFunctionFactoryImpl;
 import com.teamdev.meador.compiler.*;
 import com.teamdev.meador.compiler.statement.function.FunctionCompiler;
@@ -26,8 +26,7 @@ import static com.teamdev.meador.compiler.StatementType.*;
 
 public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
 
-    private final Map<StatementType, StatementCompiler> compilers = new EnumMap<>(
-            StatementType.class);
+    private final Map<StatementType, StatementCompiler> compilers = new EnumMap<>(StatementType.class);
 
     public StatementCompilerFactoryImpl() {
         compilers.put(PROGRAM, compilerInput -> {
@@ -52,14 +51,15 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
         );
 
         compilers.put(EXPRESSION, new DetachedStackStatementCompiler(
-                OperandFSM.create(new TransitionOneOfMatrixBuilder<List<Command>, CompilingException>()
-                                .allowTransition(new CompileStatementAcceptor<>(this, RELATIONAL_EXPRESSION, List::add),
-                                        "RELATIONAL EXPRESSION", true)
-                                .allowTransition(new CompileStatementAcceptor<>(this, NUMERIC_EXPRESSION, List::add),
-                                        "NUMERIC EXPRESSION")
-                                .build(),
-                        new ExceptionThrower<>(CompilingException::new)
-                )
+                FiniteStateMachine.oneOf(
+                        "MeadorExpressionFSM",
+                        new TransitionOneOfMatrixBuilder<List<Command>, CompilingException>()
+                                .allowTransition(new CompileStatementAcceptor<List<Command>>(this, RELATIONAL_EXPRESSION, List::add)
+                                        .named("RELATIONAL EXPRESSION"), true)
+
+                                .allowTransition(new CompileStatementAcceptor<List<Command>>(this, NUMERIC_EXPRESSION, List::add)
+                                        .named("NUMERIC EXPRESSION")),
+                        new ExceptionThrower<>(CompilingException::new))
         ));
 
         compilers.put(NUMERIC_EXPRESSION, new DetachedStackStatementCompiler(createNumericExpressionMachine()));
@@ -82,34 +82,36 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
 
     private StateAcceptor<List<Command>, CompilingException> createNumericExpressionMachine() {
         return ExpressionFSM.create(
-                new CompileStatementAcceptor<>(this, OPERAND, List::add),
+                new CompileStatementAcceptor<List<Command>>(this, OPERAND, List::add)
+                        .named("NUMERIC OPERAND"),
+
                 new MathBinaryOperatorFactoryImpl(),
+
                 (commands, operator) -> commands.add(environment -> environment.stack()
                         .peek()
                         .pushOperator(operator)),
-                new ExceptionThrower<>(CompilingException::new)
-        );
+
+                new ExceptionThrower<>(CompilingException::new));
     }
 
     private StateAcceptor<List<Command>, CompilingException> createOperandMachine() {
-        return OperandFSM.create(
+        return FiniteStateMachine.oneOf(
+                "NumericOperandFSM",
                 new TransitionOneOfMatrixBuilder<List<Command>, CompilingException>()
 
-                        .allowTransition(new CompileStatementAcceptor<>(this, NUMBER, List::add),
-                                "MEADOR NUMBER")
+                        .allowTransition(new CompileStatementAcceptor<List<Command>>(this, NUMBER, List::add)
+                                .named("MEADOR NUMBER"))
 
-                        .allowTransition(new CompileStatementAcceptor<>(this, BRACKETS, List::add),
-                                "MEADOR BRACKETS")
+                        .allowTransition(new CompileStatementAcceptor<List<Command>>(this, BRACKETS, List::add)
+                                .named("MEADOR BRACKETS"))
 
-                        .allowTransition(new CompileStatementAcceptor<>(this, FUNCTION, List::add),
-                                "MEADOR FUNCTION")
+                        .allowTransition(new CompileStatementAcceptor<List<Command>>(this, FUNCTION, List::add)
+                                .named("MEADOR FUNCTION"))
 
-                        .allowTransition(new CompileStatementAcceptor<>(this, VARIABLE_VALUE, List::add),
-                                "MEADOR VARIABLE")
-                        .build(),
+                        .allowTransition(new CompileStatementAcceptor<List<Command>>(this, VARIABLE_VALUE, List::add)
+                                .named("MEADOR VARIABLE")),
 
-                new ExceptionThrower<>(CompilingException::new)
-        );
+                new ExceptionThrower<>(CompilingException::new));
     }
 
     @Override
