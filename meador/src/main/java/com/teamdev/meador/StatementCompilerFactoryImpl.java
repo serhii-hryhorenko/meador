@@ -2,12 +2,12 @@ package com.teamdev.meador;
 
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.ExceptionThrower;
+import com.teamdev.fsm.FiniteStateMachine;
 import com.teamdev.fsm.StateAcceptor;
 import com.teamdev.fsm.TransitionOneOfMatrixBuilder;
 import com.teamdev.machine.brackets.BracketsFSM;
 import com.teamdev.machine.expression.ExpressionFSM;
 import com.teamdev.machine.number.NumberFSM;
-import com.teamdev.machine.operand.OperandFSM;
 import com.teamdev.machine.util.ValidatedFunctionFactoryImpl;
 import com.teamdev.meador.compiler.*;
 import com.teamdev.meador.compiler.statement.boolean_expr.BooleanLiteralCompiler;
@@ -18,6 +18,7 @@ import com.teamdev.meador.compiler.statement.switch_operator.SwitchOperatorCompi
 import com.teamdev.meador.compiler.statement.variable.VariableDeclarationCompiler;
 import com.teamdev.meador.compiler.statement.variable.VariableValueCompiler;
 import com.teamdev.meador.fsmimpl.compiler.CompilerFSM;
+import com.teamdev.meador.fsmimpl.util.DeepestParsedInputAcceptor;
 import com.teamdev.runtime.Command;
 import com.teamdev.runtime.value.BooleanBinaryOperatorFactory;
 import com.teamdev.runtime.value.MathBinaryOperatorFactoryImpl;
@@ -54,21 +55,12 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
         );
 
         compilers.put(EXPRESSION, new DetachedStackStatementCompiler(
-                (inputSequence, outputSequence) -> {
-                    var booleanCompiler = new CompileStatementAcceptor<List<Command>>(StatementCompilerFactoryImpl.this,
-                            BOOLEAN_EXPRESSION,
-                            List::add);
-
-                    var numericCompiler = new CompileStatementAcceptor<List<Command>>(StatementCompilerFactoryImpl.this,
-                            NUMERIC_EXPRESSION,
-                            List::add);
-
-                    int parsedBoolean = booleanCompiler.parseInDepth(inputSequence, ArrayList::new);
-                    int parsedNumeric = numericCompiler.parseInDepth(inputSequence, ArrayList::new);
-
-                    return parsedBoolean >= parsedNumeric ?
-                            booleanCompiler.accept(inputSequence, outputSequence) : numericCompiler.accept(inputSequence, outputSequence);
-                })
+                new DeepestParsedInputAcceptor<>(
+                        ArrayList::new,
+                        new CompileStatementAcceptor<List<Command>>(this, BOOLEAN_EXPRESSION, List::add)
+                                .named("BooleanExpressionFSM"),
+                        new CompileStatementAcceptor<List<Command>>(this, NUMERIC_EXPRESSION, List::add)
+                                .named("NumericExpressionFSM")))
         );
 
         compilers.put(BOOLEAN_LITERAL, new BooleanLiteralCompiler());
@@ -110,21 +102,21 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
     }
 
     private StateAcceptor<List<Command>, CompilingException> createNumericOperandMachine() {
-        return OperandFSM.create(
+        return FiniteStateMachine.oneOf(
+                "NumericOperandFSM",
                 new TransitionOneOfMatrixBuilder<List<Command>, CompilingException>()
 
-                        .allowTransition(new CompileStatementAcceptor<>(this, NUMBER, List::add),
-                                "MEADOR NUMBER")
+                        .allowTransition(new CompileStatementAcceptor<List<Command>>(this, NUMBER, List::add)
+                                .named("MEADOR NUMBER"))
 
-                        .allowTransition(new CompileStatementAcceptor<>(this, NUMERIC_BRACKETS, List::add),
-                                "MEADOR BRACKETS")
+                        .allowTransition(new CompileStatementAcceptor<List<Command>>(this, NUMERIC_BRACKETS, List::add)
+                                .named("MEADOR BRACKETS"))
 
-                        .allowTransition(new CompileStatementAcceptor<>(this, FUNCTION, List::add),
-                                "MEADOR FUNCTION")
+                        .allowTransition(new CompileStatementAcceptor<List<Command>>(this, FUNCTION, List::add)
+                                .named("MEADOR FUNCTION"))
 
-                        .allowTransition(new CompileStatementAcceptor<>(this, VARIABLE_VALUE, List::add),
-                                "MEADOR VARIABLE")
-                        .build(),
+                        .allowTransition(new CompileStatementAcceptor<List<Command>>(this, VARIABLE_VALUE, List::add)
+                                .named("MEADOR VARIABLE")),
 
                 new ExceptionThrower<>(CompilingException::new)
         );
@@ -145,20 +137,20 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
     }
 
     private StateAcceptor<List<Command>, CompilingException> createBooleanOperandMachine() {
-        return OperandFSM.create(
+        return FiniteStateMachine.oneOf(
+                "BooleanOperandFSM",
                 new TransitionOneOfMatrixBuilder<List<Command>, CompilingException>()
-                        .allowTransition(new CompileStatementAcceptor<>(this, BOOLEAN_LITERAL, List::add),
-                                "MEADOR BOOLEAN LITERAL", true)
+                        .allowTransition(new CompileStatementAcceptor<List<Command>>(this, BOOLEAN_LITERAL, List::add)
+                                .named("MEADOR BOOLEAN LITERAL"), true)
 
-                        .allowTransition(new CompileStatementAcceptor<>(this, BOOLEAN_BRACKETS, List::add),
-                                "MEADOR BOOLEAN BRACKETS")
+                        .allowTransition(new CompileStatementAcceptor<List<Command>>(this, BOOLEAN_BRACKETS, List::add)
+                                .named("MEADOR BOOLEAN BRACKETS"))
 
-                        .allowTransition(new CompileStatementAcceptor<>(this, RELATIONAL_EXPRESSION, List::add),
-                                "MEADOR RELATIVE EXPRESSION", true)
+                        .allowTransition(new CompileStatementAcceptor<List<Command>>(this, RELATIONAL_EXPRESSION, List::add)
+                                .named("MEADOR RELATIVE EXPRESSION"), true)
 
-                        .allowTransition(new CompileStatementAcceptor<>(this, VARIABLE_VALUE, List::add),
-                                "MEADOR VARIABLE")
-                        .build(),
+                        .allowTransition(new CompileStatementAcceptor<List<Command>>(this, VARIABLE_VALUE, List::add)
+                                .named("MEADOR VARIABLE")),
 
                 new ExceptionThrower<>(CompilingException::new)
         );
