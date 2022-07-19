@@ -36,7 +36,28 @@ public class IntegrationTest extends MeadorTest {
                         "[false, true, false]",
                         "Boolean expressions are broken"),
                 of("a = (5 >= (2 + 1) ^ 2 - 4) && false; print(a);", "[false]",
-                        "Boolean expressions with parenthesis are broken.")
+                        "Boolean expressions with parenthesis are broken."),
+
+                of("a = 5; if (a >= 5 || false) { b = a ^ 2; } print(a + b);", "[30.0]", "If statement is broken."),
+
+                of("""
+                                a = 5;
+                                switch(a) {
+                                    case a: {
+                                        if (a > 10) {
+                                            print(true);
+                                        } else {
+                                            print(false);
+                                        }
+                                    }
+                                    
+                                    default: {
+                                        print(1);
+                                    }
+                                }
+                                """,
+                        "[false]",
+                        "If operator inside switch is broken.")
         );
     }
 

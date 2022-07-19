@@ -3,12 +3,12 @@ package com.teamdev.meador.fsmimpl.switch_operator;
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.*;
 import com.teamdev.machine.util.TextIdentifierFSM;
-import com.teamdev.meador.compiler.CompileStatementAcceptor;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompilerFactory;
 import com.teamdev.meador.compiler.StatementType;
 import com.teamdev.meador.compiler.statement.switch_operator.SwitchContext;
 import com.teamdev.meador.compiler.statement.switch_operator.SwitchOptionContext;
+import com.teamdev.meador.fsmimpl.util.ConditionFSM;
 
 /**
  * {@link FiniteStateMachine} implementation for recognizing {@code switch} operator in Meador programs.
@@ -50,19 +50,10 @@ public class SwitchFSM extends FiniteStateMachine<SwitchContext, CompilingExcept
                 })
                 .build();
 
-        var openBracket = new State.Builder<SwitchContext, CompilingException>()
-                .setName("OPEN BRACKET")
-                .setAcceptor(StateAcceptor.acceptChar('('))
-                .build();
 
         var expressionToMatch = new State.Builder<SwitchContext, CompilingException>()
                 .setName("EXPRESSION TO MATCH")
-                .setAcceptor(new CompileStatementAcceptor<>(factory, StatementType.VARIABLE_VALUE, SwitchContext::setValueToMatch))
-                .build();
-
-        var closeBracket = new State.Builder<SwitchContext, CompilingException>()
-                .setName("CLOSE BRACKET")
-                .setAcceptor(StateAcceptor.acceptChar(')'))
+                .setAcceptor(ConditionFSM.create(factory, StatementType.VARIABLE_VALUE, SwitchContext::setValueToMatch))
                 .build();
 
         var openCurlyBracket = new State.Builder<SwitchContext, CompilingException>()
@@ -99,10 +90,8 @@ public class SwitchFSM extends FiniteStateMachine<SwitchContext, CompilingExcept
         var matrix = new TransitionMatrixBuilder<SwitchContext, CompilingException>()
                 .withStartState(initial)
                 .allowTransition(initial, switchKeyword)
-                .allowTransition(switchKeyword, openBracket)
-                .allowTransition(openBracket, expressionToMatch)
-                .allowTransition(expressionToMatch, closeBracket)
-                .allowTransition(closeBracket, openCurlyBracket)
+                .allowTransition(switchKeyword, expressionToMatch)
+                .allowTransition(expressionToMatch, openCurlyBracket)
                 .allowTransition(openCurlyBracket, caseOption)
                 .allowTransition(caseOption, caseOption, defaultOption)
                 .allowTransition(defaultOption, closeCurlyBracket)

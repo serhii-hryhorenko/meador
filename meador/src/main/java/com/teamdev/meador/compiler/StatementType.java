@@ -9,6 +9,8 @@ public enum StatementType {
     PROCEDURE,
     SWITCH,
 
+    CONDITIONAL_OPERATOR,
+
     EXPRESSION,
     NUMERIC_EXPRESSION,
     RELATIONAL_EXPRESSION,

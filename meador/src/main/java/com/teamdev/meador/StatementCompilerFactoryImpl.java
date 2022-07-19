@@ -11,6 +11,7 @@ import com.teamdev.machine.number.NumberFSM;
 import com.teamdev.machine.util.ValidatedFunctionFactoryImpl;
 import com.teamdev.meador.compiler.*;
 import com.teamdev.meador.compiler.statement.boolean_expr.BooleanLiteralCompiler;
+import com.teamdev.meador.compiler.statement.conditional_operator.ConditionalOperatorCompiler;
 import com.teamdev.meador.compiler.statement.function.FunctionCompiler;
 import com.teamdev.meador.compiler.statement.procedure.ProcedureCompiler;
 import com.teamdev.meador.compiler.statement.relative_expr.RelationalExpressionCompiler;
@@ -62,6 +63,8 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
                         new CompileStatementAcceptor<List<Command>>(this, NUMERIC_EXPRESSION, List::add)
                                 .named("NumericExpressionFSM")))
         );
+
+        compilers.put(CONDITIONAL_OPERATOR, new ConditionalOperatorCompiler(this));
 
         compilers.put(BOOLEAN_LITERAL, new BooleanLiteralCompiler());
 
