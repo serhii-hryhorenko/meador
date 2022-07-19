@@ -40,6 +40,20 @@ public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor
         this.skippingWhitespaces = skippingWhitespaces;
     }
 
+    public static <O, E extends Exception> FiniteStateMachine<O, E> oneOf(String name,
+                                                                          TransitionOneOfMatrixBuilder<O, E> matrixBuilder,
+                                                                          ExceptionThrower<E> exceptionThrower) {
+
+        Preconditions.checkNotNull(matrixBuilder, exceptionThrower);
+
+        return new FiniteStateMachine<>(matrixBuilder.build(), exceptionThrower) {
+            @Override
+            public String toString() {
+                return Preconditions.checkNotNull(name);
+            }
+        };
+    }
+
     @Override
     public boolean accept(InputSequenceReader input, O output) throws E {
         Preconditions.checkNotNull(input, output);
@@ -120,7 +134,7 @@ public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor
                 if (candidateState.getAcceptor().accept(input, output)) {
 
                     if (logger.isInfoEnabled()) {
-                        logger.info("[{}]: [{}] -> [{}]", this.getClass().getSimpleName(), currentState, candidateState);
+                        logger.info("[{}]: [{}] -> [{}]", this, currentState, candidateState);
                     }
 
                     return Optional.of(candidateState);
@@ -130,5 +144,10 @@ public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor
         }
 
         return Optional.empty();
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
     }
 }

@@ -28,6 +28,22 @@ public interface StateAcceptor<O, E extends Exception> {
 
     boolean accept(InputSequenceReader inputSequence, O outputSequence) throws E;
 
+    default StateAcceptor<O, E> named(String name) {
+        var old = this;
+
+        return new StateAcceptor<>() {
+            @Override
+            public boolean accept(InputSequenceReader inputSequence, O outputSequence) throws E {
+                return old.accept(inputSequence, outputSequence);
+            }
+
+            @Override
+            public String toString() {
+                return Preconditions.checkNotNull(name);
+            }
+        };
+    }
+
     default StateAcceptor<O, E> and(StateAcceptor<O, E> other) {
         return (inputSequence, outputSequence) ->
                 this.accept(inputSequence, outputSequence) &&
