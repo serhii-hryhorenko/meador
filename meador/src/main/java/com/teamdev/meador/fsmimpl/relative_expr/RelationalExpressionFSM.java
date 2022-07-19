@@ -48,6 +48,7 @@ public class RelationalExpressionFSM extends FiniteStateMachine<RelationalExpres
 
         var matrix =
                 TransitionMatrix.chainedTransitions(left, relationOperator, right);
+
         return new RelationalExpressionFSM(matrix, new ExceptionThrower<>(CompilingException::new));
     }
 }

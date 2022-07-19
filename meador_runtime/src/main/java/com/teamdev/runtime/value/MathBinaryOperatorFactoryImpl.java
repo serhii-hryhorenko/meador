@@ -1,5 +1,6 @@
 package com.teamdev.runtime.value;
 
+import com.google.common.base.Preconditions;
 import com.teamdev.runtime.value.bioperator.AbstractBinaryOperator;
 import com.teamdev.runtime.value.bioperator.AbstractBinaryOperatorFactory;
 import com.teamdev.runtime.value.bioperator.DoubleValueBinaryOperator;
@@ -44,6 +45,6 @@ public class MathBinaryOperatorFactoryImpl implements AbstractBinaryOperatorFact
 
     @Override
     public boolean acceptOperator(String operator) {
-        return mathOperators.keySet().stream().anyMatch(mathOperator -> mathOperator.equals(operator));
+        return mathOperators.containsKey(Preconditions.checkNotNull(operator));
     }
 }

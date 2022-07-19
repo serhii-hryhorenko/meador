@@ -8,8 +8,7 @@ import java.util.Objects;
  * Represents a certain state of finite state machine and encapsulates a condition of transitioning
  * to it.
  *
- * @param <O>
- *         type of output sequence for {@code StateAcceptor}.
+ * @param <O> type of output sequence for {@code StateAcceptor}.
  */
 
 public class State<O, E extends Exception> {
@@ -53,7 +52,7 @@ public class State<O, E extends Exception> {
 
     public static class Builder<O, E extends Exception> {
 
-        private String name = "EMPTY";
+        private String name;
         private StateAcceptor<O, E> acceptor;
 
         private boolean isTemporary = false;
@@ -63,6 +62,11 @@ public class State<O, E extends Exception> {
         public Builder<O, E> setAcceptor(StateAcceptor<O, E> acceptor) {
             Preconditions.checkState(Objects.isNull(this.acceptor), "Acceptor is already set.");
             this.acceptor = Preconditions.checkNotNull(acceptor);
+
+            if (Objects.isNull(name)) {
+                name = acceptor.toString();
+            }
+
             return this;
         }
 

@@ -16,11 +16,6 @@ import java.util.function.BiConsumer;
  */
 public class ExpressionFSM<O, E extends Exception> extends FiniteStateMachine<O, E> {
 
-    private ExpressionFSM(TransitionMatrix<O, E> transitionMatrix,
-                          ExceptionThrower<E> thrower) {
-        super(transitionMatrix, thrower);
-    }
-
     public static <O, E extends Exception> ExpressionFSM<O, E> create(
             StateAcceptor<O, E> operandAcceptor,
             AbstractBinaryOperatorFactory factory,
@@ -32,7 +27,6 @@ public class ExpressionFSM<O, E extends Exception> extends FiniteStateMachine<O,
         var initialState = State.<O, E>initialState();
 
         var operandState = new State.Builder<O, E>()
-                .setName("OPERAND")
                 .setAcceptor(Preconditions.checkNotNull(operandAcceptor))
                 .setFinite(true)
                 .build();
@@ -50,5 +44,10 @@ public class ExpressionFSM<O, E extends Exception> extends FiniteStateMachine<O,
                 .build();
 
         return new ExpressionFSM<>(matrix, thrower);
+    }
+
+    private ExpressionFSM(TransitionMatrix<O, E> transitionMatrix,
+                          ExceptionThrower<E> thrower) {
+        super(transitionMatrix, thrower);
     }
 }
