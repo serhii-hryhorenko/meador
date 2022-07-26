@@ -1,5 +1,6 @@
 package com.teamdev.meador.compiler.statement.variable;
 
+import com.google.common.base.Preconditions;
 import com.teamdev.fsm.ExceptionThrower;
 import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.machine.util.TextIdentifierFSM;
@@ -19,14 +20,29 @@ public class VariableValueCompiler implements StatementCompiler {
                 .accept(inputSequence, variableName)) {
 
             return Optional.of(runtimeEnvironment -> {
-                var value = runtimeEnvironment.memory().getVariable(variableName.toString());
+                var value = runtimeEnvironment
+                        .memory()
+                        .getVariable(variableName.toString());
+
                 runtimeEnvironment.stack()
                         .peek()
                         .pushOperand(value);
             });
-
         }
 
         return Optional.empty();
+    }
+
+    public Optional<Command> compile(String variableName) {
+        return Optional.of(runtimeEnvironment -> {
+
+            var variable = runtimeEnvironment
+                    .memory()
+                    .getVariable(Preconditions.checkNotNull(variableName));
+
+            runtimeEnvironment.stack()
+                    .peek()
+                    .pushOperand(variable);
+        });
     }
 }

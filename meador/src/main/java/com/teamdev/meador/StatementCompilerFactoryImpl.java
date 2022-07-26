@@ -17,8 +17,12 @@ import com.teamdev.meador.compiler.statement.switch_operator.SwitchOperatorCompi
 import com.teamdev.meador.compiler.statement.variable.VariableDeclarationCompiler;
 import com.teamdev.meador.compiler.statement.variable.VariableValueCompiler;
 import com.teamdev.meador.fsmimpl.compiler.CompilerFSM;
+import com.teamdev.meador.fsmimpl.unary_operator.PostfixOperatorFSM;
+import com.teamdev.meador.fsmimpl.unary_operator.PrefixOperatorFSM;
+import com.teamdev.meador.fsmimpl.unary_operator.UnaryExpressionOutputChain;
 import com.teamdev.runtime.Command;
 import com.teamdev.runtime.value.MathBinaryOperatorFactoryImpl;
+import com.teamdev.runtime.value.UnaryOperatorFactoryImpl;
 
 import java.util.*;
 
@@ -38,6 +42,51 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
                 return Optional.of(environment -> commands.forEach(command -> command.execute(environment)));
             }
 
+            return Optional.empty();
+        });
+
+        compilers.put(UNARY_PREFIX_EXPRESSION, inputSequence -> {
+            UnaryExpressionOutputChain outputChain = new UnaryExpressionOutputChain();
+            if (PrefixOperatorFSM.create(StatementCompilerFactoryImpl.this, new UnaryOperatorFactoryImpl())
+                    .accept(inputSequence, outputChain)) {
+
+                return Optional.of(runtimeEnvironment -> {
+                    var variableCommand = new VariableValueCompiler().compile(outputChain.variableName());
+
+                    variableCommand.ifPresent(command -> {
+                        variableCommand.get().execute(runtimeEnvironment);
+
+                        var topStack = runtimeEnvironment.stack().peek();
+
+                        var applied = outputChain.unaryOperator().apply(topStack.popOperand());
+
+                        topStack.pushOperand(applied);
+
+                        if (outputChain.unaryOperator().mutates()) {
+                            runtimeEnvironment.memory().putVariable(outputChain.variableName(), applied);
+                        }
+                    });
+                });
+            }
+
+            return Optional.empty();
+        });
+
+        compilers.put(UNARY_POSTFIX_EXPRESSION, inputSequence -> {
+            UnaryExpressionOutputChain outputChain = new UnaryExpressionOutputChain();
+            if (PostfixOperatorFSM.create(StatementCompilerFactoryImpl.this, new UnaryOperatorFactoryImpl())
+                    .accept(inputSequence, outputChain)) {
+                return Optional.of(runtimeEnvironment -> {
+                    var variableCommand = new VariableValueCompiler().compile(outputChain.variableName());
+
+                    variableCommand.ifPresent(command -> {
+                        variableCommand.get().execute(runtimeEnvironment);
+
+                        runtimeEnvironment.memory().putVariable(outputChain.variableName(),
+                                outputChain.unaryOperator().apply(runtimeEnvironment.stack().peek().peekOperand()));
+                    });
+                });
+            }
             return Optional.empty();
         });
 
@@ -73,6 +122,18 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
 
         compilers.put(FUNCTION, new FunctionCompiler(this, new ValidatedFunctionFactoryImpl()));
 
+        compilers.put(READ_VARIABLE, new DetachedStackStatementCompiler(FiniteStateMachine.oneOf("READ VARIABLE",
+                new TransitionOneOfMatrixBuilder<List<Command>, CompilingException>()
+                        .allowTransition(new CompileStatementAcceptor<List<Command>>(StatementCompilerFactoryImpl.this, UNARY_PREFIX_EXPRESSION, List::add)
+                                .named("UNARY PREFIX"))
+
+                        .allowTransition(new CompileStatementAcceptor<List<Command>>(StatementCompilerFactoryImpl.this, UNARY_POSTFIX_EXPRESSION, List::add)
+                                .named("UNARY POSTFIX"))
+
+                        .allowTransition(new CompileStatementAcceptor<List<Command>>(StatementCompilerFactoryImpl.this, VARIABLE_VALUE, List::add)
+                                .named("VARIABLE VALUE")),
+                new ExceptionThrower<>(CompilingException::new))));
+
         compilers.put(PROCEDURE, new ProcedureCompiler(this));
 
         compilers.put(VARIABLE_DECLARATION, new VariableDeclarationCompiler(this));
@@ -99,17 +160,18 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
                 "NumericOperandFSM",
                 new TransitionOneOfMatrixBuilder<List<Command>, CompilingException>()
 
-                        .allowTransition(new CompileStatementAcceptor<List<Command>>(this, NUMBER, List::add)
-                                .named("MEADOR NUMBER"))
-
                         .allowTransition(new CompileStatementAcceptor<List<Command>>(this, BRACKETS, List::add)
                                 .named("MEADOR BRACKETS"))
 
                         .allowTransition(new CompileStatementAcceptor<List<Command>>(this, FUNCTION, List::add)
                                 .named("MEADOR FUNCTION"))
 
-                        .allowTransition(new CompileStatementAcceptor<List<Command>>(this, VARIABLE_VALUE, List::add)
-                                .named("MEADOR VARIABLE")),
+                        .allowTransition(new CompileStatementAcceptor<List<Command>>(this, READ_VARIABLE, List::add)
+                                .named("MEADOR VARIABLE"))
+
+                        .allowTransition(new CompileStatementAcceptor<List<Command>>(this, NUMBER, List::add)
+                                .named("MEADOR NUMBER")),
+
 
                 new ExceptionThrower<>(CompilingException::new));
     }

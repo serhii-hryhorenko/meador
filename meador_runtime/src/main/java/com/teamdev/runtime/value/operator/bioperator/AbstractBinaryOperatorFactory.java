@@ -1,4 +1,4 @@
-package com.teamdev.runtime.value.bioperator;
+package com.teamdev.runtime.value.operator.bioperator;
 
 /**
  * Abstract factory for {@link DoubleValueBinaryOperator}.

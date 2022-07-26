@@ -10,7 +10,7 @@ public class IntegrationTest extends MeadorTest {
 
     static Stream<Arguments> positiveCases() {
         return Stream.of(
-                of("a = 5; print(a);", "[5.0]",
+                of("a = 5; print(++a);", "[6.0]",
                         "Numeric value wasn't printed."),
                 of("a = 2 >= 2; print(a);", "[true]",
                         "Boolean value wasn't printed."),

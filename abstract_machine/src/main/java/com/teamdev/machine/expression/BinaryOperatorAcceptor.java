@@ -3,8 +3,8 @@ package com.teamdev.machine.expression;
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.fsm.StateAcceptor;
-import com.teamdev.runtime.value.bioperator.AbstractBinaryOperator;
-import com.teamdev.runtime.value.bioperator.AbstractBinaryOperatorFactory;
+import com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperator;
+import com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperatorFactory;
 
 import java.util.function.BiConsumer;
 

@@ -1,15 +1,15 @@
 package com.teamdev.runtime.value;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.runtime.value.bioperator.AbstractBinaryOperator;
-import com.teamdev.runtime.value.bioperator.AbstractBinaryOperatorFactory;
-import com.teamdev.runtime.value.bioperator.RelativeBinaryOperator;
+import com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperator;
+import com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperatorFactory;
+import com.teamdev.runtime.value.operator.bioperator.RelativeBinaryOperator;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.teamdev.runtime.value.bioperator.AbstractBinaryOperator.Priority.LOW;
+import static com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperator.Priority.LOW;
 
 
 /**
