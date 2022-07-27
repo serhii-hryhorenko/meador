@@ -14,6 +14,10 @@ import com.teamdev.runtime.value.operator.unaryoperator.AbstractUnaryOperator;
 
 import java.util.Optional;
 
+/**
+ * {@link StatementCompiler} implementation for creating command of unary expressions with {@link AbstractUnaryOperator} prefix position.
+ * These operations <b>can change</b> the variable value if the operator is supposed to do it.
+ */
 public class UnaryPrefixExpressionCompiler implements StatementCompiler {
 
     private final StatementCompilerFactoryImpl statementCompilerFactory;
@@ -30,7 +34,7 @@ public class UnaryPrefixExpressionCompiler implements StatementCompiler {
     @Override
     public Optional<Command> compile(InputSequenceReader inputSequence) throws CompilingException {
         UnaryExpressionOutputChain outputChain = new UnaryExpressionOutputChain();
-        
+
         if (PrefixOperatorFSM.create(statementCompilerFactory, unaryOperatorFactory)
                 .accept(inputSequence, outputChain)) {
 

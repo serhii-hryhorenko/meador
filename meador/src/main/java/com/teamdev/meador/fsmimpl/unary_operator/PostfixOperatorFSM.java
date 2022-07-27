@@ -12,6 +12,11 @@ import com.teamdev.meador.compiler.StatementCompilerFactory;
 import com.teamdev.runtime.value.operator.AbstractOperatorFactory;
 import com.teamdev.runtime.value.operator.unaryoperator.AbstractUnaryOperator;
 
+/**
+ * {@link FiniteStateMachine} implementation for recognizing unary expressions with an {@link AbstractUnaryOperator} postfix
+ * position.
+ * Parses only the variable name, not a value.
+ */
 public class PostfixOperatorFSM extends FiniteStateMachine<UnaryExpressionOutputChain, CompilingException> {
 
     public static PostfixOperatorFSM create(StatementCompilerFactory compilerFactory,

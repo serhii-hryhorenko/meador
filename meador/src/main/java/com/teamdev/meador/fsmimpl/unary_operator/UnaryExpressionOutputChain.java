@@ -3,6 +3,9 @@ package com.teamdev.meador.fsmimpl.unary_operator;
 import com.google.common.base.Preconditions;
 import com.teamdev.runtime.value.operator.unaryoperator.AbstractUnaryOperator;
 
+/**
+ * Output chain for {@link PrefixOperatorFSM} and {@link PostfixOperatorFSM}.
+ */
 public class UnaryExpressionOutputChain {
 
     private String variableName;

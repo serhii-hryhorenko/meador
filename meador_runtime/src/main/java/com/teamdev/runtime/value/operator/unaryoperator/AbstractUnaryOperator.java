@@ -4,6 +4,12 @@ import com.teamdev.runtime.value.type.Value;
 
 import java.util.function.UnaryOperator;
 
+/**
+ * Abstract unary operator which takes {@link Value} and mutate it, has to return a mutated copy of the original.
+ * Can be applied only to Meador variables.
+ * Always mutates variable value in the postfix position.
+ * Can mutate a variable value in prefix position if the parameter given to the constructor is true.
+ */
 public abstract class AbstractUnaryOperator implements UnaryOperator<Value> {
 
     private final boolean prefixFormMutatesVariable;

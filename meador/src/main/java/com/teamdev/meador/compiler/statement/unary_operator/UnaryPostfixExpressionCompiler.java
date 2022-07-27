@@ -14,6 +14,10 @@ import com.teamdev.runtime.value.operator.unaryoperator.AbstractUnaryOperator;
 
 import java.util.Optional;
 
+/**
+ * {@link StatementCompiler} implementation for creating command of unary expressions with {@link AbstractUnaryOperator} postfix position.
+ * This kind of operations <b>always</b> changes the variable value.
+ */
 public class UnaryPostfixExpressionCompiler implements StatementCompiler {
 
     private final StatementCompilerFactoryImpl statementCompilerFactory;

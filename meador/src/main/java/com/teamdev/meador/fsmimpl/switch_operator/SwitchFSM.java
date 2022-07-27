@@ -52,7 +52,7 @@ public class SwitchFSM extends FiniteStateMachine<SwitchContext, CompilingExcept
 
         var expressionToMatch = new State.Builder<SwitchContext, CompilingException>()
                 .setName("EXPRESSION TO MATCH")
-                .setAcceptor(new CompileStatementAcceptor<>(factory, StatementType.VARIABLE_VALUE, SwitchContext::setValueToMatch))
+                .setAcceptor(new CompileStatementAcceptor<>(factory, StatementType.READ_VARIABLE, SwitchContext::setValueToMatch))
                 .build();
 
         var closeBracket = new State.Builder<SwitchContext, CompilingException>()
