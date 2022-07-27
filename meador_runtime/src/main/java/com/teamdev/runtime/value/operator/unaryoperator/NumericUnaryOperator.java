@@ -11,13 +11,13 @@ public class NumericUnaryOperator extends AbstractUnaryOperator {
 
     private final DoubleUnaryOperator operator;
 
-    public NumericUnaryOperator(DoubleUnaryOperator operator, Position position) {
-        super(position);
+    public NumericUnaryOperator(DoubleUnaryOperator operator) {
+        super();
         this.operator = Preconditions.checkNotNull(operator);
     }
 
-    public NumericUnaryOperator(DoubleUnaryOperator operator, Position position, boolean mutates) {
-        super(position, mutates);
+    public NumericUnaryOperator(DoubleUnaryOperator operator, boolean prefixFormMutatesVariable) {
+        super(prefixFormMutatesVariable);
         this.operator = Preconditions.checkNotNull(operator);
     }
 

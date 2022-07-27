@@ -11,13 +11,13 @@ public class BooleanUnaryOperator extends AbstractUnaryOperator {
 
     private final UnaryOperator<Boolean> operator;
 
-    public BooleanUnaryOperator(UnaryOperator<Boolean> operator, Position position) {
-        super(position);
+    public BooleanUnaryOperator(UnaryOperator<Boolean> operator) {
+        super();
         this.operator = Preconditions.checkNotNull(operator);
     }
 
-    public BooleanUnaryOperator(UnaryOperator<Boolean> operator, Position position, boolean mutates) {
-        super(position, mutates);
+    public BooleanUnaryOperator(UnaryOperator<Boolean> operator, boolean prefixMutatesVariable) {
+        super(prefixMutatesVariable);
         this.operator = Preconditions.checkNotNull(operator);
     }
 

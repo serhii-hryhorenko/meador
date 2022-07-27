@@ -22,7 +22,7 @@ import com.teamdev.meador.fsmimpl.unary_operator.PrefixOperatorFSM;
 import com.teamdev.meador.fsmimpl.unary_operator.UnaryExpressionOutputChain;
 import com.teamdev.runtime.Command;
 import com.teamdev.runtime.value.MathBinaryOperatorFactoryImpl;
-import com.teamdev.runtime.value.UnaryOperatorFactoryImpl;
+import com.teamdev.runtime.value.NumericUnaryOperatorFactory;
 
 import java.util.*;
 
@@ -47,7 +47,7 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
 
         compilers.put(UNARY_PREFIX_EXPRESSION, inputSequence -> {
             UnaryExpressionOutputChain outputChain = new UnaryExpressionOutputChain();
-            if (PrefixOperatorFSM.create(StatementCompilerFactoryImpl.this, new UnaryOperatorFactoryImpl())
+            if (PrefixOperatorFSM.create(StatementCompilerFactoryImpl.this, new NumericUnaryOperatorFactory())
                     .accept(inputSequence, outputChain)) {
 
                 return Optional.of(runtimeEnvironment -> {
@@ -62,7 +62,7 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
 
                         topStack.pushOperand(applied);
 
-                        if (outputChain.unaryOperator().mutates()) {
+                        if (outputChain.unaryOperator().prefixFormMutatesVariable()) {
                             runtimeEnvironment.memory().putVariable(outputChain.variableName(), applied);
                         }
                     });
@@ -74,7 +74,7 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
 
         compilers.put(UNARY_POSTFIX_EXPRESSION, inputSequence -> {
             UnaryExpressionOutputChain outputChain = new UnaryExpressionOutputChain();
-            if (PostfixOperatorFSM.create(StatementCompilerFactoryImpl.this, new UnaryOperatorFactoryImpl())
+            if (PostfixOperatorFSM.create(StatementCompilerFactoryImpl.this, new NumericUnaryOperatorFactory())
                     .accept(inputSequence, outputChain)) {
                 return Optional.of(runtimeEnvironment -> {
                     var variableCommand = new VariableValueCompiler().compile(outputChain.variableName());

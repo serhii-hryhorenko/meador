@@ -5,16 +5,17 @@ import com.teamdev.fsm.ExceptionThrower;
 import com.teamdev.fsm.FiniteStateMachine;
 import com.teamdev.fsm.State;
 import com.teamdev.fsm.TransitionMatrix;
+import com.teamdev.machine.expression.OperatorAcceptor;
 import com.teamdev.machine.util.TextIdentifierFSM;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompilerFactory;
-import com.teamdev.runtime.value.operator.unaryoperator.AbstractUnaryOperatorFactory;
-
-import static com.teamdev.runtime.value.operator.unaryoperator.Position.POSTFIX;
+import com.teamdev.runtime.value.operator.AbstractOperatorFactory;
+import com.teamdev.runtime.value.operator.unaryoperator.AbstractUnaryOperator;
 
 public class PostfixOperatorFSM extends FiniteStateMachine<UnaryExpressionOutputChain, CompilingException> {
 
-    public static PostfixOperatorFSM create(StatementCompilerFactory compilerFactory, AbstractUnaryOperatorFactory operatorFactory) {
+    public static PostfixOperatorFSM create(StatementCompilerFactory compilerFactory,
+                                            AbstractOperatorFactory<AbstractUnaryOperator> operatorFactory) {
         Preconditions.checkNotNull(compilerFactory, operatorFactory);
 
         var expression = new State.Builder<UnaryExpressionOutputChain, CompilingException>()
@@ -31,7 +32,7 @@ public class PostfixOperatorFSM extends FiniteStateMachine<UnaryExpressionOutput
 
         var postfixOperator = new State.Builder<UnaryExpressionOutputChain, CompilingException>()
                 .setName("POSTFIX OPERATOR")
-                .setAcceptor(new UnaryOperatorAcceptor<>(operatorFactory, UnaryExpressionOutputChain::setUnaryOperator, POSTFIX))
+                .setAcceptor(new OperatorAcceptor<>(operatorFactory, UnaryExpressionOutputChain::setUnaryOperator))
                 .setFinite(true)
                 .build();
 
