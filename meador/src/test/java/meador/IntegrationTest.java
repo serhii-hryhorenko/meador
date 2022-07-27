@@ -27,7 +27,19 @@ public class IntegrationTest extends MeadorTest {
                 of("pi = pi(); print(pi, pi()); pi = 2 * pi;", "[" + Math.PI + ", " + Math.PI + ']',
                         "Variable could not refer itself."),
                 of("a = 5; switch(a) { case 5: { b = pi(); } default: { print(1); } } print(b);", "[" + Math.PI + ']',
-                        "Variable was not created inside switch operator.")
+                        "Variable was not created inside switch operator."),
+                of("""
+                                a = 4;
+                                switch(++a) {
+                                    case 5: {
+                                        print(±a);
+                                    }
+                                    
+                                    default: { print(false); }
+                                }
+                                """,
+                        "[-5.0]",
+                        "Unary operator is failed to integrate with switch operator.")
         );
     }
 

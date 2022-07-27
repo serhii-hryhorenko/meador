@@ -3,38 +3,41 @@ package com.teamdev.runtime.value;
 import com.google.common.base.Preconditions;
 import com.teamdev.runtime.value.operator.AbstractOperatorFactory;
 import com.teamdev.runtime.value.operator.unaryoperator.AbstractUnaryOperator;
+import com.teamdev.runtime.value.operator.unaryoperator.BooleanUnaryOperator;
 import com.teamdev.runtime.value.operator.unaryoperator.NumericUnaryOperator;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.DoubleUnaryOperator;
 
-public class NumericUnaryOperatorFactory implements AbstractOperatorFactory<AbstractUnaryOperator> {
+public class UnaryOperatorFactory implements AbstractOperatorFactory<AbstractUnaryOperator> {
 
-    private final Map<String, AbstractUnaryOperator> numericUnaryOperators = new HashMap<>();
+    private final Map<String, AbstractUnaryOperator> unaryOperators = new HashMap<>();
 
-    public NumericUnaryOperatorFactory() {
-        numericUnaryOperators.put("++", new NumericUnaryOperator(operand -> ++operand, true));
-        numericUnaryOperators.put("--", new NumericUnaryOperator(operand -> --operand, true));
-        numericUnaryOperators.put("!", new NumericUnaryOperator(new FactorialOperator()));
-        numericUnaryOperators.put("~", new NumericUnaryOperator(operand -> (int) operand));
+    public UnaryOperatorFactory() {
+        unaryOperators.put("++", new NumericUnaryOperator(operand -> ++operand, true));
+        unaryOperators.put("--", new NumericUnaryOperator(operand -> --operand, true));
+        unaryOperators.put("!", new NumericUnaryOperator(new FactorialOperator()));
+        unaryOperators.put("~", new NumericUnaryOperator(operand -> (int) operand));
+        unaryOperators.put("±", new NumericUnaryOperator(operand -> -operand));
+        unaryOperators.put("not", new BooleanUnaryOperator(operand -> !operand));
     }
 
     @Override
     public AbstractUnaryOperator create(String operator) {
-        return numericUnaryOperators.get(Preconditions.checkNotNull(operator));
+        return unaryOperators.get(Preconditions.checkNotNull(operator));
     }
 
     @Override
     public boolean acceptOperatorPrefix(String prefix) {
-        return numericUnaryOperators.keySet()
+        return unaryOperators.keySet()
                 .stream()
                 .anyMatch(operator -> operator.startsWith(Preconditions.checkNotNull(prefix)));
     }
 
     @Override
     public boolean acceptOperator(String operator) {
-        return numericUnaryOperators.containsKey(Preconditions.checkNotNull(operator));
+        return unaryOperators.containsKey(Preconditions.checkNotNull(operator));
     }
 
     private static class FactorialOperator implements DoubleUnaryOperator {

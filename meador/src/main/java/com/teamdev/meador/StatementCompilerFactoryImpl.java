@@ -14,15 +14,14 @@ import com.teamdev.meador.compiler.statement.function.FunctionCompiler;
 import com.teamdev.meador.compiler.statement.procedure.ProcedureCompiler;
 import com.teamdev.meador.compiler.statement.relative_expr.RelationalExpressionCompiler;
 import com.teamdev.meador.compiler.statement.switch_operator.SwitchOperatorCompiler;
+import com.teamdev.meador.compiler.statement.unary_operator.UnaryPostfixExpressionCompiler;
+import com.teamdev.meador.compiler.statement.unary_operator.UnaryPrefixExpressionCompiler;
 import com.teamdev.meador.compiler.statement.variable.VariableDeclarationCompiler;
 import com.teamdev.meador.compiler.statement.variable.VariableValueCompiler;
 import com.teamdev.meador.fsmimpl.compiler.CompilerFSM;
-import com.teamdev.meador.fsmimpl.unary_operator.PostfixOperatorFSM;
-import com.teamdev.meador.fsmimpl.unary_operator.PrefixOperatorFSM;
-import com.teamdev.meador.fsmimpl.unary_operator.UnaryExpressionOutputChain;
 import com.teamdev.runtime.Command;
 import com.teamdev.runtime.value.MathBinaryOperatorFactoryImpl;
-import com.teamdev.runtime.value.NumericUnaryOperatorFactory;
+import com.teamdev.runtime.value.UnaryOperatorFactory;
 
 import java.util.*;
 
@@ -45,50 +44,9 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
             return Optional.empty();
         });
 
-        compilers.put(UNARY_PREFIX_EXPRESSION, inputSequence -> {
-            UnaryExpressionOutputChain outputChain = new UnaryExpressionOutputChain();
-            if (PrefixOperatorFSM.create(StatementCompilerFactoryImpl.this, new NumericUnaryOperatorFactory())
-                    .accept(inputSequence, outputChain)) {
+        compilers.put(UNARY_PREFIX_EXPRESSION, new UnaryPrefixExpressionCompiler(this, new UnaryOperatorFactory()));
 
-                return Optional.of(runtimeEnvironment -> {
-                    var variableCommand = new VariableValueCompiler().compile(outputChain.variableName());
-
-                    variableCommand.ifPresent(command -> {
-                        variableCommand.get().execute(runtimeEnvironment);
-
-                        var topStack = runtimeEnvironment.stack().peek();
-
-                        var applied = outputChain.unaryOperator().apply(topStack.popOperand());
-
-                        topStack.pushOperand(applied);
-
-                        if (outputChain.unaryOperator().prefixFormMutatesVariable()) {
-                            runtimeEnvironment.memory().putVariable(outputChain.variableName(), applied);
-                        }
-                    });
-                });
-            }
-
-            return Optional.empty();
-        });
-
-        compilers.put(UNARY_POSTFIX_EXPRESSION, inputSequence -> {
-            UnaryExpressionOutputChain outputChain = new UnaryExpressionOutputChain();
-            if (PostfixOperatorFSM.create(StatementCompilerFactoryImpl.this, new NumericUnaryOperatorFactory())
-                    .accept(inputSequence, outputChain)) {
-                return Optional.of(runtimeEnvironment -> {
-                    var variableCommand = new VariableValueCompiler().compile(outputChain.variableName());
-
-                    variableCommand.ifPresent(command -> {
-                        variableCommand.get().execute(runtimeEnvironment);
-
-                        runtimeEnvironment.memory().putVariable(outputChain.variableName(),
-                                outputChain.unaryOperator().apply(runtimeEnvironment.stack().peek().peekOperand()));
-                    });
-                });
-            }
-            return Optional.empty();
-        });
+        compilers.put(UNARY_POSTFIX_EXPRESSION, new UnaryPostfixExpressionCompiler(this, new UnaryOperatorFactory()));
 
         compilers.put(SWITCH, new SwitchOperatorCompiler(this));
 
