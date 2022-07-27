@@ -15,20 +15,17 @@ import com.teamdev.meador.fsmimpl.util.CodeBlockFSM;
  */
 public class CaseOptionFSM extends FiniteStateMachine<SwitchOptionContext, CompilingException> {
 
-    protected CaseOptionFSM(TransitionMatrix<SwitchOptionContext, CompilingException> transitionMatrix,
-                            ExceptionThrower<CompilingException> thrower) {
-        super(transitionMatrix, thrower);
-    }
+    private static final String CASE = "case";
 
     public static CaseOptionFSM create(StatementCompilerFactory factory) {
         Preconditions.checkNotNull(factory);
 
+        var exceptionThrower = new ExceptionThrower<>(CompilingException::new);
+
         var keyword = new State.Builder<SwitchOptionContext, CompilingException>()
                 .setName("CASE KEYWORD")
-                .setAcceptor((inputSequence, outputSequence) -> {
-                    var optionalWord = TextIdentifierFSM.execute(inputSequence, new ExceptionThrower<>(CompilingException::new));
-                    return optionalWord.isPresent() && optionalWord.get().equals("case");
-                })
+                .setAcceptor((inputSequence, outputSequence) ->
+                        TextIdentifierFSM.acceptKeyword(inputSequence, CASE, exceptionThrower))
                 .build();
 
         var statement = new State.Builder<SwitchOptionContext, CompilingException>()
@@ -51,6 +48,11 @@ public class CaseOptionFSM extends FiniteStateMachine<SwitchOptionContext, Compi
                 TransitionMatrix.chainedTransitions(keyword, statement, colon, executableExpression);
 
 
-        return new CaseOptionFSM(matrix, new ExceptionThrower<>(CompilingException::new));
+        return new CaseOptionFSM(matrix, exceptionThrower);
+    }
+
+    private CaseOptionFSM(TransitionMatrix<SwitchOptionContext, CompilingException> transitionMatrix,
+                          ExceptionThrower<CompilingException> exceptionThrower) {
+        super(transitionMatrix, exceptionThrower);
     }
 }

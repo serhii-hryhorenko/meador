@@ -5,6 +5,7 @@ import com.teamdev.fsm.*;
 import com.teamdev.machine.function.ValidatedFunction;
 
 import java.util.Optional;
+import java.util.function.BiConsumer;
 
 /**
  * {@link FiniteStateMachine} implementation for recognizing names of {@link ValidatedFunction}.
@@ -14,11 +15,36 @@ import java.util.Optional;
 
 public class TextIdentifierFSM<E extends Exception> extends FiniteStateMachine<StringBuilder, E> {
 
-    public static <E extends Exception> Optional<String> execute(InputSequenceReader inputSequence,
-                                                                 ExceptionThrower<E> exceptionThrower) throws E {
+    public static <E extends Exception> Optional<String> parseIdentifier(InputSequenceReader reader,
+                                                                         ExceptionThrower<E> exceptionThrower) throws E {
         var identifier = new StringBuilder();
-        return create(exceptionThrower).accept(inputSequence, identifier) ?
+        return create(exceptionThrower).accept(reader, identifier) ?
                 Optional.of(identifier.toString()) : Optional.empty();
+
+    }
+
+    public static <O, E extends Exception> boolean acceptIdentifier(InputSequenceReader reader,
+                                                                    O outputSequence,
+                                                                    BiConsumer<O, String> identifierConsumer,
+                                                                    ExceptionThrower<E> exceptionThrower) throws E {
+
+        var optionalIdentifier = parseIdentifier(reader, exceptionThrower);
+
+        optionalIdentifier.ifPresent(identifier ->
+                identifierConsumer.accept(Preconditions.checkNotNull(outputSequence), identifier));
+
+        return optionalIdentifier.isPresent();
+    }
+
+    public static <E extends Exception> boolean acceptKeyword(InputSequenceReader reader,
+                                                              String keyword,
+                                                              ExceptionThrower<E> exceptionThrower) throws E {
+
+        Preconditions.checkNotNull(keyword);
+
+        var optionalKeyword = parseIdentifier(reader, exceptionThrower);
+
+        return optionalKeyword.isPresent() && optionalKeyword.get().equals(keyword);
     }
 
     public static <E extends Exception> TextIdentifierFSM<E> create(
