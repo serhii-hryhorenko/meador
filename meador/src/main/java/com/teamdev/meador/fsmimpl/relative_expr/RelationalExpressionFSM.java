@@ -5,7 +5,7 @@ import com.teamdev.fsm.ExceptionThrower;
 import com.teamdev.fsm.FiniteStateMachine;
 import com.teamdev.fsm.State;
 import com.teamdev.fsm.TransitionMatrix;
-import com.teamdev.machine.expression.BinaryOperatorAcceptor;
+import com.teamdev.machine.expression.OperatorAcceptor;
 import com.teamdev.meador.compiler.CompileStatementAcceptor;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompilerFactory;
@@ -35,7 +35,7 @@ public class RelationalExpressionFSM extends FiniteStateMachine<RelationalExpres
 
         var relationOperator = new State.Builder<RelationalExpressionContext, CompilingException>()
                 .setName("RELATION OPERATOR")
-                .setAcceptor(new BinaryOperatorAcceptor<>(new RelativeBinaryOperatorFactory(), RelationalExpressionContext::setOperator))
+                .setAcceptor(new OperatorAcceptor<>(new RelativeBinaryOperatorFactory(), RelationalExpressionContext::setOperator))
                 .build();
 
         var right = new State.Builder<RelationalExpressionContext, CompilingException>()

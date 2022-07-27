@@ -2,7 +2,7 @@ package com.teamdev.meador.fsmimpl.relative_expr;
 
 import com.google.common.base.Preconditions;
 import com.teamdev.runtime.Command;
-import com.teamdev.runtime.value.bioperator.AbstractBinaryOperator;
+import com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperator;
 
 import java.util.Objects;
 

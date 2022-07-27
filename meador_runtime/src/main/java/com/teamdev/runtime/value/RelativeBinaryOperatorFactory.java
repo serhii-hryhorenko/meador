@@ -1,22 +1,22 @@
 package com.teamdev.runtime.value;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.runtime.value.bioperator.AbstractBinaryOperator;
-import com.teamdev.runtime.value.bioperator.AbstractBinaryOperatorFactory;
-import com.teamdev.runtime.value.bioperator.RelativeBinaryOperator;
+import com.teamdev.runtime.value.operator.AbstractOperatorFactory;
+import com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperator;
+import com.teamdev.runtime.value.operator.bioperator.RelativeBinaryOperator;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.teamdev.runtime.value.bioperator.AbstractBinaryOperator.Priority.LOW;
+import static com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperator.Priority.LOW;
 
 
 /**
- * {@link AbstractBinaryOperatorFactory} implementation for boolean binary operators
+ * {@link AbstractOperatorFactory} implementation for boolean binary operators
  * that are a part of relational expressions.
  */
-public class RelativeBinaryOperatorFactory implements AbstractBinaryOperatorFactory {
+public class RelativeBinaryOperatorFactory implements AbstractOperatorFactory<AbstractBinaryOperator> {
     private final Map<String, RelativeBinaryOperator> relativeOperators = new HashMap<>();
 
     public RelativeBinaryOperatorFactory() {

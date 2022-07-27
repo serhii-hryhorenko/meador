@@ -1,4 +1,4 @@
-package com.teamdev.runtime.value.bioperator;
+package com.teamdev.runtime.value.operator.bioperator;
 
 import com.google.common.base.Preconditions;
 import com.teamdev.runtime.value.type.BooleanValue;
