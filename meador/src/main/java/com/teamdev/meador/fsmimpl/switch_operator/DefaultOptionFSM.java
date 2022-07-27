@@ -13,6 +13,8 @@ import com.teamdev.meador.fsmimpl.util.CodeBlockFSM;
  */
 public class DefaultOptionFSM extends FiniteStateMachine<SwitchContext, CompilingException> {
 
+    private static final String DEFAULT = "default";
+
     private DefaultOptionFSM(TransitionMatrix<SwitchContext, CompilingException> transitionMatrix, ExceptionThrower<CompilingException> thrower) {
         super(transitionMatrix, thrower);
     }
@@ -20,12 +22,12 @@ public class DefaultOptionFSM extends FiniteStateMachine<SwitchContext, Compilin
     public static DefaultOptionFSM create(StatementCompilerFactory factory) {
         Preconditions.checkNotNull(factory);
 
+        var exceptionThrower = new ExceptionThrower<>(CompilingException::new);
+
         var defaultKeyword = new State.Builder<SwitchContext, CompilingException>()
                 .setName("DEFAULT OPTION")
-                .setAcceptor((inputSequence, outputSequence) -> {
-                    var optionalWord = TextIdentifierFSM.execute(inputSequence, new ExceptionThrower<>(CompilingException::new));
-                    return optionalWord.isPresent() && optionalWord.get().equals("default");
-                })
+                .setAcceptor((inputSequence, outputSequence) ->
+                        TextIdentifierFSM.acceptKeyword(inputSequence, DEFAULT, exceptionThrower))
                 .build();
 
         var colon = new State.Builder<SwitchContext, CompilingException>()
@@ -42,6 +44,6 @@ public class DefaultOptionFSM extends FiniteStateMachine<SwitchContext, Compilin
         var matrix =
                 TransitionMatrix.chainedTransitions(defaultKeyword, colon, executableExpression);
 
-        return new DefaultOptionFSM(matrix, new ExceptionThrower<>(CompilingException::new));
+        return new DefaultOptionFSM(matrix, exceptionThrower);
     }
 }

@@ -27,13 +27,10 @@ public class FunctionFSM<O extends FunctionHolder, E extends Exception> extends 
 
         var nameState = new State.Builder<O, E>()
                 .setName("NAME")
-                .setAcceptor((inputSequence, outputSequence) -> {
-                    var optionalString = TextIdentifierFSM.execute(inputSequence, exceptionThrower);
-
-                    optionalString.ifPresent(outputSequence::setFunctionName);
-
-                    return optionalString.isPresent();
-                })
+                .setAcceptor((inputSequence, outputSequence) ->
+                        TextIdentifierFSM.acceptIdentifier(inputSequence, outputSequence,
+                                FunctionHolder::setFunctionName,
+                                exceptionThrower))
                 .setTemporary(true)
                 .build();
 

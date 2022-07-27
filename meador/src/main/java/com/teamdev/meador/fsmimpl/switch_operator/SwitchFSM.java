@@ -30,24 +30,19 @@ import com.teamdev.meador.compiler.statement.switch_operator.SwitchOptionContext
  */
 public class SwitchFSM extends FiniteStateMachine<SwitchContext, CompilingException> {
 
-    private SwitchFSM(TransitionMatrix<SwitchContext, CompilingException> transitionMatrix,
-                      ExceptionThrower<CompilingException> thrower) {
-        super(transitionMatrix, thrower);
-    }
+    private static final String SWITCH = "switch";
 
     public static SwitchFSM create(StatementCompilerFactory factory) {
         Preconditions.checkNotNull(factory);
 
         var initial = State.<SwitchContext, CompilingException>initialState();
 
+        var exceptionThrower = new ExceptionThrower<>(CompilingException::new);
+
         var switchKeyword = new State.Builder<SwitchContext, CompilingException>()
                 .setName("SWITCH")
-                .setAcceptor((inputSequence, outputSequence) -> {
-                    var optionalKeyword = TextIdentifierFSM.execute(inputSequence,
-                            new ExceptionThrower<>(CompilingException::new));
-
-                    return optionalKeyword.isPresent() && optionalKeyword.get().equals("switch");
-                })
+                .setAcceptor((inputSequence, outputSequence) ->
+                        TextIdentifierFSM.acceptKeyword(inputSequence, SWITCH, exceptionThrower))
                 .build();
 
         var openBracket = new State.Builder<SwitchContext, CompilingException>()
@@ -108,6 +103,11 @@ public class SwitchFSM extends FiniteStateMachine<SwitchContext, CompilingExcept
                 .allowTransition(defaultOption, closeCurlyBracket)
                 .build();
 
-        return new SwitchFSM(matrix, new ExceptionThrower<>(CompilingException::new));
+        return new SwitchFSM(matrix, exceptionThrower);
+    }
+
+    private SwitchFSM(TransitionMatrix<SwitchContext, CompilingException> transitionMatrix,
+                      ExceptionThrower<CompilingException> thrower) {
+        super(transitionMatrix, thrower);
     }
 }
