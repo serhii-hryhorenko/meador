@@ -18,26 +18,25 @@ public class PrefixOperatorFSM extends FiniteStateMachine<UnaryExpressionOutputC
                                            AbstractOperatorFactory<AbstractUnaryOperator> operatorFactory) {
         Preconditions.checkNotNull(compilerFactory, operatorFactory);
 
+        var exceptionThrower = new ExceptionThrower<>(CompilingException::new);
+
         var prefixOperator = new State.Builder<UnaryExpressionOutputChain, CompilingException>()
                 .setName("PREFIX OPERATOR")
                 .setAcceptor(new OperatorAcceptor<>(operatorFactory, UnaryExpressionOutputChain::setUnaryOperator))
                 .setTemporary(true)
                 .build();
 
+
         var expression = new State.Builder<UnaryExpressionOutputChain, CompilingException>()
                 .setName("VARIABLE NAME")
-                .setAcceptor((inputSequence, outputSequence) -> {
-                    var optionalName = TextIdentifierFSM.execute(inputSequence,
-                            new ExceptionThrower<>(CompilingException::new));
-
-                    optionalName.ifPresent(outputSequence::setVariableName);
-                    return optionalName.isPresent();
-                })
+                .setAcceptor((reader, outputSequence) -> TextIdentifierFSM.acceptIdentifier(reader, outputSequence,
+                        UnaryExpressionOutputChain::setVariableName,
+                        exceptionThrower))
                 .setFinite(true)
                 .build();
 
         return new PrefixOperatorFSM(TransitionMatrix.chainedTransitions(prefixOperator, expression),
-                new ExceptionThrower<>(CompilingException::new));
+                exceptionThrower);
     }
 
     private PrefixOperatorFSM(TransitionMatrix<UnaryExpressionOutputChain, CompilingException> transitionMatrix,

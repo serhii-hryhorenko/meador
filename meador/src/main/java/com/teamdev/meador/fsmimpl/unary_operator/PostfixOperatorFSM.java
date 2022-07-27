@@ -18,15 +18,13 @@ public class PostfixOperatorFSM extends FiniteStateMachine<UnaryExpressionOutput
                                             AbstractOperatorFactory<AbstractUnaryOperator> operatorFactory) {
         Preconditions.checkNotNull(compilerFactory, operatorFactory);
 
+        var exceptionThrower = new ExceptionThrower<>(CompilingException::new);
+
         var expression = new State.Builder<UnaryExpressionOutputChain, CompilingException>()
                 .setName("VARIABLE NAME")
-                .setAcceptor((inputSequence, outputSequence) -> {
-                    var optionalName = TextIdentifierFSM.execute(inputSequence,
-                            new ExceptionThrower<>(CompilingException::new));
-
-                    optionalName.ifPresent(outputSequence::setVariableName);
-                    return optionalName.isPresent();
-                })
+                .setAcceptor((reader, outputSequence) -> TextIdentifierFSM.acceptIdentifier(reader, outputSequence,
+                        UnaryExpressionOutputChain::setVariableName,
+                        exceptionThrower))
                 .setTemporary(true)
                 .build();
 
@@ -37,7 +35,7 @@ public class PostfixOperatorFSM extends FiniteStateMachine<UnaryExpressionOutput
                 .build();
 
         return new PostfixOperatorFSM(TransitionMatrix.chainedTransitions(expression, postfixOperator),
-                new ExceptionThrower<>(CompilingException::new));
+                exceptionThrower);
     }
 
     private PostfixOperatorFSM(TransitionMatrix<UnaryExpressionOutputChain, CompilingException> transitionMatrix,
