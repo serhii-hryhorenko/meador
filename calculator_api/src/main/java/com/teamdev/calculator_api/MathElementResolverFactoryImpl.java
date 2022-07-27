@@ -36,14 +36,11 @@ public class MathElementResolverFactoryImpl implements MathElementResolverFactor
         resolvers.put(OPERAND, new ShuntingYardResolver(OperandFSM.create(
                         new TransitionOneOfMatrixBuilder<ShuntingYard, ResolvingException>()
                                 .allowTransition(new ResolveMathElementAcceptor<>(this, NUMBER,
-                                                ShuntingYard::pushOperand),
-                                        "NUMBER")
+                                        ShuntingYard::pushOperand))
                                 .allowTransition(new ResolveMathElementAcceptor<>(this, BRACKETS,
-                                                ShuntingYard::pushOperand),
-                                        "BRACKETS")
+                                        ShuntingYard::pushOperand))
                                 .allowTransition(new ResolveMathElementAcceptor<>(this, FUNCTION,
-                                                ShuntingYard::pushOperand),
-                                        "FUNCTION")
+                                        ShuntingYard::pushOperand))
                                 .build(),
                         new ExceptionThrower<>(ResolvingException::new))
                 )

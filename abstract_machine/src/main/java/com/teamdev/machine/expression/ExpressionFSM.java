@@ -3,8 +3,8 @@ package com.teamdev.machine.expression;
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.*;
 import com.teamdev.machine.operand.OperandFSM;
+import com.teamdev.runtime.value.operator.AbstractOperatorFactory;
 import com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperator;
-import com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperatorFactory;
 
 import java.util.function.BiConsumer;
 
@@ -18,7 +18,7 @@ public class ExpressionFSM<O, E extends Exception> extends FiniteStateMachine<O,
 
     public static <O, E extends Exception> ExpressionFSM<O, E> create(
             StateAcceptor<O, E> operandAcceptor,
-            AbstractBinaryOperatorFactory factory,
+            AbstractOperatorFactory<AbstractBinaryOperator> factory,
             BiConsumer<O, AbstractBinaryOperator> operatorConsumer,
             ExceptionThrower<E> thrower) {
 
@@ -33,7 +33,7 @@ public class ExpressionFSM<O, E extends Exception> extends FiniteStateMachine<O,
 
         var binaryOperatorState = new State.Builder<O, E>()
                 .setName("BINARY OPERATOR")
-                .setAcceptor(new BinaryOperatorAcceptor<>(Preconditions.checkNotNull(factory), operatorConsumer))
+                .setAcceptor(new OperatorAcceptor<>(Preconditions.checkNotNull(factory), operatorConsumer))
                 .build();
 
         var matrix = new TransitionMatrixBuilder<O, E>()
