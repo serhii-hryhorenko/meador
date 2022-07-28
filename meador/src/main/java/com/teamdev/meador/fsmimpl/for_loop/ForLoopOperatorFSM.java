@@ -9,6 +9,15 @@ import com.teamdev.meador.compiler.StatementCompilerFactory;
 import com.teamdev.meador.compiler.StatementType;
 import com.teamdev.meador.fsmimpl.util.CodeBlockFSM;
 
+/**
+ * {@link FiniteStateMachine} implementation for recognizing the for loop operator in Meador programs.
+ * Grammar reference:
+ * {@code
+ * for (i = 0; i < 5; i = i + 1;) {
+ * print(i);
+ * }
+ * }
+ */
 public class ForLoopOperatorFSM extends FiniteStateMachine<ForLoopOperatorOutputChain, CompilingException> {
 
     private static final String FOR = "for";

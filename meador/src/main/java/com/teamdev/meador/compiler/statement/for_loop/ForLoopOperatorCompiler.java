@@ -14,6 +14,13 @@ import com.teamdev.runtime.value.type.Value;
 
 import java.util.Optional;
 
+/**
+ * {@link StatementCompiler} implementation for creating commands of Meador {@code for} loops.
+ * Variable declaration is required.
+ * The loop body is not executed if repeat condition is failed.
+ * Update variable statement is a usual variable declaration.
+ * See details {@link ForLoopOperatorFSM}.
+ */
 public class ForLoopOperatorCompiler implements StatementCompiler {
 
     private final StatementCompilerFactory factory;

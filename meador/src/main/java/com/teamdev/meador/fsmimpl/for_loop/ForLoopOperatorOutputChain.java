@@ -3,6 +3,9 @@ package com.teamdev.meador.fsmimpl.for_loop;
 import com.google.common.base.Preconditions;
 import com.teamdev.runtime.Command;
 
+/**
+ * Output chain for {@link ForLoopOperatorFSM}.
+ */
 public class ForLoopOperatorOutputChain {
 
     private Command variableDeclaration;
