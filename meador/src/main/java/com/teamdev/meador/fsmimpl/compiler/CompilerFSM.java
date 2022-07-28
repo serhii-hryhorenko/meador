@@ -24,7 +24,7 @@ public class CompilerFSM extends FiniteStateMachine<List<Command>, CompilingExce
 
         var statement = new State.Builder<List<Command>, CompilingException>()
                 .setName("STATEMENT RECOGNITION")
-                .setAcceptor((inputSequence, outputSequence) -> true)
+                .setAcceptor((inputSequence, outputSequence) -> inputSequence.canRead())
                 .build();
 
         var variable = new State.Builder<List<Command>, CompilingException>()
@@ -55,13 +55,21 @@ public class CompilerFSM extends FiniteStateMachine<List<Command>, CompilingExce
                 .setTemporary(true)
                 .build();
 
+        var conditionalOperator = new State.Builder<List<Command>, CompilingException>()
+                .setName("CONDITIONAL OPERATOR")
+                .setAcceptor(new CompileStatementAcceptor<>(factory, StatementType.CONDITIONAL_OPERATOR, List::add))
+                .setFinite(true)
+                .setTemporary(true)
+                .build();
+
         var matrix = new TransitionMatrixBuilder<List<Command>, CompilingException>()
                 .withStartState(initial)
                 .allowTransition(initial, statement)
-                .allowTransition(statement, switchOperator, procedure, variable)
-                .allowTransition(variable, switchOperator, procedure, variable)
-                .allowTransition(procedure, switchOperator, procedure, variable)
-                .allowTransition(switchOperator, switchOperator, procedure, variable)
+                .allowTransition(statement, conditionalOperator, switchOperator, procedure, variable)
+                .allowTransition(variable, conditionalOperator, switchOperator, procedure, variable)
+                .allowTransition(procedure, conditionalOperator, switchOperator, procedure, variable)
+                .allowTransition(switchOperator, conditionalOperator, switchOperator, procedure, variable)
+                .allowTransition(conditionalOperator, conditionalOperator, switchOperator, procedure, variable)
                 .build();
 
         return new CompilerFSM(matrix);
