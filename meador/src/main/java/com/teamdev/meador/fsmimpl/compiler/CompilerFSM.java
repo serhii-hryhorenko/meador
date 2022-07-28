@@ -55,13 +55,21 @@ public class CompilerFSM extends FiniteStateMachine<List<Command>, CompilingExce
                 .setTemporary(true)
                 .build();
 
+        var forLoopOperator = new State.Builder<List<Command>, CompilingException>()
+                .setName("FOR LOOP")
+                .setAcceptor(new CompileStatementAcceptor<>(factory, StatementType.FOR, List::add))
+                .setFinite(true)
+                .setTemporary(true)
+                .build();
+
         var matrix = new TransitionMatrixBuilder<List<Command>, CompilingException>()
                 .withStartState(initial)
                 .allowTransition(initial, statement)
-                .allowTransition(statement, switchOperator, procedure, variable)
-                .allowTransition(variable, switchOperator, procedure, variable)
-                .allowTransition(procedure, switchOperator, procedure, variable)
-                .allowTransition(switchOperator, switchOperator, procedure, variable)
+                .allowTransition(statement, forLoopOperator, switchOperator, procedure, variable)
+                .allowTransition(variable, forLoopOperator, switchOperator, procedure, variable)
+                .allowTransition(procedure, forLoopOperator, switchOperator, procedure, variable)
+                .allowTransition(switchOperator, forLoopOperator, switchOperator, procedure, variable)
+                .allowTransition(forLoopOperator, forLoopOperator, switchOperator, procedure, variable)
                 .build();
 
         return new CompilerFSM(matrix);
