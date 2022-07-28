@@ -19,7 +19,9 @@ public class UnaryOperatorTest extends MeadorTest {
                         "Prefix operator usage in postfix position didn't changed variable value."),
                 of("a = pi(); b = a~; print(~b, a);", "[3.0, 3.0]", "Integer cast operator is broken."),
                 of("a = 5 != 1; print(not a);", "[false]", "Negation operator is broken."),
-                of("a = 1; print(sum(a++, ±a, !a));", "[1.0]", "Operator returned values are wrong.")
+                of("a = 1; print(sum(a++, ±a, !a));", "[1.0]", "Operator returned values are wrong."),
+                of("a = 1; print(++a, a);", "[2.0, 2.0]", "Prefix mutation is broken."),
+                of("a = 1; b = ++a >= a++; print(not b, a);", "[false, 3.0]", "Unary operator is broken.")
         );
     }
 
