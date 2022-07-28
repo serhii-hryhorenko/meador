@@ -7,6 +7,7 @@ import com.teamdev.meador.compiler.CompileStatementAcceptor;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompilerFactory;
 import com.teamdev.meador.compiler.StatementType;
+import com.teamdev.meador.fsmimpl.util.CodeBlockFSM;
 
 public class ForLoopOperatorFSM extends FiniteStateMachine<ForLoopOperatorOutputChain, CompilingException> {
 
@@ -61,9 +62,7 @@ public class ForLoopOperatorFSM extends FiniteStateMachine<ForLoopOperatorOutput
 
         var loopBody = new State.Builder<ForLoopOperatorOutputChain, CompilingException>()
                 .setName("LOOP BODY")
-                .setAcceptor(new CompileStatementAcceptor<>(factory,
-                        StatementType.CODE_BLOCK,
-                        ForLoopOperatorOutputChain::setLoopBody))
+                .setAcceptor(CodeBlockFSM.create(factory, ForLoopOperatorOutputChain::setLoopBody))
                 .setFinite(true)
                 .build();
 
