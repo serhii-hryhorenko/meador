@@ -40,6 +40,16 @@ public class ShuntingYard {
         return operandStack.pop();
     }
 
+    public Value popOperand() {
+        Preconditions.checkState(!operandStack.isEmpty());
+        return operandStack.pop();
+    }
+
+    public Value peekOperand() {
+        Preconditions.checkState(!operandStack.isEmpty());
+        return operandStack.peek();
+    }
+
     private void applyOperand() {
         while (!operatorStack.isEmpty()) {
 
