@@ -6,17 +6,16 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 /**
- * Readable string from Turing machine operated by {@code StateAcceptor}.
+ * Reader for user String input operated by {@code StateAcceptor}.
  */
-
 public class InputSequenceReader {
 
     private final char[] source;
-    private final Deque<Integer> savedPositions = new ArrayDeque<>();
+    private Deque<Integer> savedPositions = new ArrayDeque<>();
     private int readingPosition;
 
     public InputSequenceReader(String value) {
-        this.source = value.toCharArray();
+        this.source = Preconditions.checkNotNull(value).toCharArray();
     }
 
     public boolean canRead() {
@@ -31,11 +30,19 @@ public class InputSequenceReader {
         readingPosition++;
     }
 
-    void savePosition() {
+    public void savePosition() {
         savedPositions.push(readingPosition);
     }
 
-    void restorePosition() {
+    Deque<Integer> dumpState() {
+        return new ArrayDeque<>(savedPositions);
+    }
+
+    void setState(Deque<Integer> state) {
+        savedPositions = Preconditions.checkNotNull(state);
+    }
+
+    public void restorePosition() {
         Preconditions.checkState(!savedPositions.isEmpty(), "Can't pop empty save.");
         readingPosition = savedPositions.pop();
     }
