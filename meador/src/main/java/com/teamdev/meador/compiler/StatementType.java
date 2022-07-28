@@ -18,5 +18,5 @@ public enum StatementType {
     NUMBER,
     BRACKETS,
     FUNCTION,
-    VARIABLE_VALUE,
+    VARIABLE_VALUE, FOR,
 }

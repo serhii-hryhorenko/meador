@@ -10,6 +10,7 @@ import com.teamdev.machine.expression.ExpressionFSM;
 import com.teamdev.machine.number.NumberFSM;
 import com.teamdev.machine.util.ValidatedFunctionFactoryImpl;
 import com.teamdev.meador.compiler.*;
+import com.teamdev.meador.compiler.statement.for_loop.ForLoopOperatorCompiler;
 import com.teamdev.meador.compiler.statement.function.FunctionCompiler;
 import com.teamdev.meador.compiler.statement.procedure.ProcedureCompiler;
 import com.teamdev.meador.compiler.statement.relative_expr.RelationalExpressionCompiler;
@@ -78,6 +79,8 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
         compilers.put(VARIABLE_DECLARATION, new VariableDeclarationCompiler(this));
 
         compilers.put(VARIABLE_VALUE, new VariableValueCompiler());
+
+        compilers.put(FOR, new ForLoopOperatorCompiler(this));
     }
 
     private StateAcceptor<List<Command>, CompilingException> createNumericExpressionMachine() {
