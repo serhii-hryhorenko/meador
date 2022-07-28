@@ -14,6 +14,11 @@ public class BooleanVisitor implements ValueVisitor {
         this.value = value.value();
     }
 
+    @Override
+    public void visit(StringValue value) {
+        throw new IllegalArgumentException("Type mismatch. Expected: Boolean.");
+    }
+
     public boolean value() {
         return value;
     }

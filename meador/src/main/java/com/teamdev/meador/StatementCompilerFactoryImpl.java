@@ -14,6 +14,7 @@ import com.teamdev.meador.compiler.statement.boolean_expr.BooleanLiteralCompiler
 import com.teamdev.meador.compiler.statement.function.FunctionCompiler;
 import com.teamdev.meador.compiler.statement.procedure.ProcedureCompiler;
 import com.teamdev.meador.compiler.statement.relative_expr.RelationalExpressionCompiler;
+import com.teamdev.meador.compiler.statement.string_expr.StringLiteralCompiler;
 import com.teamdev.meador.compiler.statement.switch_operator.SwitchOperatorCompiler;
 import com.teamdev.meador.compiler.statement.variable.VariableDeclarationCompiler;
 import com.teamdev.meador.compiler.statement.variable.VariableValueCompiler;
@@ -22,6 +23,7 @@ import com.teamdev.meador.fsmimpl.util.DeepestParsedInputAcceptor;
 import com.teamdev.runtime.Command;
 import com.teamdev.runtime.value.BooleanBinaryOperatorFactory;
 import com.teamdev.runtime.value.MathBinaryOperatorFactoryImpl;
+import com.teamdev.runtime.value.StringBinaryOperatorFactory;
 
 import java.util.*;
 
@@ -57,8 +59,13 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
         compilers.put(EXPRESSION, new DetachedStackStatementCompiler(
                 new DeepestParsedInputAcceptor<>(
                         ArrayList::new,
+
+                        new CompileStatementAcceptor<List<Command>>(this, STRING_EXPRESSION, List::add)
+                                .named("StringExpressionFSM"),
+
                         new CompileStatementAcceptor<List<Command>>(this, BOOLEAN_EXPRESSION, List::add)
                                 .named("BooleanExpressionFSM"),
+
                         new CompileStatementAcceptor<List<Command>>(this, NUMERIC_EXPRESSION, List::add)
                                 .named("NumericExpressionFSM")))
         );
@@ -88,6 +95,8 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
         compilers.put(VARIABLE_DECLARATION, new VariableDeclarationCompiler(this));
 
         compilers.put(VARIABLE_VALUE, new VariableValueCompiler());
+
+        compilers.put(STRING_LITERAL, new StringLiteralCompiler());
     }
 
     private StateAcceptor<List<Command>, CompilingException> createNumericExpressionMachine() {
@@ -117,6 +126,33 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
 
                         .allowTransition(new CompileStatementAcceptor<List<Command>>(this, VARIABLE_VALUE, List::add)
                                 .named("MEADOR VARIABLE")),
+
+                new ExceptionThrower<>(CompilingException::new)
+        );
+    }
+
+    private StateAcceptor<List<Command>, CompilingException> createStringExpression() {
+        return ExpressionFSM.create(
+                createStringOperand(),
+                new StringBinaryOperatorFactory(),
+
+                (commands, operator) -> commands.add(environment -> environment.stack()
+                        .peek()
+                        .pushOperator(operator)),
+
+                new ExceptionThrower<>(CompilingException::new)
+        );
+    }
+
+    private StateAcceptor<List<Command>, CompilingException> createStringOperand() {
+        return FiniteStateMachine.oneOf("STRING OPERAND",
+
+                new TransitionOneOfMatrixBuilder<List<Command>, CompilingException>()
+                        .allowTransition(new CompileStatementAcceptor<List<Command>>(this, STRING_LITERAL, List::add)
+                                .named("STRING LITERAL"))
+
+                        .allowTransition(new CompileStatementAcceptor<List<Command>>(this, VARIABLE_VALUE, List::add)
+                                .named("STRING VARIABLE")),
 
                 new ExceptionThrower<>(CompilingException::new)
         );
