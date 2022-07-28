@@ -2,6 +2,7 @@ package com.teamdev.runtime.value.bioperator;
 
 import com.teamdev.runtime.value.type.DoubleValue;
 import com.teamdev.runtime.value.type.DoubleValueVisitor;
+import com.teamdev.runtime.value.type.StringValue;
 import com.teamdev.runtime.value.type.Value;
 
 import java.util.function.DoubleBinaryOperator;
@@ -19,16 +20,21 @@ public class DoubleValueBinaryOperator extends AbstractBinaryOperator {
     }
 
     @Override
-    public Value apply(Value a, Value b) {
+    public Value apply(Value left, Value right) {
+
         var visitor = new DoubleValueVisitor();
 
-        a.acceptVisitor(visitor);
-        double one = visitor.value();
+        try {
+            left.acceptVisitor(visitor);
+            double leftValue = visitor.value();
 
-        b.acceptVisitor(visitor);
-        double two = visitor.value();
+            right.acceptVisitor(visitor);
+            double rightValue = visitor.value();
 
-        return new DoubleValue(operator.applyAsDouble(one, two));
+            return new DoubleValue(operator.applyAsDouble(leftValue, rightValue));
+        } catch (IllegalArgumentException ile) {
+            return new StringValue(left + right.toString());
+        }
     }
 
     @Override

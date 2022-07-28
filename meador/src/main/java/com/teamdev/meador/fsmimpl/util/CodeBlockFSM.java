@@ -18,6 +18,7 @@ import java.util.function.BiConsumer;
 public class CodeBlockFSM<O> extends FiniteStateMachine<O, CompilingException> {
     public static <O> CodeBlockFSM<O> create(StatementCompilerFactory factory,
                                              BiConsumer<O, Command> blockConsumer) {
+
         Preconditions.checkNotNull(factory);
 
         var openCurlyBracket = new State.Builder<O, CompilingException>()

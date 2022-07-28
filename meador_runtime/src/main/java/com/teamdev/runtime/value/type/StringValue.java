@@ -18,4 +18,9 @@ public class StringValue implements Value {
     public String string() {
         return string;
     }
+
+    @Override
+    public String toString() {
+        return string;
+    }
 }

@@ -55,7 +55,7 @@ public interface StateAcceptor<O, E extends Exception> {
 
             inputSequence.setState(readerState);
             inputSequence.restorePosition();
-            return 0;
+            return -1;
         }
 
         final int parsed = inputSequence.getPosition();
