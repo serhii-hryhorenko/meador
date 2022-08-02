@@ -10,6 +10,7 @@ import com.teamdev.machine.expression.ExpressionFSM;
 import com.teamdev.machine.number.NumberFSM;
 import com.teamdev.machine.util.ValidatedFunctionFactoryImpl;
 import com.teamdev.meador.compiler.*;
+import com.teamdev.meador.compiler.statement.conditional_operator.ConditionalOperatorCompiler;
 import com.teamdev.meador.compiler.statement.expression.bool.BooleanLiteralCompiler;
 import com.teamdev.meador.compiler.statement.expression.relative.RelationalExpressionCompiler;
 import com.teamdev.meador.compiler.statement.expression.string.StringLiteralCompiler;
@@ -207,6 +208,8 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
 
         compilers.put(READ_VARIABLE, new DetachedStackStatementCompiler(
                 FiniteStateMachine.oneOf("READ VARIABLE", readVariableAcceptor.get(), compilingExceptionThrower)));
+
+        compilers.put(CONDITIONAL_OPERATOR, new ConditionalOperatorCompiler(this));
     }
 
     @Override

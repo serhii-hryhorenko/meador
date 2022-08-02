@@ -17,10 +17,10 @@ import com.teamdev.runtime.value.operator.unaryoperator.AbstractUnaryOperator;
  * position.
  * Parses only the variable name, not a value.
  */
-public class PostfixOperatorFSM extends FiniteStateMachine<UnaryExpressionOutputChain, CompilingException> {
+public class PostfixUnaryOperatorFSM extends FiniteStateMachine<UnaryExpressionOutputChain, CompilingException> {
 
-    public static PostfixOperatorFSM create(StatementCompilerFactory compilerFactory,
-                                            AbstractOperatorFactory<AbstractUnaryOperator> operatorFactory) {
+    public static PostfixUnaryOperatorFSM create(StatementCompilerFactory compilerFactory,
+                                                 AbstractOperatorFactory<AbstractUnaryOperator> operatorFactory) {
         Preconditions.checkNotNull(compilerFactory, operatorFactory);
 
         var exceptionThrower = new ExceptionThrower<>(CompilingException::new);
@@ -39,11 +39,11 @@ public class PostfixOperatorFSM extends FiniteStateMachine<UnaryExpressionOutput
                 .setFinal()
                 .build();
 
-        return new PostfixOperatorFSM(TransitionMatrix.chainedTransitions(expression, postfixOperator), exceptionThrower);
+        return new PostfixUnaryOperatorFSM(TransitionMatrix.chainedTransitions(expression, postfixOperator), exceptionThrower);
     }
 
-    private PostfixOperatorFSM(TransitionMatrix<UnaryExpressionOutputChain, CompilingException> transitionMatrix,
-                               ExceptionThrower<CompilingException> thrower) {
+    private PostfixUnaryOperatorFSM(TransitionMatrix<UnaryExpressionOutputChain, CompilingException> transitionMatrix,
+                                    ExceptionThrower<CompilingException> thrower) {
         super(transitionMatrix, thrower);
     }
 }

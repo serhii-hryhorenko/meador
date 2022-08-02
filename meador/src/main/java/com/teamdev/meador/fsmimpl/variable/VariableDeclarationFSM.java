@@ -21,17 +21,9 @@ public class VariableDeclarationFSM extends FiniteStateMachine<VariableHolder, C
 
         var variableName = new State.Builder<VariableHolder, CompilingException>()
                 .setName("VARIABLE NAME")
-                .setAcceptor((inputSequence, outputSequence) -> {
-                    var stringBuilder = new StringBuilder(16);
-
-                    if (TextIdentifierFSM.create(new ExceptionThrower<>(CompilingException::new))
-                            .accept(inputSequence, stringBuilder)) {
-                        outputSequence.setName(stringBuilder.toString());
-                        return true;
-                    }
-
-                    return false;
-                })
+                .setAcceptor((reader, outputSequence) -> TextIdentifierFSM.acceptIdentifier(reader, outputSequence,
+                        VariableHolder::setName,
+                        new ExceptionThrower<>(CompilingException::new)))
                 .build();
 
         var assignOperator = new State.Builder<VariableHolder, CompilingException>()
@@ -50,9 +42,7 @@ public class VariableDeclarationFSM extends FiniteStateMachine<VariableHolder, C
                 .setFinal()
                 .build();
 
-        var matrix =
-                TransitionMatrix.chainedTransitions(variableName, assignOperator, expression,
-                        semicolon);
+        var matrix = TransitionMatrix.chainedTransitions(variableName, assignOperator, expression, semicolon);
 
         return new VariableDeclarationFSM(matrix);
     }

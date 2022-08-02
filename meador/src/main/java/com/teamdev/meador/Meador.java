@@ -17,10 +17,11 @@ public class Meador {
             compiler.compile(program)
                     .ifPresent(command -> command.execute(environment));
         } catch (CompilingException ce) {
-            throw new InvalidProgramException("ERROR CAUGHT DURING COMPILATION.");
+            throw new InvalidProgramException("ERROR CAUGHT DURING COMPILATION."
+                    + System.lineSeparator() + ce.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new InvalidProgramException("RUNTIME ERROR WHILE EXECUTING PROGRAM.");
+            throw new InvalidProgramException("RUNTIME ERROR WHILE EXECUTING PROGRAM."
+                    + System.lineSeparator() + e.getMessage());
         }
 
         return new Output(environment.console());

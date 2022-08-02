@@ -6,7 +6,7 @@ import com.teamdev.meador.StatementCompilerFactoryImpl;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompiler;
 import com.teamdev.meador.compiler.statement.variable.VariableValueCompiler;
-import com.teamdev.meador.fsmimpl.unary_operator.PostfixOperatorFSM;
+import com.teamdev.meador.fsmimpl.unary_operator.PostfixUnaryOperatorFSM;
 import com.teamdev.meador.fsmimpl.unary_operator.UnaryExpressionOutputChain;
 import com.teamdev.runtime.Command;
 import com.teamdev.runtime.value.operator.AbstractOperatorFactory;
@@ -33,7 +33,7 @@ public class UnaryPostfixExpressionCompiler implements StatementCompiler {
     @Override
     public Optional<Command> compile(InputSequenceReader inputSequence) throws CompilingException {
         UnaryExpressionOutputChain outputChain = new UnaryExpressionOutputChain();
-        if (PostfixOperatorFSM.create(statementCompilerFactory, unaryOperatorFactory)
+        if (PostfixUnaryOperatorFSM.create(statementCompilerFactory, unaryOperatorFactory)
                 .accept(inputSequence, outputChain)) {
             return Optional.of(runtimeEnvironment -> {
                 var variableCommand = new VariableValueCompiler().compile(outputChain.variableName());

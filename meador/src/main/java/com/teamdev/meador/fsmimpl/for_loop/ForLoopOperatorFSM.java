@@ -6,8 +6,10 @@ import com.teamdev.machine.util.TextIdentifierFSM;
 import com.teamdev.meador.compiler.CompileStatementAcceptor;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompilerFactory;
-import com.teamdev.meador.compiler.StatementType;
 import com.teamdev.meador.fsmimpl.util.CodeBlockFSM;
+
+import static com.teamdev.meador.compiler.StatementType.BOOLEAN_EXPRESSION;
+import static com.teamdev.meador.compiler.StatementType.VARIABLE_DECLARATION;
 
 /**
  * {@link FiniteStateMachine} implementation for recognizing the for loop operator in Meador programs.
@@ -41,14 +43,14 @@ public class ForLoopOperatorFSM extends FiniteStateMachine<ForLoopOperatorOutput
         var initVariable = new State.Builder<ForLoopOperatorOutputChain, CompilingException>()
                 .setName("INITIALIZE VARIABLE")
                 .setAcceptor(new CompileStatementAcceptor<>(factory,
-                        StatementType.VARIABLE_DECLARATION,
+                        VARIABLE_DECLARATION,
                         ForLoopOperatorOutputChain::setVariableDeclaration))
                 .build();
 
         var repeatCondition = new State.Builder<ForLoopOperatorOutputChain, CompilingException>()
                 .setName("REPEAT CONDITION")
                 .setAcceptor(new CompileStatementAcceptor<>(factory,
-                        StatementType.RELATIONAL_EXPRESSION,
+                        BOOLEAN_EXPRESSION,
                         ForLoopOperatorOutputChain::setRepeatCondition))
                 .build();
 
@@ -58,9 +60,9 @@ public class ForLoopOperatorFSM extends FiniteStateMachine<ForLoopOperatorOutput
                 .build();
 
         var updateVariableStatement = new State.Builder<ForLoopOperatorOutputChain, CompilingException>()
-                .setName("UPDATE VARIABLE STATEMENT")
+                .setName("UPDATE VARIABLE EXPRESSION")
                 .setAcceptor(new CompileStatementAcceptor<>(factory,
-                        StatementType.VARIABLE_DECLARATION,
+                        VARIABLE_DECLARATION,
                         ForLoopOperatorOutputChain::setUpdateVariableStatement))
                 .build();
 
@@ -70,12 +72,14 @@ public class ForLoopOperatorFSM extends FiniteStateMachine<ForLoopOperatorOutput
                 .build();
 
         var loopBody = new State.Builder<ForLoopOperatorOutputChain, CompilingException>()
-                .setName("LOOP BODY")
+                .setName("FOR LOOP BODY")
                 .setAcceptor(CodeBlockFSM.create(factory, ForLoopOperatorOutputChain::setLoopBody))
                 .setFinal()
                 .build();
 
-        var matrix = TransitionMatrix.chainedTransitions(forKeyword, openBracket, initVariable, repeatCondition, repeatSemicolon, updateVariableStatement, closeBracket, loopBody);
+        var matrix = TransitionMatrix.chainedTransitions(
+                forKeyword, openBracket, initVariable, repeatCondition, repeatSemicolon, updateVariableStatement, closeBracket, loopBody
+        );
 
         return new ForLoopOperatorFSM(matrix, exceptionThrower);
     }

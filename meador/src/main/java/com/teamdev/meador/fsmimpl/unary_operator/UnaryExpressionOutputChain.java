@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import com.teamdev.runtime.value.operator.unaryoperator.AbstractUnaryOperator;
 
 /**
- * Output chain for {@link PrefixOperatorFSM} and {@link PostfixOperatorFSM}.
+ * Output chain for {@link PrefixUnaryOperatorFSM} and {@link PostfixUnaryOperatorFSM}.
  */
 public class UnaryExpressionOutputChain {
 
