@@ -32,8 +32,8 @@ public class CompilerFSM extends FiniteStateMachine<List<Command>, CompilingExce
                 .setAcceptor(new CompileStatementAcceptor<>(factory,
                         StatementType.VARIABLE_DECLARATION,
                         List::add))
-                .setFinite(true)
-                .setTemporary(true)
+                .setFinal()
+                .setTemporary()
                 .build();
 
         var procedure = new State.Builder<List<Command>,
@@ -44,15 +44,15 @@ public class CompilerFSM extends FiniteStateMachine<List<Command>, CompilingExce
                         List::add)
                         .and(StateAcceptor.acceptChar(';'))
                 )
-                .setFinite(true)
-                .setTemporary(true)
+                .setFinal()
+                .setTemporary()
                 .build();
 
         var switchOperator = new State.Builder<List<Command>, CompilingException>()
                 .setName("SWITCH")
                 .setAcceptor(new CompileStatementAcceptor<>(factory, StatementType.SWITCH, List::add))
-                .setFinite(true)
-                .setTemporary(true)
+                .setFinal()
+                .setTemporary()
                 .build();
 
         var matrix = new TransitionMatrixBuilder<List<Command>, CompilingException>()

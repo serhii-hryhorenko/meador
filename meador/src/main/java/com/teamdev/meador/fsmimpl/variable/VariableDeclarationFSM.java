@@ -47,7 +47,7 @@ public class VariableDeclarationFSM extends FiniteStateMachine<VariableHolder, C
         var semicolon = new State.Builder<VariableHolder, CompilingException>()
                 .setName("VARIABLE SEPARATOR")
                 .setAcceptor(StateAcceptor.acceptChar(';'))
-                .setFinite(true)
+                .setFinal()
                 .build();
 
         var matrix =

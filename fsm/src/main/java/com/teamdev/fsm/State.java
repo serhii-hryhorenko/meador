@@ -70,13 +70,13 @@ public class State<O, E extends Exception> {
             return this;
         }
 
-        public Builder<O, E> setTemporary(boolean temporary) {
-            isTemporary = temporary;
+        public Builder<O, E> setTemporary() {
+            isTemporary = true;
             return this;
         }
 
-        public Builder<O, E> setFinite(boolean finite) {
-            isFinite = finite;
+        public Builder<O, E> setFinal() {
+            isFinite = true;
             return this;
         }
 

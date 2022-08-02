@@ -51,10 +51,8 @@ public class FunctionCompiler implements StatementCompiler {
 
             var function = functionFactory.create(context.functionName());
 
-            if (context.commands()
-                    .size() >= function.getMinArguments()
-                    && context.commands()
-                    .size() <= function.getMaxArguments()) {
+            if (context.commands().size() >= function.getMinArguments()
+                    && context.commands().size() <= function.getMaxArguments()) {
 
                 return Optional.of(runtimeEnvironment -> {
 

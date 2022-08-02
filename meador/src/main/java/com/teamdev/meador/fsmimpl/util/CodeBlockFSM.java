@@ -18,6 +18,7 @@ import java.util.function.BiConsumer;
 public class CodeBlockFSM<O> extends FiniteStateMachine<O, CompilingException> {
     public static <O> CodeBlockFSM<O> create(StatementCompilerFactory factory,
                                              BiConsumer<O, Command> blockConsumer) {
+
         Preconditions.checkNotNull(factory);
 
         var openCurlyBracket = new State.Builder<O, CompilingException>()
@@ -33,7 +34,7 @@ public class CodeBlockFSM<O> extends FiniteStateMachine<O, CompilingException> {
         var closeCurlyBracket = new State.Builder<O, CompilingException>()
                 .setName("CODE BLOCK END")
                 .setAcceptor(StateAcceptor.acceptChar('}'))
-                .setFinite(true)
+                .setFinal()
                 .build();
 
         var matrix = TransitionMatrix.chainedTransitions(openCurlyBracket, program, closeCurlyBracket);

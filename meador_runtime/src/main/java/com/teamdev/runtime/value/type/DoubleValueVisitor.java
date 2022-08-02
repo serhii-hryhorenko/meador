@@ -14,6 +14,11 @@ public class DoubleValueVisitor implements ValueVisitor {
         throw new IllegalArgumentException("Type mismatch. Expected: Double.");
     }
 
+    @Override
+    public void visit(StringValue value) {
+        throw new IllegalArgumentException("Type mismatch. Expected: Double.");
+    }
+
     public double value() {
         return value;
     }

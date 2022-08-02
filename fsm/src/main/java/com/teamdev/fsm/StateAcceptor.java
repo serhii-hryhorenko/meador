@@ -1,8 +1,11 @@
 package com.teamdev.fsm;
 
 import com.google.common.base.Preconditions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Accepts transitions from one state to another and operates on the input sequence inside
@@ -13,6 +16,8 @@ import java.util.List;
 
 @FunctionalInterface
 public interface StateAcceptor<O, E extends Exception> {
+
+    Logger logger = LoggerFactory.getLogger(StateAcceptor.class);
 
     static <O, E extends Exception> StateAcceptor<O, E> acceptChar(Character... chars) {
         return (inputSequence, outputSequence) -> {
@@ -27,6 +32,48 @@ public interface StateAcceptor<O, E extends Exception> {
     }
 
     boolean accept(InputSequenceReader inputSequence, O outputSequence) throws E;
+
+    default Integer parseInDepth(InputSequenceReader inputSequence, Supplier<O> outputSimulation) {
+        var output = outputSimulation.get();
+        final int startPosition = inputSequence.getPosition();
+
+        inputSequence.savePosition();
+        var readerState = inputSequence.dumpState();
+
+        if (logger.isInfoEnabled()) {
+            logger.info("[{}] started parsing in depth. Reader sequence: {}, index: {}.",
+                    this, inputSequence.getSequence(), inputSequence.getPosition());
+        }
+
+        try {
+            accept(inputSequence, output);
+        } catch (Exception deadlock) {
+            if (logger.isInfoEnabled()) {
+                logger.info("[{}] got into deadlock while parsing. Reader sequence: {}, index: {}.",
+                        this, inputSequence.getSequence(), inputSequence.getPosition());
+            }
+
+            inputSequence.setState(readerState);
+            inputSequence.restorePosition();
+            return -1;
+        }
+
+        final int parsed = inputSequence.getPosition();
+        inputSequence.setState(readerState);
+        inputSequence.restorePosition();
+
+        int depth = parsed - startPosition;
+
+        if (logger.isInfoEnabled()) {
+            logger.info("Reader position is restored to {}, index: {}.",
+                    inputSequence.getSequence(), inputSequence.getPosition());
+
+            logger.info("[{}] parsed {} symbols.",
+                    this, depth);
+        }
+
+        return depth;
+    }
 
     default StateAcceptor<O, E> named(String name) {
         Preconditions.checkNotNull(name);

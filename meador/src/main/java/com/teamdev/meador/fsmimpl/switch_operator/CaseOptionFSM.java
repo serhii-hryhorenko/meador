@@ -41,7 +41,7 @@ public class CaseOptionFSM extends FiniteStateMachine<SwitchOptionContext, Compi
         var executableExpression = new State.Builder<SwitchOptionContext, CompilingException>()
                 .setName("EXPRESSION BLOCK")
                 .setAcceptor(CodeBlockFSM.create(factory, SwitchOptionContext::setStatement))
-                .setFinite(true)
+                .setFinal()
                 .build();
 
         var matrix =

@@ -77,7 +77,7 @@ public class SwitchFSM extends FiniteStateMachine<SwitchContext, CompilingExcept
 
                     return false;
                 })
-                .setTemporary(true)
+                .setTemporary()
                 .build();
 
         var defaultOption = new State.Builder<SwitchContext, CompilingException>()
@@ -88,7 +88,7 @@ public class SwitchFSM extends FiniteStateMachine<SwitchContext, CompilingExcept
         var closeCurlyBracket = new State.Builder<SwitchContext, CompilingException>()
                 .setName("CLOSE CURLY BRACKET")
                 .setAcceptor(StateAcceptor.acceptChar('}'))
-                .setFinite(true)
+                .setFinal()
                 .build();
 
         var matrix = new TransitionMatrixBuilder<SwitchContext, CompilingException>()

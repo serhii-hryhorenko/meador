@@ -56,7 +56,7 @@ public class TextIdentifierFSM<E extends Exception> extends FiniteStateMachine<S
         var symbolState = new State.Builder<StringBuilder, E>()
                 .setName("SYMBOL")
                 .setAcceptor(new SymbolAcceptor<>(Character::isLetter))
-                .setFinite(true)
+                .setFinal()
                 .build();
 
         var matrix = new TransitionMatrixBuilder<StringBuilder, E>()

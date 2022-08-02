@@ -19,6 +19,7 @@ public class Meador {
         } catch (CompilingException ce) {
             throw new InvalidProgramException("ERROR CAUGHT DURING COMPILATION.");
         } catch (Exception e) {
+            e.printStackTrace();
             throw new InvalidProgramException("RUNTIME ERROR WHILE EXECUTING PROGRAM.");
         }
 

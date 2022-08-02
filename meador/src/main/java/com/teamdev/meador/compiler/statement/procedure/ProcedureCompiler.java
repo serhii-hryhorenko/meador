@@ -5,6 +5,7 @@ import com.teamdev.fsm.ExceptionThrower;
 import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.machine.function.FunctionFSM;
 import com.teamdev.meador.ValidatedProcedureFactoryImpl;
+import com.teamdev.meador.compiler.CompileStatementAcceptor;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompiler;
 import com.teamdev.meador.compiler.StatementCompilerFactory;
@@ -14,7 +15,7 @@ import com.teamdev.runtime.Command;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.teamdev.meador.compiler.StatementType.NUMERIC_EXPRESSION;
+import static com.teamdev.meador.compiler.StatementType.EXPRESSION;
 
 /**
  * {@link StatementCompiler} implementation for compiling procedure statements.
@@ -33,17 +34,8 @@ public class ProcedureCompiler implements StatementCompiler {
     @Override
     public Optional<Command> compile(InputSequenceReader input) throws CompilingException {
 
-        var functionFSM = FunctionFSM.<CompileFunctionContext, CompilingException>create(
-                (inputSequence, outputSequence) -> {
-
-                    var optionalCommand = compilerFactory.create(NUMERIC_EXPRESSION)
-                            .compile(inputSequence);
-
-                    optionalCommand.ifPresent(outputSequence::addCommand);
-
-                    return optionalCommand.isPresent();
-                },
-
+        var functionFSM = FunctionFSM.create(
+                new CompileStatementAcceptor<>(compilerFactory, EXPRESSION, CompileFunctionContext::addCommand),
                 new ExceptionThrower<>(CompilingException::new)
         );
 
