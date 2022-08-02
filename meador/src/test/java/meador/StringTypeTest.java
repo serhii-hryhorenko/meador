@@ -31,13 +31,28 @@ public class StringTypeTest extends MeadorTest {
 
                 of("a = 1994 + ` problems is ` + true; print(a);",
                         "[1994.0 problems is true]",
-                        "Numeric to String conversion is failed.")
+                        "Numeric to String conversion is failed."),
+
+                of("print(`2` + true + false);",
+                        "[2truefalse]",
+                        "Boolean to String conversion is failed."),
+
+                of("print(true + `false`);",
+                        "[truefalse]",
+                        "Boolean to String conversion is failed."),
+
+                of("print(max(1, 2) + `abc`, `abc`);",
+                        "[abc22, abc]",
+                        "String expression is broken as a procedure parameter.")
         );
     }
 
     static Stream<Arguments> negativeCases() {
         return Stream.of(
-                of("a = Hello, World!`;", "Omitted ` on start is ignored.")
+                of("a = Hello, World!`;", "Omitted ` on start is ignored."),
+                of("a = `Hello, World!;", "Omitted ` in end is ignored."),
+                of("print(2 + 2 + true);",
+                        "String expression without strings is accepted.")
         );
     }
 }
