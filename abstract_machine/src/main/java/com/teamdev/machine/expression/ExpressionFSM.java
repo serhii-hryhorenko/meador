@@ -28,7 +28,7 @@ public class ExpressionFSM<O, E extends Exception> extends FiniteStateMachine<O,
 
         var operandState = new State.Builder<O, E>()
                 .setAcceptor(Preconditions.checkNotNull(operandAcceptor))
-                .setFinite(true)
+                .setFinal()
                 .build();
 
         var binaryOperatorState = new State.Builder<O, E>()

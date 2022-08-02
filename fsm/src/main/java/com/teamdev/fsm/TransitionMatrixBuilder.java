@@ -22,7 +22,14 @@ public class TransitionMatrixBuilder<O, E extends Exception> {
                                                                State<O, E>... transitionStates) {
         Preconditions.checkNotNull(state, transitionStates);
 
-        transitions.put(state, new LinkedHashSet<>(Arrays.asList(transitionStates)));
+        Preconditions.checkNotNull(state, transitionStates);
+
+        if (transitions.containsKey(state)) {
+            transitions.get(state).addAll(List.of(transitionStates));
+            return this;
+        }
+
+        transitions.put(state, new LinkedHashSet<>(List.of(transitionStates)));
         return this;
     }
 

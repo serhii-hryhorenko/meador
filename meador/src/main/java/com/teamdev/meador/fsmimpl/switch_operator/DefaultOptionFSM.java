@@ -36,7 +36,7 @@ public class DefaultOptionFSM extends FiniteStateMachine<SwitchContext, Compilin
         var executableExpression = new State.Builder<SwitchContext, CompilingException>()
                 .setName("EXECUTABLE EXPRESSION")
                 .setAcceptor(CodeBlockFSM.create(factory, SwitchContext::setDefaultCommand))
-                .setFinite(true)
+                .setFinal()
                 .build();
 
         var matrix =

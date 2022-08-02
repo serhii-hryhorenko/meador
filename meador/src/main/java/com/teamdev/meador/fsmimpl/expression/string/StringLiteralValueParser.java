@@ -24,7 +24,7 @@ public class StringLiteralValueParser extends FiniteStateMachine<StringBuilder, 
         var symbol = new State.Builder<StringBuilder, CompilingException>()
                 .setName("SYMBOL")
                 .setAcceptor(new SymbolAcceptor<>(character -> character != '`'))
-                .setFinite(true)
+                .setFinal()
                 .build();
 
         var matrix = new TransitionMatrixBuilder<StringBuilder, CompilingException>()

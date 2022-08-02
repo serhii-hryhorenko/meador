@@ -41,8 +41,8 @@ public class StringTypeTest extends MeadorTest {
                         "[truefalse]",
                         "Boolean to String conversion is failed."),
 
-                of("print(max(1, 2) + `abc`, `abc`);",
-                        "[abc22, abc]",
+                of("print(max(1, 2) + `abc` + 2, `abc`);",
+                        "[2.0abc2.0, abc]",
                         "String expression is broken as a procedure parameter.")
         );
     }

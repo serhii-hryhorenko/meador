@@ -34,7 +34,7 @@ public class FunctionFSM<O extends FunctionHolder, E extends Exception> extends 
 
                     return optionalString.isPresent();
                 })
-                .setTemporary(true)
+                .setTemporary()
                 .build();
 
         var openBracketState = new State.Builder<O, E>()
@@ -55,7 +55,7 @@ public class FunctionFSM<O extends FunctionHolder, E extends Exception> extends 
         var closeBracketState = new State.Builder<O, E>()
                 .setName("FUNCTION CLOSED BRACKET")
                 .setAcceptor(StateAcceptor.acceptChar(')'))
-                .setFinite(true)
+                .setFinal()
                 .build();
 
         var matrix = new TransitionMatrixBuilder<O, E>()

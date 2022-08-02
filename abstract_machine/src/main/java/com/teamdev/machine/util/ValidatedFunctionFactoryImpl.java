@@ -3,6 +3,7 @@ package com.teamdev.machine.util;
 import com.teamdev.machine.function.ValidatedFunction;
 import com.teamdev.machine.function.ValidatedFunctionFactory;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,8 +20,8 @@ public class ValidatedFunctionFactoryImpl implements ValidatedFunctionFactory {
     public ValidatedFunctionFactoryImpl() {
         functions.put("sum", new ValidatedFunction.Builder()
                 .setFunction(doubles -> doubles.stream()
-                                               .mapToDouble(d -> d)
-                                               .sum())
+                        .mapToDouble(d -> d)
+                        .sum())
                 .setMinimumArguments(2)
                 .setMaximumArguments(MAX_ARGUMENTS)
                 .build()
@@ -30,12 +31,26 @@ public class ValidatedFunctionFactoryImpl implements ValidatedFunctionFactory {
                 .setFunction(
                         doubles -> {
                             var sum = doubles.stream()
-                                             .mapToDouble(d -> d)
-                                             .sum();
+                                    .mapToDouble(d -> d)
+                                    .sum();
                             return sum / doubles.size();
                         })
                 .setMinimumArguments(2)
                 .setMaximumArguments(MAX_ARGUMENTS)
+                .build()
+        );
+
+        functions.put("max", new ValidatedFunction.Builder()
+                .setFunction(doubles -> doubles.stream().max(Comparator.naturalOrder()).get())
+                .setMinimumArguments(2)
+                .setMaximumArguments(10)
+                .build()
+        );
+
+        functions.put("min", new ValidatedFunction.Builder()
+                .setFunction(doubles -> doubles.stream().min(Comparator.naturalOrder()).get())
+                .setMinimumArguments(2)
+                .setMaximumArguments(10)
                 .build()
         );
 

@@ -30,7 +30,7 @@ public class RelationalExpressionFSM extends FiniteStateMachine<RelationalExpres
                 .setAcceptor(new CompileStatementAcceptor<>(factory,
                         StatementType.NUMERIC_EXPRESSION,
                         RelationalExpressionContext::setLeft))
-                .setTemporary(true)
+                .setTemporary()
                 .build();
 
         var relationOperator = new State.Builder<RelationalExpressionContext, CompilingException>()
@@ -43,7 +43,7 @@ public class RelationalExpressionFSM extends FiniteStateMachine<RelationalExpres
                 .setAcceptor(new CompileStatementAcceptor<>(factory,
                         StatementType.NUMERIC_EXPRESSION,
                         RelationalExpressionContext::setRight))
-                .setFinite(true)
+                .setFinal()
                 .build();
 
         var matrix =

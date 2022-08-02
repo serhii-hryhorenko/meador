@@ -20,7 +20,7 @@ public class TextIdentifierFSM<E extends Exception> extends FiniteStateMachine<S
         return create(exceptionThrower).accept(inputSequence, identifier) ?
                 Optional.of(identifier.toString()) : Optional.empty();
     }
-    
+
     public static <E extends Exception> TextIdentifierFSM<E> create(
             ExceptionThrower<E> exceptionThrower) {
         Preconditions.checkNotNull(exceptionThrower);
@@ -30,7 +30,7 @@ public class TextIdentifierFSM<E extends Exception> extends FiniteStateMachine<S
         var symbolState = new State.Builder<StringBuilder, E>()
                 .setName("SYMBOL")
                 .setAcceptor(new SymbolAcceptor<>(Character::isLetter))
-                .setFinite(true)
+                .setFinal()
                 .build();
 
         var matrix = new TransitionMatrixBuilder<StringBuilder, E>()

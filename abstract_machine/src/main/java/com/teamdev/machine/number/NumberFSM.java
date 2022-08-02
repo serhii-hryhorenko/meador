@@ -45,7 +45,7 @@ public class NumberFSM<E extends Exception> extends FiniteStateMachine<StringBui
         var integerPartState = new State.Builder<StringBuilder, E>()
                 .setName("INTEGER PART")
                 .setAcceptor(new SymbolAcceptor<>(Character::isDigit))
-                .setFinite(true)
+                .setFinal()
                 .build();
 
         var dotState = new State.Builder<StringBuilder, E>()
@@ -56,7 +56,7 @@ public class NumberFSM<E extends Exception> extends FiniteStateMachine<StringBui
         var floatPartState = new State.Builder<StringBuilder, E>()
                 .setName("FLOAT PART")
                 .setAcceptor(new SymbolAcceptor<>(Character::isDigit))
-                .setFinite(true)
+                .setFinal()
                 .build();
 
         var matrix = new TransitionMatrixBuilder<StringBuilder, E>()

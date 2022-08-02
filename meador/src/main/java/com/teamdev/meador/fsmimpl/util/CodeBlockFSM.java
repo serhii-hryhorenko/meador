@@ -34,7 +34,7 @@ public class CodeBlockFSM<O> extends FiniteStateMachine<O, CompilingException> {
         var closeCurlyBracket = new State.Builder<O, CompilingException>()
                 .setName("CODE BLOCK END")
                 .setAcceptor(StateAcceptor.acceptChar('}'))
-                .setFinite(true)
+                .setFinal()
                 .build();
 
         var matrix = TransitionMatrix.chainedTransitions(openCurlyBracket, program, closeCurlyBracket);

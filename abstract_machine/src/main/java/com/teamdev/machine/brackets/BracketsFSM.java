@@ -31,7 +31,7 @@ public class BracketsFSM<O, E extends Exception> extends FiniteStateMachine<O, E
         var closedBracketState = new State.Builder<O, E>()
                 .setName("CLOSED BRACKET")
                 .setAcceptor(StateAcceptor.acceptChar(')'))
-                .setFinite(true)
+                .setFinal()
                 .build();
 
         var matrix = TransitionMatrix.chainedTransitions(

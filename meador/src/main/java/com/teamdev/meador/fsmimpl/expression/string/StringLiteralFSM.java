@@ -27,7 +27,7 @@ public class StringLiteralFSM extends FiniteStateMachine<StringLiteralOutputChai
         var end = new State.Builder<StringLiteralOutputChain, CompilingException>()
                 .setName("STRING START")
                 .setAcceptor(StateAcceptor.acceptChar('`'))
-                .setFinite(true)
+                .setFinal()
                 .build();
 
         return new StringLiteralFSM(TransitionMatrix.chainedTransitions(start, literal, end), exceptionThrower);

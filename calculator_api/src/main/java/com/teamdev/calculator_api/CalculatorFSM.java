@@ -32,7 +32,7 @@ class CalculatorFSM extends FiniteStateMachine<ShuntingYard, ResolvingException>
         var finalState = new State.Builder<ShuntingYard, ResolvingException>()
                 .setName("FINAL")
                 .setAcceptor(((inputSequence, outputSequence) -> !inputSequence.canRead()))
-                .setFinite(true)
+                .setFinal()
                 .build();
 
         var matrix = TransitionMatrix.chainedTransitions(
