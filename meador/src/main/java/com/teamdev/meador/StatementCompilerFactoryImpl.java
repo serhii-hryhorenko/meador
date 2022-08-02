@@ -13,6 +13,7 @@ import com.teamdev.meador.compiler.*;
 import com.teamdev.meador.compiler.statement.expression.bool.BooleanLiteralCompiler;
 import com.teamdev.meador.compiler.statement.expression.relative.RelationalExpressionCompiler;
 import com.teamdev.meador.compiler.statement.expression.string.StringLiteralCompiler;
+import com.teamdev.meador.compiler.statement.for_loop.ForLoopOperatorCompiler;
 import com.teamdev.meador.compiler.statement.function.FunctionCompiler;
 import com.teamdev.meador.compiler.statement.procedure.ProcedureCompiler;
 import com.teamdev.meador.compiler.statement.switch_operator.SwitchOperatorCompiler;
@@ -24,7 +25,7 @@ import com.teamdev.runtime.Command;
 import com.teamdev.runtime.value.BooleanBinaryOperatorFactory;
 import com.teamdev.runtime.value.MathBinaryOperatorFactoryImpl;
 import com.teamdev.runtime.value.StringBinaryOperatorFactory;
-import com.teamdev.runtime.value.bioperator.AbstractBinaryOperator;
+import com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperator;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -183,6 +184,8 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
         compilers.put(STRING_LITERAL, new StringLiteralCompiler());
 
         compilers.put(STRING_EXPRESSION, new DetachedStackStatementCompiler(stringExpression.get()));
+
+        compilers.put(FOR, new ForLoopOperatorCompiler(this));
     }
 
     @Override

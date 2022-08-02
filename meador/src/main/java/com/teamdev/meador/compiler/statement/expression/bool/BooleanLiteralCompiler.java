@@ -17,7 +17,7 @@ public class BooleanLiteralCompiler implements StatementCompiler {
 
     @Override
     public Optional<Command> compile(InputSequenceReader inputSequence) throws CompilingException {
-        var optionalLiteral = TextIdentifierFSM.execute(inputSequence,
+        var optionalLiteral = TextIdentifierFSM.parseIdentifier(inputSequence,
                 new ExceptionThrower<>(CompilingException::new));
 
         if (optionalLiteral.isPresent()) {

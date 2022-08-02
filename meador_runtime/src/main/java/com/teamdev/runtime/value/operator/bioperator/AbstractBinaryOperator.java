@@ -16,7 +16,7 @@ public abstract class AbstractBinaryOperator implements BinaryOperator<Value>,
 
     private final Priority priority;
 
-    AbstractBinaryOperator(Priority priority) {
+    protected AbstractBinaryOperator(Priority priority) {
         this.priority = priority;
     }
 

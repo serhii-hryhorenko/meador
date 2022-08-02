@@ -1,17 +1,17 @@
 package com.teamdev.runtime.value;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.runtime.value.bioperator.AbstractBinaryOperator;
-import com.teamdev.runtime.value.bioperator.AbstractBinaryOperatorFactory;
-import com.teamdev.runtime.value.bioperator.DoubleValueBinaryOperator;
+import com.teamdev.runtime.value.operator.AbstractOperatorFactory;
+import com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperator;
+import com.teamdev.runtime.value.operator.bioperator.DoubleValueBinaryOperator;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.teamdev.runtime.value.bioperator.AbstractBinaryOperator.Priority.*;
+import static com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperator.Priority.*;
 
 /**
- * {@link AbstractBinaryOperatorFactory} implementation with prepared objects inside a Map.
+ * {@link AbstractOperatorFactory} implementation with prepared objects inside a Map.
  * <p>
  * Before trying to create an operator strictly recommended to check presence of an operator in
  * implementation.
@@ -23,9 +23,9 @@ import static com.teamdev.runtime.value.bioperator.AbstractBinaryOperator.Priori
  * }
  * }
  */
-public class MathBinaryOperatorFactoryImpl implements AbstractBinaryOperatorFactory {
+public class MathBinaryOperatorFactoryImpl implements AbstractOperatorFactory<AbstractBinaryOperator> {
 
-    private final Map<String, DoubleValueBinaryOperator> mathOperators = new HashMap<>();
+    private final Map<String, AbstractBinaryOperator> mathOperators = new HashMap<>();
 
     public MathBinaryOperatorFactoryImpl() {
         mathOperators.put("+", new DoubleValueBinaryOperator(Double::sum, LOW));

@@ -9,6 +9,8 @@ import com.teamdev.runtime.Command;
 
 import java.util.List;
 
+import static com.teamdev.meador.compiler.StatementType.FOR;
+
 /**
  * Provides {@link com.teamdev.meador.Meador} general language elements recognition.
  */
@@ -55,13 +57,21 @@ public class CompilerFSM extends FiniteStateMachine<List<Command>, CompilingExce
                 .setTemporary()
                 .build();
 
+        var forLoopOperator = new State.Builder<List<Command>, CompilingException>()
+                .setName("FOR LOOP")
+                .setAcceptor(new CompileStatementAcceptor<>(factory, FOR, List::add))
+                .setFinal()
+                .setTemporary()
+                .build();
+
         var matrix = new TransitionMatrixBuilder<List<Command>, CompilingException>()
                 .withStartState(initial)
                 .allowTransition(initial, statement)
-                .allowTransition(statement, switchOperator, procedure, variable)
-                .allowTransition(variable, switchOperator, procedure, variable)
-                .allowTransition(procedure, switchOperator, procedure, variable)
-                .allowTransition(switchOperator, switchOperator, procedure, variable)
+                .allowTransition(statement, forLoopOperator, switchOperator, procedure, variable)
+                .allowTransition(variable, forLoopOperator, switchOperator, procedure, variable)
+                .allowTransition(procedure, forLoopOperator, switchOperator, procedure, variable)
+                .allowTransition(switchOperator, forLoopOperator, switchOperator, procedure, variable)
+                .allowTransition(forLoopOperator, forLoopOperator, switchOperator, procedure, variable)
                 .build();
 
         return new CompilerFSM(matrix);

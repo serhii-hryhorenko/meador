@@ -1,5 +1,6 @@
 package com.teamdev.runtime.value.bioperator;
 
+import com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperator;
 import com.teamdev.runtime.value.type.StringValue;
 import com.teamdev.runtime.value.type.Value;
 
@@ -9,7 +10,7 @@ public class StringBinaryOperator extends AbstractBinaryOperator {
 
     private final BinaryOperator<String> operator;
 
-    public StringBinaryOperator(BinaryOperator<String> operator, Priority priority) {
+    public StringBinaryOperator(BinaryOperator<String> operator, AbstractBinaryOperator.Priority priority) {
         super(priority);
         this.operator = operator;
     }
