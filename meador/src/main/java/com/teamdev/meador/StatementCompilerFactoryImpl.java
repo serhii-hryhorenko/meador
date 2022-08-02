@@ -17,6 +17,8 @@ import com.teamdev.meador.compiler.statement.for_loop.ForLoopOperatorCompiler;
 import com.teamdev.meador.compiler.statement.function.FunctionCompiler;
 import com.teamdev.meador.compiler.statement.procedure.ProcedureCompiler;
 import com.teamdev.meador.compiler.statement.switch_operator.SwitchOperatorCompiler;
+import com.teamdev.meador.compiler.statement.unary_operator.UnaryPostfixExpressionCompiler;
+import com.teamdev.meador.compiler.statement.unary_operator.UnaryPrefixExpressionCompiler;
 import com.teamdev.meador.compiler.statement.variable.VariableDeclarationCompiler;
 import com.teamdev.meador.compiler.statement.variable.VariableValueCompiler;
 import com.teamdev.meador.fsmimpl.compiler.CompilerFSM;
@@ -25,6 +27,7 @@ import com.teamdev.runtime.Command;
 import com.teamdev.runtime.value.BooleanBinaryOperatorFactory;
 import com.teamdev.runtime.value.MathBinaryOperatorFactoryImpl;
 import com.teamdev.runtime.value.StringBinaryOperatorFactory;
+import com.teamdev.runtime.value.UnaryOperatorFactory;
 import com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperator;
 
 import java.util.*;
@@ -44,8 +47,6 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
         Supplier<StateAcceptor<List<Command>, CompilingException>> numericOperand = () -> FiniteStateMachine.oneOf(
                 "NUMERIC OPERAND",
                 new TransitionOneOfMatrixBuilder<List<Command>, CompilingException>()
-                        .allowTransition(new CompileStatementAcceptor<List<Command>>(this, NUMBER, List::add)
-                                .named("MEADOR NUMBER"))
 
                         .allowTransition(new CompileStatementAcceptor<List<Command>>(this, NUMERIC_BRACKETS, List::add)
                                 .named("MEADOR BRACKETS"))
@@ -53,8 +54,11 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
                         .allowTransition(new CompileStatementAcceptor<List<Command>>(this, FUNCTION, List::add)
                                 .named("MEADOR FUNCTION"))
 
-                        .allowTransition(new CompileStatementAcceptor<List<Command>>(this, VARIABLE_VALUE, List::add)
-                                .named("MEADOR VARIABLE")),
+                        .allowTransition(new CompileStatementAcceptor<List<Command>>(this, READ_VARIABLE, List::add)
+                                .named("MEADOR VARIABLE"))
+
+                        .allowTransition(new CompileStatementAcceptor<List<Command>>(this, NUMBER, List::add)
+                                .named("MEADOR NUMBER")),
 
                 compilingExceptionThrower
         );
@@ -71,7 +75,7 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
                         .allowTransition(new CompileStatementAcceptor<List<Command>>(this, RELATIONAL_EXPRESSION, List::add)
                                 .named("MEADOR RELATIVE EXPRESSION"), true)
 
-                        .allowTransition(new CompileStatementAcceptor<List<Command>>(this, VARIABLE_VALUE, List::add)
+                        .allowTransition(new CompileStatementAcceptor<List<Command>>(this, READ_VARIABLE, List::add)
                                 .named("MEADOR VARIABLE")),
 
                 compilingExceptionThrower
@@ -186,6 +190,23 @@ public class StatementCompilerFactoryImpl implements StatementCompilerFactory {
         compilers.put(STRING_EXPRESSION, new DetachedStackStatementCompiler(stringExpression.get()));
 
         compilers.put(FOR, new ForLoopOperatorCompiler(this));
+
+        compilers.put(UNARY_PREFIX_EXPRESSION, new UnaryPrefixExpressionCompiler(this, new UnaryOperatorFactory()));
+
+        compilers.put(UNARY_POSTFIX_EXPRESSION, new UnaryPostfixExpressionCompiler(this, new UnaryOperatorFactory()));
+
+        Supplier<TransitionOneOfMatrixBuilder<List<Command>, CompilingException>> readVariableAcceptor = () -> new TransitionOneOfMatrixBuilder<List<Command>, CompilingException>()
+                .allowTransition(new CompileStatementAcceptor<List<Command>>(this, UNARY_PREFIX_EXPRESSION, List::add)
+                        .named("UNARY PREFIX"))
+
+                .allowTransition(new CompileStatementAcceptor<List<Command>>(this, UNARY_POSTFIX_EXPRESSION, List::add)
+                        .named("UNARY POSTFIX"))
+
+                .allowTransition(new CompileStatementAcceptor<List<Command>>(this, VARIABLE_VALUE, List::add)
+                        .named("VARIABLE VALUE"));
+
+        compilers.put(READ_VARIABLE, new DetachedStackStatementCompiler(
+                FiniteStateMachine.oneOf("READ VARIABLE", readVariableAcceptor.get(), compilingExceptionThrower)));
     }
 
     @Override

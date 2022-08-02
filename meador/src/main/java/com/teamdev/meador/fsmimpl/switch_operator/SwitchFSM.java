@@ -6,9 +6,10 @@ import com.teamdev.machine.util.TextIdentifierFSM;
 import com.teamdev.meador.compiler.CompileStatementAcceptor;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompilerFactory;
-import com.teamdev.meador.compiler.StatementType;
 import com.teamdev.meador.compiler.statement.switch_operator.SwitchContext;
 import com.teamdev.meador.compiler.statement.switch_operator.SwitchOptionContext;
+
+import static com.teamdev.meador.compiler.StatementType.READ_VARIABLE;
 
 /**
  * {@link FiniteStateMachine} implementation for recognizing {@code switch} operator in Meador programs.
@@ -52,7 +53,7 @@ public class SwitchFSM extends FiniteStateMachine<SwitchContext, CompilingExcept
 
         var expressionToMatch = new State.Builder<SwitchContext, CompilingException>()
                 .setName("EXPRESSION TO MATCH")
-                .setAcceptor(new CompileStatementAcceptor<>(factory, StatementType.VARIABLE_VALUE, SwitchContext::setValueToMatch))
+                .setAcceptor(new CompileStatementAcceptor<>(factory, READ_VARIABLE, SwitchContext::setValueToMatch))
                 .build();
 
         var closeBracket = new State.Builder<SwitchContext, CompilingException>()
