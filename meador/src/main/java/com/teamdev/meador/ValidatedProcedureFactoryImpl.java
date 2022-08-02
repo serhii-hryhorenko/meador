@@ -16,8 +16,7 @@ public class ValidatedProcedureFactoryImpl implements ValidatedProcedureFactory 
     public ValidatedProcedureFactoryImpl() {
 
         procedures.put("print", new ValidatedProcedure.Builder()
-                .setAction((values, environment) -> environment.output()
-                        .println(values.toString()))
+                .setAction((values, environment) -> environment.output().println(values.toString()))
                 .setMinArguments(1)
                 .setMaxArguments(10)
                 .build());

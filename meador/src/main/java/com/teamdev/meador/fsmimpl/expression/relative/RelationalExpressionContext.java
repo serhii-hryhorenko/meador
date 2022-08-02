@@ -1,4 +1,4 @@
-package com.teamdev.meador.fsmimpl.relative_expr;
+package com.teamdev.meador.fsmimpl.expression.relative;
 
 import com.google.common.base.Preconditions;
 import com.teamdev.runtime.Command;

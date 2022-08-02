@@ -1,4 +1,4 @@
-package com.teamdev.meador.fsmimpl.string_expression;
+package com.teamdev.meador.fsmimpl.expression.string;
 
 import com.google.common.base.Preconditions;
 

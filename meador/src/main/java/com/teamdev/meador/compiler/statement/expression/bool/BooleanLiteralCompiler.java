@@ -1,4 +1,4 @@
-package com.teamdev.meador.compiler.statement.boolean_expr;
+package com.teamdev.meador.compiler.statement.expression.bool;
 
 import com.teamdev.fsm.ExceptionThrower;
 import com.teamdev.fsm.InputSequenceReader;

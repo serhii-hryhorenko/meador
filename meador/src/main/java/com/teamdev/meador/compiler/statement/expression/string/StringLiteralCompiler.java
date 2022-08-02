@@ -1,10 +1,10 @@
-package com.teamdev.meador.compiler.statement.string_expr;
+package com.teamdev.meador.compiler.statement.expression.string;
 
 import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompiler;
-import com.teamdev.meador.fsmimpl.string_expression.StringLiteralFSM;
-import com.teamdev.meador.fsmimpl.string_expression.StringLiteralOutputChain;
+import com.teamdev.meador.fsmimpl.expression.string.StringLiteralFSM;
+import com.teamdev.meador.fsmimpl.expression.string.StringLiteralOutputChain;
 import com.teamdev.runtime.Command;
 import com.teamdev.runtime.value.type.StringValue;
 

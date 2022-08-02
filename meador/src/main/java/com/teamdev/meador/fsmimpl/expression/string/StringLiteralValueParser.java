@@ -1,4 +1,4 @@
-package com.teamdev.meador.fsmimpl.string_expression;
+package com.teamdev.meador.fsmimpl.expression.string;
 
 import com.teamdev.fsm.*;
 import com.teamdev.machine.util.SymbolAcceptor;

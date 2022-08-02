@@ -27,6 +27,10 @@ public class StringTypeTest extends MeadorTest {
                                 print(str + 1994);
                                 """,
                         "[Year: 1994.0]",
+                        "Numeric to String conversion is failed."),
+
+                of("a = 1994 + ` problems is ` + true; print(a);",
+                        "[1994.0 problems is true]",
                         "Numeric to String conversion is failed.")
         );
     }

@@ -16,7 +16,8 @@ public class StringBinaryOperator extends AbstractBinaryOperator {
 
     @Override
     public Value apply(Value left, Value right) {
-
-        return new StringValue(operator.apply(left.toString(), right.toString()));
+        String applied = operator.apply(left.toString(), right.toString());
+        System.out.printf("`%s` + `%s` = `%s`\n", left, right, applied);
+        return new StringValue(applied);
     }
 }

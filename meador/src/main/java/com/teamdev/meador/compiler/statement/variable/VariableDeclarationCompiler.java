@@ -41,11 +41,9 @@ public class VariableDeclarationCompiler implements StatementCompiler {
         if (variable.accept(input, builder)) {
             return Optional.of(runtimeEnvironment -> {
 
-                runtimeEnvironment.stack()
-                        .create();
+                runtimeEnvironment.stack().create();
 
-                builder.command()
-                        .execute(runtimeEnvironment);
+                builder.command().execute(runtimeEnvironment);
 
                 runtimeEnvironment.memory()
                         .putVariable(builder.name(),

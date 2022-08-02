@@ -19,10 +19,11 @@ public class ShuntingYard {
     private final Deque<AbstractBinaryOperator> operatorStack = new ArrayDeque<>();
 
     public void pushOperand(Value operand) {
-        operandStack.push(operand);
+        operandStack.push(Preconditions.checkNotNull(operand));
     }
 
     public void pushOperator(AbstractBinaryOperator operator) {
+        Preconditions.checkNotNull(operator);
 
         while (!operatorStack.isEmpty() && operatorStack.peek()
                 .compareTo(operator) >= 0) {
@@ -34,10 +35,11 @@ public class ShuntingYard {
 
     public Value popResult() {
         applyOperand();
+
         Preconditions.checkState(operandStack.size() == 1,
                 "Stack contains more than 1 operand at the end of calculation.");
 
-        return operandStack.pop();
+        return Preconditions.checkNotNull(operandStack.pop());
     }
 
     private void applyOperand() {

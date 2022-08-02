@@ -1,11 +1,11 @@
-package com.teamdev.meador.compiler.statement.relative_expr;
+package com.teamdev.meador.compiler.statement.expression.relative;
 
 import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.meador.StatementCompilerFactoryImpl;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.StatementCompiler;
-import com.teamdev.meador.fsmimpl.relative_expr.RelationalExpressionContext;
-import com.teamdev.meador.fsmimpl.relative_expr.RelationalExpressionFSM;
+import com.teamdev.meador.fsmimpl.expression.relative.RelationalExpressionContext;
+import com.teamdev.meador.fsmimpl.expression.relative.RelationalExpressionFSM;
 import com.teamdev.runtime.Command;
 import com.teamdev.runtime.value.type.Value;
 
