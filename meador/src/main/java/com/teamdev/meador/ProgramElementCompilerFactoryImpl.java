@@ -151,7 +151,11 @@ public class ProgramElementCompilerFactoryImpl implements ProgramElementCompiler
                 throw new CompilingException("List of statements is empty.");
             }
 
-            return Optional.of(runtimeEnvironment -> commands.forEach(command -> command.execute(runtimeEnvironment)));
+            return Optional.of(runtimeEnvironment -> {
+                for (var command : commands) {
+                    command.execute(runtimeEnvironment);
+                }
+            });
         };
 
         compilers.put(LIST_OF_STATEMENTS, programAcceptor.get());

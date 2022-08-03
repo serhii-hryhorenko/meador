@@ -38,12 +38,12 @@ public class UnaryPostfixExpressionCompiler implements ProgramElementCompiler {
             return Optional.of(runtimeEnvironment -> {
                 var variableCommand = new VariableValueCompiler().compile(outputChain.variableName());
 
-                variableCommand.ifPresent(command -> {
+                if (variableCommand.isPresent()) {
                     variableCommand.get().execute(runtimeEnvironment);
 
                     runtimeEnvironment.memory().putVariable(outputChain.variableName(),
                             outputChain.unaryOperator().apply(runtimeEnvironment.stack().peek().peekOperand()));
-                });
+                }
             });
         }
         return Optional.empty();

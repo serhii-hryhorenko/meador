@@ -3,8 +3,10 @@ package com.teamdev.calculator_api.resolver;
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.fsm.StateAcceptor;
+import com.teamdev.runtime.MeadorRuntimeException;
 import com.teamdev.runtime.value.type.Value;
 
+import java.util.Optional;
 import java.util.function.BiConsumer;
 
 public class ResolveMathElementAcceptor<O> implements StateAcceptor<O, ResolvingException> {
@@ -29,7 +31,12 @@ public class ResolveMathElementAcceptor<O> implements StateAcceptor<O, Resolving
     public boolean accept(InputSequenceReader reader, O outputChain) throws ResolvingException {
         var resolver = factory.create(element);
 
-        var optionalResult = resolver.resolve(reader);
+        Optional<Value> optionalResult = Optional.empty();
+
+        try {
+            optionalResult = resolver.resolve(reader);
+        } catch (MeadorRuntimeException ignored) {}
+
         optionalResult.ifPresent(value -> resultConsumer.accept(outputChain, value));
 
         return optionalResult.isPresent();

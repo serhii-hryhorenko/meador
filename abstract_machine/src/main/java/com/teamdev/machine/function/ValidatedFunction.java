@@ -2,10 +2,13 @@ package com.teamdev.machine.function;
 
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.InputSequenceReader;
+import com.teamdev.runtime.MeadorRuntimeException;
 import com.teamdev.runtime.value.type.number.NumericValue;
 import com.teamdev.runtime.value.type.number.NumericValueVisitor;
 import com.teamdev.runtime.value.type.Value;
+import org.checkerframework.checker.units.qual.A;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -15,8 +18,7 @@ import java.util.stream.Collectors;
  * Implementation has {@code minimalArguments}, {@code minimalArguments} fields which
  * determine requested number of arguments from {@link InputSequenceReader}.
  */
-public class ValidatedFunction implements Function<List<Value>, Value> {
-
+public class ValidatedFunction {
     private final Function<List<Double>, Double> function;
     private final int minArguments;
     private final int maxArguments;
@@ -35,15 +37,14 @@ public class ValidatedFunction implements Function<List<Value>, Value> {
         return maxArguments;
     }
 
-    @Override
-    public Value apply(List<Value> values) {
-        var doubles = values.stream()
-                .mapToDouble(value -> {
-                    var visitor = new NumericValueVisitor();
-                    value.acceptVisitor(visitor);
-                    return visitor.value();
-                })
-                .boxed().toList();
+    public Value apply(List<Value> arguments) throws MeadorRuntimeException {
+        var visitor = new NumericValueVisitor();
+        List<Double> doubles = new ArrayList<>();
+
+        for (var argument : arguments) {
+            argument.acceptVisitor(visitor);
+            doubles.add(visitor.value());
+        }
 
         return new NumericValue(function.apply(doubles));
     }

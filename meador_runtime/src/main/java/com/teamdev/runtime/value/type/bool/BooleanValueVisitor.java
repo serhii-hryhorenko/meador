@@ -1,6 +1,7 @@
 package com.teamdev.runtime.value.type.bool;
 
 import com.google.common.base.Preconditions;
+import com.teamdev.runtime.MeadorRuntimeException;
 import com.teamdev.runtime.value.type.datastructure.DataStructureValue;
 import com.teamdev.runtime.value.type.number.NumericValue;
 import com.teamdev.runtime.value.type.string.StringValue;
@@ -12,8 +13,8 @@ public class BooleanValueVisitor implements ValueVisitor {
     private boolean value;
 
     @Override
-    public void visit(NumericValue value) {
-        throw new IllegalArgumentException(ERROR_MESSAGE);
+    public void visit(NumericValue value) throws MeadorRuntimeException {
+        throw new MeadorRuntimeException(ERROR_MESSAGE);
     }
 
     @Override
@@ -22,13 +23,13 @@ public class BooleanValueVisitor implements ValueVisitor {
     }
 
     @Override
-    public void visit(DataStructureValue value) {
-        throw new IllegalArgumentException(ERROR_MESSAGE);
+    public void visit(DataStructureValue value) throws MeadorRuntimeException {
+        throw new MeadorRuntimeException(ERROR_MESSAGE);
     }
 
     @Override
-    public void visit(StringValue value) {
-        throw new IllegalArgumentException(ERROR_MESSAGE);
+    public void visit(StringValue value) throws MeadorRuntimeException {
+        throw new MeadorRuntimeException(ERROR_MESSAGE);
     }
 
     public boolean value() {

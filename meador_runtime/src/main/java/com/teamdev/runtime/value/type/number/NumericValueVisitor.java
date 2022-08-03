@@ -1,6 +1,7 @@
 package com.teamdev.runtime.value.type.number;
 
 import com.google.common.base.Preconditions;
+import com.teamdev.runtime.MeadorRuntimeException;
 import com.teamdev.runtime.value.type.datastructure.DataStructureValue;
 import com.teamdev.runtime.value.type.string.StringValue;
 import com.teamdev.runtime.value.type.ValueVisitor;
@@ -17,18 +18,18 @@ public class NumericValueVisitor implements ValueVisitor {
     }
 
     @Override
-    public void visit(BooleanValue value) {
-        throw new IllegalArgumentException(ERROR_MESSAGE);
+    public void visit(BooleanValue value) throws MeadorRuntimeException {
+        throw new MeadorRuntimeException(ERROR_MESSAGE);
     }
 
     @Override
-    public void visit(DataStructureValue value) {
-        throw new IllegalArgumentException(ERROR_MESSAGE);
+    public void visit(DataStructureValue value) throws MeadorRuntimeException {
+        throw new MeadorRuntimeException(ERROR_MESSAGE);
     }
 
     @Override
-    public void visit(StringValue value) {
-        throw new IllegalArgumentException(ERROR_MESSAGE);
+    public void visit(StringValue value) throws MeadorRuntimeException {
+        throw new MeadorRuntimeException(ERROR_MESSAGE);
     }
 
     public double value() {

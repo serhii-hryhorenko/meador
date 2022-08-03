@@ -15,9 +15,10 @@ public final class Memory {
 
     private final Set<DataStructureTemplate> dataStructures = new HashSet<>();
 
-    public Value getVariable(String name) {
-        Preconditions.checkState(variables.containsKey(Preconditions.checkNotNull(name)),
-                String.format("`%s` variable is not initialized.", name));
+    public Value getVariable(String name) throws MeadorRuntimeException {
+        if (!variables.containsKey(Preconditions.checkNotNull(name))) {
+            throw new MeadorRuntimeException(String.format("`%s` variable is not initialized.", name));
+        }
 
         return variables.get(name);
     }
@@ -27,17 +28,22 @@ public final class Memory {
         variables.put(name, value);
     }
 
-    public Optional<DataStructureTemplate> getDataStructureTemplate(String name) {
-        Preconditions.checkNotNull(name);
-
-        return dataStructures.stream()
+    public DataStructureTemplate getDataStructureTemplate(String name) throws MeadorRuntimeException {
+        var optionalTemplate = dataStructures.stream()
                 .filter(structure -> structure.name().equals(name))
                 .findFirst();
+
+        if (optionalTemplate.isEmpty()) {
+            throw new MeadorRuntimeException(String.format("`%s` structure is not initialized.", name));
+        }
+
+        return optionalTemplate.get();
     }
 
-    public void putDataStructureTemplate(DataStructureTemplate template) {
-        Preconditions.checkState(dataStructures.add(Preconditions.checkNotNull(template)),
-                "Trying to add an existing structure.");
+    public void putDataStructureTemplate(DataStructureTemplate template) throws MeadorRuntimeException {
+        if (!dataStructures.add(Preconditions.checkNotNull(template))) {
+            throw new MeadorRuntimeException(String.format("`%s` template is already exists.", template.name()));
+        }
     }
 
     public void clear() {

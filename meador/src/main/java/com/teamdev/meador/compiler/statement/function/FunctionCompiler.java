@@ -10,7 +10,10 @@ import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.ProgramElementCompiler;
 import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
 import com.teamdev.runtime.Command;
+import com.teamdev.runtime.value.type.Value;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static com.teamdev.meador.compiler.ProgramElement.NUMERIC_EXPRESSION;
@@ -56,16 +59,13 @@ public class FunctionCompiler implements ProgramElementCompiler {
 
                 return Optional.of(runtimeEnvironment -> {
 
-                    var doubles = context.arguments()
-                            .stream()
-                            .map(value -> {
-                                runtimeEnvironment.stack().create();
+                    List<Value> doubles = new ArrayList<>();
 
-                                value.execute(runtimeEnvironment);
-
-                                return runtimeEnvironment.stack().pop().popResult();
-                            })
-                            .toList();
+                    for (var command : context.arguments()) {
+                        runtimeEnvironment.stack().create();
+                        command.execute(runtimeEnvironment);
+                        doubles.add(runtimeEnvironment.stack().pop().popResult());
+                    }
 
                     runtimeEnvironment.stack().peek().pushOperand(function.apply(doubles));
                 });

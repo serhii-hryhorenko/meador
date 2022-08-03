@@ -3,6 +3,7 @@ package com.teamdev.calculator_api.resolver;
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.fsm.StateAcceptor;
+import com.teamdev.runtime.MeadorRuntimeException;
 import com.teamdev.runtime.value.ShuntingYard;
 import com.teamdev.runtime.value.type.Value;
 
@@ -21,7 +22,10 @@ public final class ShuntingYardResolver implements MathElementResolver {
         var yard = new ShuntingYard();
 
         if (shuntingYardStateAcceptor.accept(input, yard)) {
-            return Optional.of(yard.popResult());
+            try {
+                return Optional.of(yard.popResult());
+            } catch (MeadorRuntimeException ignored) {
+            }
         }
 
         return Optional.empty();

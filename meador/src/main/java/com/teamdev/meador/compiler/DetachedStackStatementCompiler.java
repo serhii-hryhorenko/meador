@@ -25,14 +25,16 @@ public class DetachedStackStatementCompiler implements ProgramElementCompiler {
     @Override
     public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
 
-        List<Command> outputSequence = new ArrayList<>();
+        List<Command> commands = new ArrayList<>();
 
-        if (machine.accept(reader, outputSequence)) {
+        if (machine.accept(reader, commands)) {
             return Optional.of(runtimeEnvironment -> {
 
                 runtimeEnvironment.stack().create();
 
-                outputSequence.forEach(command -> command.execute(runtimeEnvironment));
+                for (var command : commands) {
+                    command.execute(runtimeEnvironment);
+                }
 
                 var result = runtimeEnvironment.stack().pop().popResult();
 

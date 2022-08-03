@@ -6,6 +6,7 @@ import com.teamdev.meador.compiler.ProgramElementCompiler;
 import com.teamdev.meador.fsmimpl.datastructure.DataStructureFieldMachine;
 import com.teamdev.meador.fsmimpl.datastructure.FieldReferenceOutputChain;
 import com.teamdev.runtime.Command;
+import com.teamdev.runtime.MeadorRuntimeException;
 import com.teamdev.runtime.value.type.Value;
 import com.teamdev.runtime.value.type.datastructure.DataStructureValueVisitor;
 
@@ -26,7 +27,7 @@ public class FieldValueCompiler implements ProgramElementCompiler {
                 var visitor = new DataStructureValueVisitor();
                 value.acceptVisitor(visitor);
 
-                var field = visitor.value().getField(outputChain.fieldName()).orElseThrow();
+                var field = visitor.value().getField(outputChain.fieldName());
 
                 field.command().execute(runtimeEnvironment);
             });

@@ -1,6 +1,7 @@
 package com.teamdev.runtime.value.operator.unaryoperator;
 
 import com.google.common.base.Preconditions;
+import com.teamdev.runtime.MeadorRuntimeException;
 import com.teamdev.runtime.value.type.bool.BooleanValue;
 import com.teamdev.runtime.value.type.bool.BooleanValueVisitor;
 import com.teamdev.runtime.value.type.Value;
@@ -22,9 +23,9 @@ public class BooleanUnaryOperator extends AbstractUnaryOperator {
     }
 
     @Override
-    public Value apply(Value value) {
+    public Value apply(Value operand) throws MeadorRuntimeException {
         var visitor = new BooleanValueVisitor();
-        value.acceptVisitor(visitor);
+        operand.acceptVisitor(visitor);
 
         boolean booleanValue = visitor.value();
         return new BooleanValue(operator.apply(booleanValue));

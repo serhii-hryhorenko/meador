@@ -1,6 +1,7 @@
 package com.teamdev.runtime.value.operator.bioperator;
 
 import com.google.common.base.Preconditions;
+import com.teamdev.runtime.MeadorRuntimeException;
 import com.teamdev.runtime.value.type.bool.BooleanValue;
 import com.teamdev.runtime.value.type.bool.BooleanValueVisitor;
 import com.teamdev.runtime.value.type.Value;
@@ -17,7 +18,7 @@ public class BooleanValueBinaryOperator extends AbstractBinaryOperator {
     }
 
     @Override
-    public Value apply(Value left, Value right) {
+    public Value apply(Value left, Value right) throws MeadorRuntimeException {
         var visitor = new BooleanValueVisitor();
 
         left.acceptVisitor(visitor);

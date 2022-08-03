@@ -1,6 +1,7 @@
 package com.teamdev.runtime.value.type.string;
 
 import com.google.common.base.Preconditions;
+import com.teamdev.runtime.MeadorRuntimeException;
 import com.teamdev.runtime.value.type.Value;
 import com.teamdev.runtime.value.type.ValueVisitor;
 
@@ -13,7 +14,7 @@ public class StringValue implements Value {
     }
 
     @Override
-    public void acceptVisitor(ValueVisitor visitor) {
+    public void acceptVisitor(ValueVisitor visitor) throws MeadorRuntimeException {
         Preconditions.checkNotNull(visitor).visit(this);
     }
 

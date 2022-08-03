@@ -23,8 +23,8 @@ public class StringTypeTest extends MeadorTest {
                         "[Adam Johns]",
                         "Long string expressions are broken."),
                 of("""
-                                str = `Year: `;
-                                print(str + 1994);
+                                str = `Year:`;
+                                print(str + ` ` + 1994);
                                 """,
                         "[Year: 1994.0]",
                         "Numeric to String conversion is failed."),

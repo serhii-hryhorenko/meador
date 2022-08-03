@@ -2,6 +2,7 @@ package com.teamdev.calculator_api.resolver;
 
 import com.teamdev.calculator_api.MathElementResolverFactoryImpl;
 import com.teamdev.fsm.InputSequenceReader;
+import com.teamdev.runtime.MeadorRuntimeException;
 import com.teamdev.runtime.value.type.Value;
 
 import java.util.Optional;
@@ -15,5 +16,5 @@ import java.util.Optional;
 @FunctionalInterface
 public interface MathElementResolver {
 
-    Optional<Value> resolve(InputSequenceReader input) throws ResolvingException;
+    Optional<Value> resolve(InputSequenceReader input) throws ResolvingException, MeadorRuntimeException;
 }

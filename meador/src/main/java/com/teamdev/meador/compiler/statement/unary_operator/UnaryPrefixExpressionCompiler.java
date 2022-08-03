@@ -41,7 +41,7 @@ public class UnaryPrefixExpressionCompiler implements ProgramElementCompiler {
             return Optional.of(runtimeEnvironment -> {
                 var variableCommand = new VariableValueCompiler().compile(outputChain.variableName());
 
-                variableCommand.ifPresent(command -> {
+                if (variableCommand.isPresent()) {
                     variableCommand.get().execute(runtimeEnvironment);
 
                     var topStack = runtimeEnvironment.stack().peek();
@@ -53,7 +53,7 @@ public class UnaryPrefixExpressionCompiler implements ProgramElementCompiler {
                     if (outputChain.unaryOperator().prefixFormMutatesVariable()) {
                         runtimeEnvironment.memory().putVariable(outputChain.variableName(), applied);
                     }
-                });
+                }
             });
         }
 

@@ -10,6 +10,7 @@ import com.teamdev.machine.function.FunctionHolder;
 import com.teamdev.machine.number.NumberMachine;
 import com.teamdev.machine.operand.OperandMachine;
 import com.teamdev.machine.util.ValidatedFunctionFactoryImpl;
+import com.teamdev.runtime.MeadorRuntimeException;
 import com.teamdev.runtime.value.MathBinaryOperatorFactoryImpl;
 import com.teamdev.runtime.value.ShuntingYard;
 import com.teamdev.runtime.value.type.Value;
@@ -30,7 +31,11 @@ public class MathElementResolverFactoryImpl implements MathElementResolverFactor
         resolvers.put(EXPRESSION, new ShuntingYardResolver(ExpressionMachine.create(
                 new ResolveMathElementAcceptor<>(this, OPERAND, ShuntingYard::pushOperand),
                 new MathBinaryOperatorFactoryImpl(),
-                ShuntingYard::pushOperator,
+                (shuntingYard, operator) -> {
+                    try {
+                        shuntingYard.pushOperator(operator);
+                    } catch (MeadorRuntimeException ignored) {}
+                },
                 new ExceptionThrower<>(ResolvingException::new)))
         );
 
@@ -54,20 +59,22 @@ public class MathElementResolverFactoryImpl implements MathElementResolverFactor
                                                 EXPRESSION,
                                                 ShuntingYard::pushOperand),
                                         new MathBinaryOperatorFactoryImpl(),
-                                        ShuntingYard::pushOperator,
+                                        (shuntingYard, operator) -> {
+                                            try {
+                                                shuntingYard.pushOperator(operator);
+                                            } catch (MeadorRuntimeException ignored) {}
+                                        },
                                         new ExceptionThrower<>(ResolvingException::new)),
 
                                 new ExceptionThrower<>(ResolvingException::new))
                 )
         );
 
-        resolvers.put(NUMBER, input -> NumberMachine.execute(input, new ExceptionThrower<>(
-                ResolvingException::new)));
+        resolvers.put(NUMBER, input -> NumberMachine.execute(input, new ExceptionThrower<>(ResolvingException::new)));
 
         resolvers.put(FUNCTION, input -> {
 
-            var argument = new ResolveMathElementAcceptor<FunctionHolder<Value>>(
-                    this,
+            var argument = new ResolveMathElementAcceptor<FunctionHolder<Value>>(this,
                     EXPRESSION,
                     FunctionHolder::addArgument);
 

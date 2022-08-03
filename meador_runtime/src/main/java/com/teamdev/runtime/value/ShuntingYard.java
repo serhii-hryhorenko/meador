@@ -1,6 +1,7 @@
 package com.teamdev.runtime.value;
 
 import com.google.common.base.Preconditions;
+import com.teamdev.runtime.MeadorRuntimeException;
 import com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperator;
 import com.teamdev.runtime.value.type.Value;
 
@@ -22,18 +23,18 @@ public class ShuntingYard {
         operandStack.push(Preconditions.checkNotNull(operand));
     }
 
-    public void pushOperator(AbstractBinaryOperator operator) {
+    public void pushOperator(AbstractBinaryOperator operator) throws MeadorRuntimeException {
         Preconditions.checkNotNull(operator);
 
-        while (!operatorStack.isEmpty() && operatorStack.peek()
-                .compareTo(operator) >= 0) {
+        while (!operatorStack.isEmpty()
+                && operatorStack.peek().compareTo(operator) >= 0) {
             applyOperand();
         }
 
         operatorStack.push(operator);
     }
 
-    public Value popResult() {
+    public Value popResult() throws MeadorRuntimeException {
         applyOperand();
 
         Preconditions.checkState(operandStack.size() == 1,
@@ -52,7 +53,7 @@ public class ShuntingYard {
         return operandStack.peek();
     }
 
-    private void applyOperand() {
+    private void applyOperand() throws MeadorRuntimeException {
         while (!operatorStack.isEmpty()) {
 
             var rightOperand = operandStack.pop();

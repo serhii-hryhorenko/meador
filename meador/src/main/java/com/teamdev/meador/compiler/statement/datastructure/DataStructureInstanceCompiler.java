@@ -8,6 +8,7 @@ import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
 import com.teamdev.meador.fsmimpl.datastructure.DataStructureOutputChain;
 import com.teamdev.meador.fsmimpl.datastructure.DataStructureInstanceMachine;
 import com.teamdev.runtime.Command;
+import com.teamdev.runtime.MeadorRuntimeException;
 import com.teamdev.runtime.value.type.datastructure.DataStructureHolder;
 import com.teamdev.runtime.value.type.datastructure.DataStructureValue;
 
@@ -29,18 +30,18 @@ public class DataStructureInstanceCompiler implements ProgramElementCompiler {
 
         if (DataStructureInstanceMachine.create(factory).accept(inputSequence, dataStructureContext)) {
             return Optional.of(runtimeEnvironment -> {
-                var optionalTemplate = runtimeEnvironment.memory()
+                var template = runtimeEnvironment.memory()
                         .getDataStructureTemplate(dataStructureContext.templateName());
 
-                var template = optionalTemplate.orElseThrow();
-
                 if (template.fieldNumber() != dataStructureContext.fieldValues().size()) {
-                    throw new IllegalStateException("The number of parsed fields don't match the template's from memory.");
+                    throw new MeadorRuntimeException("The number of parsed fields doesn't match the template's from memory.");
                 }
 
                 var implementation = new DataStructureHolder(template);
 
-                dataStructureContext.fieldValues().forEach(implementation::assignFieldValue);
+                for (var value : dataStructureContext.fieldValues()) {
+                    implementation.assignFieldValue(value);
+                }
 
                 runtimeEnvironment.stack().peek().pushOperand(new DataStructureValue(implementation));
             });

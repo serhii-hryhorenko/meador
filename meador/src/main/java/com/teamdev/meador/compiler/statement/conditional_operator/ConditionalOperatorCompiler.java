@@ -7,11 +7,13 @@ import com.teamdev.meador.compiler.ProgramElementCompiler;
 import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
 import com.teamdev.meador.fsmimpl.conditional_operator.ConditionalOperatorMachine;
 import com.teamdev.meador.fsmimpl.conditional_operator.ConditionalOperatorOutputChain;
+import com.teamdev.meador.fsmimpl.conditional_operator.IfOperatorOutputChain;
 import com.teamdev.runtime.Command;
 import com.teamdev.runtime.value.type.Value;
 import com.teamdev.runtime.value.type.bool.BooleanValueVisitor;
 
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class ConditionalOperatorCompiler implements ProgramElementCompiler {
 
@@ -29,23 +31,22 @@ public class ConditionalOperatorCompiler implements ProgramElementCompiler {
             return Optional.of(runtimeEnvironment -> {
                 var booleanVisitor = new BooleanValueVisitor();
 
-                context.ifOperators().stream()
-                        .filter(input -> {
-                            runtimeEnvironment.stack().create();
-                            input.condition().execute(runtimeEnvironment);
-                            Value conditionValue = runtimeEnvironment.stack().pop().popResult();
+                for (var operator : context.ifOperators()) {
+                    runtimeEnvironment.stack().create();
+                    operator.condition().execute(runtimeEnvironment);
+                    Value conditionValue = runtimeEnvironment.stack().pop().popResult();
 
-                            conditionValue.acceptVisitor(booleanVisitor);
-                            return booleanVisitor.value();
-                        })
-                        .findFirst()
-                        .ifPresentOrElse(ifOperatorContext -> ifOperatorContext.statements().execute(runtimeEnvironment),
-                                () -> {
-                                    if (context.elseInstructionPresent()) {
-                                        context.elseStatements().execute(runtimeEnvironment);
-                                    }
-                                }
-                        );
+                    conditionValue.acceptVisitor(booleanVisitor);
+
+                    if (booleanVisitor.value()) {
+                        operator.statements().execute(runtimeEnvironment);
+                        return;
+                    }
+                }
+
+                if (context.elseInstructionPresent()) {
+                    context.elseStatements().execute(runtimeEnvironment);
+                }
             });
         }
 

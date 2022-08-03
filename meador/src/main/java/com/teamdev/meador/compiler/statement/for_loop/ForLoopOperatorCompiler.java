@@ -8,6 +8,7 @@ import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
 import com.teamdev.meador.fsmimpl.for_loop.ForLoopOperatorMachine;
 import com.teamdev.meador.fsmimpl.for_loop.ForLoopOperatorOutputChain;
 import com.teamdev.runtime.Command;
+import com.teamdev.runtime.MeadorRuntimeException;
 import com.teamdev.runtime.RuntimeEnvironment;
 import com.teamdev.runtime.value.type.bool.BooleanValueVisitor;
 import com.teamdev.runtime.value.type.Value;
@@ -37,7 +38,7 @@ public class ForLoopOperatorCompiler implements ProgramElementCompiler {
         if (ForLoopOperatorMachine.create(factory).accept(reader, outputChain)) {
             return Optional.of(new Command() {
                 @Override
-                public void execute(RuntimeEnvironment runtimeEnvironment) {
+                public void execute(RuntimeEnvironment runtimeEnvironment) throws MeadorRuntimeException {
                     outputChain.variableDeclaration().execute(runtimeEnvironment);
 
                     int iterations = 0;
@@ -47,12 +48,12 @@ public class ForLoopOperatorCompiler implements ProgramElementCompiler {
                         outputChain.updateVariableStatement().execute(runtimeEnvironment);
 
                         if (++iterations == MAX_ITERATIONS) {
-                            throw new IllegalStateException("Infinite loop detected.");
+                            throw new MeadorRuntimeException("Infinite loop detected.");
                         }
                     }
                 }
 
-                private boolean checkCondition(RuntimeEnvironment runtimeEnvironment, Command booleanExpression) {
+                private boolean checkCondition(RuntimeEnvironment runtimeEnvironment, Command booleanExpression) throws MeadorRuntimeException {
                     runtimeEnvironment.stack().create();
                     booleanExpression.execute(runtimeEnvironment);
                     Value condition = runtimeEnvironment.stack().pop().popResult();

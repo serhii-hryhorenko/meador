@@ -2,9 +2,11 @@ package com.teamdev.runtime.value.type.datastructure;
 
 import com.google.common.base.Preconditions;
 import com.teamdev.runtime.Command;
+import com.teamdev.runtime.MeadorRuntimeException;
 import com.teamdev.runtime.variable.VariableHolder;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Data structure implementation with a set of variables with predeclared by the {@link DataStructureTemplate}
@@ -22,7 +24,7 @@ public class DataStructureHolder {
         this.fieldIterator = Preconditions.checkNotNull(template).fieldNames().iterator();
     }
 
-    public void assignFieldValue(Command value) {
+    public void assignFieldValue(Command value) throws MeadorRuntimeException {
         if (fieldIterator.hasNext()) {
             fields.add(new VariableHolder()
                     .setName(fieldIterator.next())
@@ -31,22 +33,24 @@ public class DataStructureHolder {
             return;
         }
 
-        throw new IllegalStateException("All fields are already initialized.");
+        throw new MeadorRuntimeException("All fields are already initialized.");
     }
 
-    public void assignFieldValue(String fieldName, Command value) {
-        Preconditions.checkNotNull(fieldName, value);
-
-        var optionalVariable = getField(fieldName);
-
-        optionalVariable.ifPresent(variable -> variable.setCommand(value));
-
+    public void assignFieldValue(String fieldName, Command command) throws MeadorRuntimeException {
+        Preconditions.checkNotNull(fieldName, command);
+        getField(fieldName).setCommand(command);
     }
 
-    public Optional<VariableHolder> getField(String fieldName) {
-        return fields.stream()
+    public VariableHolder getField(String fieldName) throws MeadorRuntimeException {
+        var optionalField = fields.stream()
                 .filter(variable -> variable.name().equals(Preconditions.checkNotNull(fieldName)))
                 .findFirst();
+
+        if (optionalField.isEmpty()) {
+            throw new MeadorRuntimeException(String.format("There is no field with name `%s` in %s", fieldName, type));
+        }
+
+        return optionalField.get();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.teamdev.runtime.value.operator.bioperator;
 
+import com.teamdev.runtime.MeadorRuntimeException;
 import com.teamdev.runtime.value.type.number.NumericValue;
 import com.teamdev.runtime.value.type.number.NumericValueVisitor;
 import com.teamdev.runtime.value.type.string.StringValue;
@@ -10,31 +11,27 @@ import java.util.function.DoubleBinaryOperator;
 /**
  * Binary operator from math with validated priority of evaluation.
  */
-public class DoubleValueBinaryOperator extends AbstractBinaryOperator {
+public class NumericValueBinaryOperator extends AbstractBinaryOperator {
 
     private final DoubleBinaryOperator operator;
 
-    public DoubleValueBinaryOperator(DoubleBinaryOperator operator, Priority priority) {
+    public NumericValueBinaryOperator(DoubleBinaryOperator operator, Priority priority) {
         super(priority);
         this.operator = operator;
     }
 
     @Override
-    public Value apply(Value left, Value right) {
+    public Value apply(Value left, Value right) throws MeadorRuntimeException {
 
         var visitor = new NumericValueVisitor();
 
-        try {
-            left.acceptVisitor(visitor);
-            double leftValue = visitor.value();
+        left.acceptVisitor(visitor);
+        double leftValue = visitor.value();
 
-            right.acceptVisitor(visitor);
-            double rightValue = visitor.value();
+        right.acceptVisitor(visitor);
+        double rightValue = visitor.value();
 
-            return new NumericValue(operator.applyAsDouble(leftValue, rightValue));
-        } catch (IllegalArgumentException ile) {
-            return new StringValue(left + right.toString());
-        }
+        return new NumericValue(operator.applyAsDouble(leftValue, rightValue));
     }
 
     @Override
@@ -46,7 +43,7 @@ public class DoubleValueBinaryOperator extends AbstractBinaryOperator {
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof DoubleValueBinaryOperator &&
-                compareTo((DoubleValueBinaryOperator) o) == 0;
+        return o instanceof NumericValueBinaryOperator &&
+                compareTo((NumericValueBinaryOperator) o) == 0;
     }
 }

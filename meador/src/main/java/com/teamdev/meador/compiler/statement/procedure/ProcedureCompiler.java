@@ -12,7 +12,10 @@ import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.ProgramElementCompiler;
 import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
 import com.teamdev.runtime.Command;
+import com.teamdev.runtime.value.type.Value;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static com.teamdev.meador.compiler.ProgramElement.EXPRESSION;
@@ -50,16 +53,13 @@ public class ProcedureCompiler implements ProgramElementCompiler {
                     && context.arguments().size() <= procedure.maxArguments()) {
 
                 return Optional.of(runtimeEnvironment -> {
-                    var values = context.arguments()
-                            .stream()
-                            .map(value -> {
-                                runtimeEnvironment.stack().create();
+                    List<Value> values = new ArrayList<>();
 
-                                value.execute(runtimeEnvironment);
-
-                                return runtimeEnvironment.stack().pop().popResult();
-                            })
-                            .toList();
+                    for (var command : context.arguments()) {
+                        runtimeEnvironment.stack().create();
+                        command.execute(runtimeEnvironment);
+                        values.add(runtimeEnvironment.stack().pop().popResult());
+                    }
 
                     procedure.accept(values, runtimeEnvironment);
                 });

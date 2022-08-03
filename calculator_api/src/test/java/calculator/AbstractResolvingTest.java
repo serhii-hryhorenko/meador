@@ -3,6 +3,7 @@ package calculator;
 import com.teamdev.calculator_api.Calculator;
 import com.teamdev.calculator_api.InvalidExpressionException;
 import com.teamdev.calculator_api.MathExpression;
+import com.teamdev.calculator_api.Output;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -30,7 +31,11 @@ public abstract class AbstractResolvingTest {
     @MethodSource(POSITIVE_CASES)
     void testPositiveCases(String mathExpression, double expected, String errorMessage) throws
                                                                                         InvalidExpressionException {
-        var result = calculator.calculate(new MathExpression(mathExpression));
+        Output result = null;
+        try {
+            result = calculator.calculate(new MathExpression(mathExpression));
+        } catch (com.teamdev.runtime.MeadorRuntimeException ignored) {}
+
         assertEquals(expected, result.getResult(), errorMessage);
     }
 

@@ -13,7 +13,6 @@ import com.teamdev.runtime.value.type.datastructure.DataStructureValueVisitor;
 import java.util.Optional;
 
 public class FieldAssignmentCompiler implements ProgramElementCompiler {
-
     private final ProgramElementCompilerFactory factory;
 
     /**

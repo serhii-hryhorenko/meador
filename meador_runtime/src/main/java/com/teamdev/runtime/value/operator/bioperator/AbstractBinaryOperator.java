@@ -1,13 +1,7 @@
 package com.teamdev.runtime.value.operator.bioperator;
 
 
-import com.teamdev.runtime.value.type.Value;
-
-import java.util.function.BinaryOperator;
-
-public abstract class AbstractBinaryOperator implements BinaryOperator<Value>,
-        Comparable<AbstractBinaryOperator> {
-
+public abstract class AbstractBinaryOperator implements BinaryOperator, Comparable<AbstractBinaryOperator> {
     public enum Priority {
         LOW,
         MEDIUM,

@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.teamdev.calculator_api.resolver.MathElementResolverFactory;
 import com.teamdev.calculator_api.resolver.ResolvingException;
 import com.teamdev.fsm.InputSequenceReader;
+import com.teamdev.runtime.MeadorRuntimeException;
 import com.teamdev.runtime.value.ShuntingYard;
 import com.teamdev.runtime.value.type.number.NumericValueVisitor;
 import com.teamdev.runtime.value.type.Value;
@@ -33,7 +34,7 @@ public class Calculator {
                 inputChain.getPosition());
     }
 
-    public Output calculate(MathExpression expression) throws InvalidExpressionException {
+    public Output calculate(MathExpression expression) throws InvalidExpressionException, MeadorRuntimeException {
         Preconditions.checkNotNull(expression);
         var calculatorFSM = CalculatorMachine.create(factory);
 

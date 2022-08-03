@@ -39,7 +39,6 @@ abstract class MeadorTest {
     @MethodSource("negativeCases")
     void negativeCases(String code, String errorMessage) {
         var program = new Program(code);
-
         assertThrows(InvalidProgramException.class, () -> executor.execute(program), errorMessage);
     }
 }

@@ -6,5 +6,5 @@ package com.teamdev.runtime;
 @FunctionalInterface
 public interface Command {
 
-    void execute(RuntimeEnvironment runtimeEnvironment);
+    void execute(RuntimeEnvironment runtimeEnvironment) throws MeadorRuntimeException;
 }

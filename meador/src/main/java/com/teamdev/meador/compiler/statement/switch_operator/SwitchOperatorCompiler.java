@@ -32,19 +32,20 @@ public class SwitchOperatorCompiler implements ProgramElementCompiler {
                 context.mappedValue().execute(runtimeEnvironment);
                 Value mappedValue = runtimeEnvironment.stack().pop().popResult();
 
-                context.options().stream()
-                        .filter(switchOptionContext -> {
-                            Command condition = switchOptionContext.condition();
+                for (var option : context.options()) {
+                    var condition = option.condition();
 
-                            runtimeEnvironment.stack().create();
-                            condition.execute(runtimeEnvironment);
-                            Value conditionValue = runtimeEnvironment.stack().pop().popResult();
+                    runtimeEnvironment.stack().create();
+                    condition.execute(runtimeEnvironment);
+                    var conditionValue = runtimeEnvironment.stack().pop().popResult();
 
-                            return mappedValue.equals(conditionValue);
-                        })
-                        .findFirst()
-                        .ifPresentOrElse(switchOptionContext -> switchOptionContext.statement().execute(runtimeEnvironment),
-                                () -> context.defaultCommand().execute(runtimeEnvironment));
+                    if (mappedValue.equals(conditionValue)) {
+                        option.statement().execute(runtimeEnvironment);
+                        return;
+                    }
+                }
+
+                context.defaultCommand().execute(runtimeEnvironment);
             });
         }
         return Optional.empty();

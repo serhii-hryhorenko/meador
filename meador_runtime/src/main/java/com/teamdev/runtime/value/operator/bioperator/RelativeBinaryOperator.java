@@ -1,6 +1,7 @@
 package com.teamdev.runtime.value.operator.bioperator;
 
 import com.google.common.base.Preconditions;
+import com.teamdev.runtime.MeadorRuntimeException;
 import com.teamdev.runtime.value.type.bool.BooleanValue;
 import com.teamdev.runtime.value.type.number.NumericValueVisitor;
 import com.teamdev.runtime.value.type.Value;
@@ -20,7 +21,7 @@ public class RelativeBinaryOperator extends AbstractBinaryOperator {
     }
 
     @Override
-    public Value apply(Value a, Value b) {
+    public Value apply(Value a, Value b) throws MeadorRuntimeException {
         var visitor = new NumericValueVisitor();
 
         a.acceptVisitor(visitor);
@@ -39,7 +40,7 @@ public class RelativeBinaryOperator extends AbstractBinaryOperator {
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof RelativeBinaryOperator &&
-                compareTo((RelativeBinaryOperator) o) == 0;
+        return (o instanceof RelativeBinaryOperator) &&
+                (compareTo((RelativeBinaryOperator) o) == 0);
     }
 }

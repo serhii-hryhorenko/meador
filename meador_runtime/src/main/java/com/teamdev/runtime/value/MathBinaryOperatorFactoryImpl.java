@@ -3,7 +3,8 @@ package com.teamdev.runtime.value;
 import com.google.common.base.Preconditions;
 import com.teamdev.runtime.value.operator.AbstractOperatorFactory;
 import com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperator;
-import com.teamdev.runtime.value.operator.bioperator.DoubleValueBinaryOperator;
+import com.teamdev.runtime.value.operator.bioperator.NumericValueBinaryOperator;
+import com.teamdev.runtime.value.type.number.NumericValue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,11 +30,11 @@ public class MathBinaryOperatorFactoryImpl implements AbstractOperatorFactory<Ab
     private final Map<String, AbstractBinaryOperator> mathOperators = new HashMap<>();
 
     public MathBinaryOperatorFactoryImpl() {
-        mathOperators.put("+", new DoubleValueBinaryOperator(Double::sum, LOW));
-        mathOperators.put("-", new DoubleValueBinaryOperator((left, right) -> left - right, LOW));
-        mathOperators.put("*", new DoubleValueBinaryOperator((left, right) -> left * right, MEDIUM));
-        mathOperators.put("/", new DoubleValueBinaryOperator((left, right) -> left / right, MEDIUM));
-        mathOperators.put("^", new DoubleValueBinaryOperator(Math::pow, HIGH));
+        mathOperators.put("+", new NumericValueBinaryOperator(Double::sum, LOW));
+        mathOperators.put("-", new NumericValueBinaryOperator((left, right) -> left - right, LOW));
+        mathOperators.put("*", new NumericValueBinaryOperator((left, right) -> left * right, MEDIUM));
+        mathOperators.put("/", new NumericValueBinaryOperator((left, right) -> left / right, MEDIUM));
+        mathOperators.put("^", new NumericValueBinaryOperator(Math::pow, HIGH));
     }
 
     @Override
