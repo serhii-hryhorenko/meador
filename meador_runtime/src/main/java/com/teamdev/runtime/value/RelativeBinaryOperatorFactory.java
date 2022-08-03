@@ -8,6 +8,7 @@ import com.teamdev.runtime.value.operator.bioperator.RelativeBinaryOperator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import static com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperator.Priority.LOW;
 
@@ -34,12 +35,12 @@ public class RelativeBinaryOperatorFactory implements AbstractOperatorFactory<Ab
     }
 
     @Override
-    public boolean acceptOperatorPrefix(String prefix) {
-        return relativeOperators.keySet().stream().anyMatch(operator -> operator.startsWith(prefix));
+    public Stream<String> operators() {
+        return relativeOperators.keySet().stream();
     }
 
     @Override
-    public boolean acceptOperator(String operator) {
+    public boolean hasOperator(String operator) {
         return relativeOperators.containsKey(Preconditions.checkNotNull(operator));
     }
 }

@@ -7,6 +7,7 @@ import com.teamdev.runtime.value.operator.unaryoperator.BooleanUnaryOperator;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class BooleanUnaryOperatorFactory implements AbstractOperatorFactory<AbstractUnaryOperator> {
 
@@ -22,14 +23,12 @@ public class BooleanUnaryOperatorFactory implements AbstractOperatorFactory<Abst
     }
 
     @Override
-    public boolean acceptOperatorPrefix(String prefix) {
-        return booleanUnaryOperators.keySet()
-                .stream()
-                .anyMatch(operator -> operator.startsWith(Preconditions.checkNotNull(prefix)));
+    public Stream<String> operators() {
+        return booleanUnaryOperators.keySet().stream();
     }
 
     @Override
-    public boolean acceptOperator(String operator) {
+    public boolean hasOperator(String operator) {
         return booleanUnaryOperators.containsKey(Preconditions.checkNotNull(operator));
     }
 }

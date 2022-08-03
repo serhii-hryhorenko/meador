@@ -7,6 +7,7 @@ import com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperator;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperator.Priority.LOW;
 
@@ -24,12 +25,12 @@ public class StringBinaryOperatorFactory implements AbstractOperatorFactory<Abst
     }
 
     @Override
-    public boolean acceptOperatorPrefix(String prefix) {
-        return stringOperators.keySet().stream().anyMatch(operator -> operator.startsWith(prefix));
+    public Stream<String> operators() {
+        return stringOperators.keySet().stream();
     }
 
     @Override
-    public boolean acceptOperator(String operator) {
+    public boolean hasOperator(String operator) {
         return stringOperators.containsKey(Preconditions.checkNotNull(operator));
     }
 }

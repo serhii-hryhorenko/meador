@@ -7,6 +7,7 @@ import com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperator;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperator.Priority.LOW;
 import static com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperator.Priority.MEDIUM;
@@ -23,18 +24,18 @@ public class BooleanBinaryOperatorFactory implements AbstractOperatorFactory<Abs
 
     @Override
     public AbstractBinaryOperator create(String operator) {
-        Preconditions.checkState(acceptOperator(Preconditions.checkNotNull(operator)));
+        Preconditions.checkState(hasOperator(Preconditions.checkNotNull(operator)));
         return booleanOperators.get(operator);
     }
 
     @Override
-    public boolean acceptOperatorPrefix(String prefix) {
-        Preconditions.checkNotNull(prefix);
-        return booleanOperators.keySet().stream().anyMatch(boolOperator -> boolOperator.startsWith(prefix));
+    public Stream<String> operators() {
+        return booleanOperators.keySet().stream();
     }
 
+
     @Override
-    public boolean acceptOperator(String operator) {
+    public boolean hasOperator(String operator) {
         Preconditions.checkNotNull(operator);
         return booleanOperators.keySet().stream().anyMatch(boolOperator -> boolOperator.equals(operator));
     }

@@ -7,6 +7,7 @@ import com.teamdev.runtime.value.operator.bioperator.DoubleValueBinaryOperator;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperator.Priority.*;
 
@@ -41,12 +42,12 @@ public class MathBinaryOperatorFactoryImpl implements AbstractOperatorFactory<Ab
     }
 
     @Override
-    public boolean acceptOperatorPrefix(String prefix) {
-        return mathOperators.keySet().stream().anyMatch(operator -> operator.startsWith(prefix));
+    public Stream<String> operators() {
+        return mathOperators.keySet().stream();
     }
 
     @Override
-    public boolean acceptOperator(String operator) {
+    public boolean hasOperator(String operator) {
         return mathOperators.containsKey(Preconditions.checkNotNull(operator));
     }
 }

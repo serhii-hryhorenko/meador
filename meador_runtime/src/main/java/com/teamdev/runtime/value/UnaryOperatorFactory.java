@@ -9,6 +9,7 @@ import com.teamdev.runtime.value.operator.unaryoperator.NumericUnaryOperator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.DoubleUnaryOperator;
+import java.util.stream.Stream;
 
 public class UnaryOperatorFactory implements AbstractOperatorFactory<AbstractUnaryOperator> {
 
@@ -29,14 +30,12 @@ public class UnaryOperatorFactory implements AbstractOperatorFactory<AbstractUna
     }
 
     @Override
-    public boolean acceptOperatorPrefix(String prefix) {
-        return unaryOperators.keySet()
-                .stream()
-                .anyMatch(operator -> operator.startsWith(Preconditions.checkNotNull(prefix)));
+    public Stream<String> operators() {
+        return unaryOperators.keySet().stream();
     }
 
     @Override
-    public boolean acceptOperator(String operator) {
+    public boolean hasOperator(String operator) {
         return unaryOperators.containsKey(Preconditions.checkNotNull(operator));
     }
 

@@ -28,15 +28,15 @@ public class OperatorAcceptor<T, O, E extends Exception> implements StateAccepto
         var operator = new StringBuilder();
 
         while (reader.canRead()) {
-            if (factory.acceptOperatorPrefix(operator.toString() + reader.read())) {
-                operator.append(reader.read());
-                reader.next();
-            } else {
+            if (factory.operators().noneMatch(op -> op.startsWith(operator.toString() + reader.read()))) {
                 break;
             }
+
+            operator.append(reader.read());
+            reader.next();
         }
 
-        if (factory.acceptOperator(operator.toString())) {
+        if (factory.hasOperator(operator.toString())) {
             resultConsumer.accept(outputChain, factory.create(operator.toString()));
             return true;
         }
