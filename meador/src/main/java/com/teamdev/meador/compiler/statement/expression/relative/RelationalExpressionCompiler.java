@@ -4,7 +4,7 @@ import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.meador.ProgramElementCompilerFactoryImpl;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.ProgramElementCompiler;
-import com.teamdev.meador.fsmimpl.expression.relative.RelationalExpressionContext;
+import com.teamdev.meador.fsmimpl.expression.relative.RelationalExpressionOutputChain;
 import com.teamdev.meador.fsmimpl.expression.relative.RelationalExpressionMachine;
 import com.teamdev.runtime.Command;
 import com.teamdev.runtime.value.type.Value;
@@ -25,7 +25,7 @@ public class RelationalExpressionCompiler implements ProgramElementCompiler {
     public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
         var relationalExpressionFSM = RelationalExpressionMachine.create(compilerFactory);
 
-        var context = new RelationalExpressionContext();
+        var context = new RelationalExpressionOutputChain();
 
         if (relationalExpressionFSM.accept(reader, context)) {
             return Optional.of(runtimeEnvironment -> {

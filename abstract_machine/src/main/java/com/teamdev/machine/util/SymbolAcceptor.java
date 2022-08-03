@@ -27,12 +27,12 @@ public class SymbolAcceptor<E extends Exception> implements StateAcceptor<String
     }
 
     @Override
-    public boolean accept(InputSequenceReader inputChain, StringBuilder outputChain) {
-        Preconditions.checkNotNull(inputChain, outputChain);
+    public boolean accept(InputSequenceReader reader, StringBuilder outputChain) {
+        Preconditions.checkNotNull(reader, outputChain);
 
-        if (inputChain.canRead() && condition.test(inputChain.read())) {
-            outputChain.append(inputChain.read());
-            inputChain.next();
+        if (reader.canRead() && condition.test(reader.read())) {
+            outputChain.append(reader.read());
+            reader.next();
             return true;
         }
 

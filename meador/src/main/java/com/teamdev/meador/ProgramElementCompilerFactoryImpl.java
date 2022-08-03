@@ -104,14 +104,14 @@ public class ProgramElementCompilerFactoryImpl implements ProgramElementCompiler
                         .pushOperator(operator));
 
         Supplier<ExpressionMachine<List<Command>, CompilingException>> numericExpression = () -> ExpressionMachine.create(
-                new CompileStatementAcceptor<>(this, NUMERIC_OPERAND, List::add),
+                numericOperand.get(),
                 new MathBinaryOperatorFactoryImpl(),
                 pushBinaryOperator,
                 compilingExceptionThrower
         );
 
         Supplier<ExpressionMachine<List<Command>, CompilingException>> booleanExpression = () -> ExpressionMachine.create(
-                new CompileStatementAcceptor<>(this, BOOLEAN_OPERAND, List::add),
+                booleanOperand.get(),
                 new BooleanBinaryOperatorFactory(),
                 pushBinaryOperator,
                 compilingExceptionThrower
@@ -145,7 +145,7 @@ public class ProgramElementCompilerFactoryImpl implements ProgramElementCompiler
         Supplier<ProgramElementCompiler> programAcceptor = () -> reader -> {
             var commands = new ArrayList<Command>();
 
-            while (CompilerMachine.create(this).accept(reader, commands));
+            while (reader.canRead() && CompilerMachine.create(this).accept(reader, commands));
 
             if (commands.isEmpty()) {
                 throw new CompilingException("List of statements is empty.");

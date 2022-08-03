@@ -10,22 +10,22 @@ import com.teamdev.machine.util.TextIdentifierMachine;
  * <p>
  * Syntax: {@code name(arg1, arg2, ...)}
  */
-public class FunctionMachine<O extends FunctionHolder, E extends Exception> extends FiniteStateMachine<O, E> {
+public class FunctionMachine<T, E extends Exception> extends FiniteStateMachine<FunctionHolder<T>, E> {
 
-    private FunctionMachine(TransitionMatrix<O, E> transitionMatrix,
+    private FunctionMachine(TransitionMatrix<FunctionHolder<T>, E> transitionMatrix,
                             ExceptionThrower<E> thrower) {
         super(transitionMatrix, thrower);
     }
 
-    public static <O extends FunctionHolder, E extends Exception> FunctionMachine<O, E> create(
-            StateAcceptor<O, E> argumentAcceptor,
+    public static <T, E extends Exception> FunctionMachine<T, E> create(
+            StateAcceptor<FunctionHolder<T>, E> argumentAcceptor,
             ExceptionThrower<E> exceptionThrower) {
 
         Preconditions.checkNotNull(argumentAcceptor);
 
-        var initialState = State.<O, E>initialState();
+        var initialState = State.<FunctionHolder<T>, E>initialState();
 
-        var nameState = new State.Builder<O, E>()
+        var nameState = new State.Builder<FunctionHolder<T>, E>()
                 .setName("NAME")
                 .setAcceptor((reader, outputSequence) -> TextIdentifierMachine.acceptIdentifier(reader, outputSequence,
                         FunctionHolder::setFunctionName,
@@ -33,28 +33,28 @@ public class FunctionMachine<O extends FunctionHolder, E extends Exception> exte
                 .setTemporary()
                 .build();
 
-        var openBracketState = new State.Builder<O, E>()
+        var openBracketState = new State.Builder<FunctionHolder<T>, E>()
                 .setName("FUNCTION OPEN BRACKET")
                 .setAcceptor(StateAcceptor.acceptChar('('))
                 .build();
 
-        var argumentExpressionState = new State.Builder<O, E>()
+        var argumentExpressionState = new State.Builder<FunctionHolder<T>, E>()
                 .setName("ARGUMENT EXPRESSION")
                 .setAcceptor(argumentAcceptor)
                 .build();
 
-        var separatorState = new State.Builder<O, E>()
+        var separatorState = new State.Builder<FunctionHolder<T>, E>()
                 .setName("FUNCTION SEPARATOR")
                 .setAcceptor(StateAcceptor.acceptChar(','))
                 .build();
 
-        var closeBracketState = new State.Builder<O, E>()
+        var closeBracketState = new State.Builder<FunctionHolder<T>, E>()
                 .setName("FUNCTION CLOSED BRACKET")
                 .setAcceptor(StateAcceptor.acceptChar(')'))
                 .setFinal()
                 .build();
 
-        var matrix = new TransitionMatrixBuilder<O, E>()
+        var matrix = new TransitionMatrixBuilder<FunctionHolder<T>, E>()
                 .withStartState(initialState)
                 .allowTransition(initialState, nameState)
                 .allowTransition(nameState, openBracketState)

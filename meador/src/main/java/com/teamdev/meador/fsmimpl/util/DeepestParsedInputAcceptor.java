@@ -22,10 +22,10 @@ public class DeepestParsedInputAcceptor<O> implements StateAcceptor<O, Compiling
     }
 
     @Override
-    public boolean accept(InputSequenceReader inputSequence, O outputSequence) throws CompilingException {
+    public boolean accept(InputSequenceReader reader, O outputChain) throws CompilingException {
         var optionalCandidate = acceptors.stream()
-                .max(Comparator.comparing(o -> o.parseInDepth(inputSequence, outputChainSupplier)));
+                .max(Comparator.comparing(o -> o.parseInDepth(reader, outputChainSupplier)));
 
-        return optionalCandidate.isPresent() && optionalCandidate.get().accept(inputSequence, outputSequence);
+        return optionalCandidate.isPresent() && optionalCandidate.get().accept(reader, outputChain);
     }
 }

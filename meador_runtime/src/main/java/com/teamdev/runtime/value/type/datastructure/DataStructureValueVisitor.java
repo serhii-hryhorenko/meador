@@ -27,7 +27,7 @@ public class DataStructureValueVisitor implements ValueVisitor {
 
     @Override
     public void visit(DataStructureValue value) {
-        this.value = value.dataStructureValue();
+        this.value = Preconditions.checkNotNull(value).dataStructureValue();
     }
 
     @Override

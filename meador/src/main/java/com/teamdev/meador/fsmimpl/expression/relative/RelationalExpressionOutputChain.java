@@ -4,19 +4,16 @@ import com.google.common.base.Preconditions;
 import com.teamdev.runtime.Command;
 import com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperator;
 
-import java.util.Objects;
-
 /**
  * Output chain for {@link RelationalExpressionMachine}.
  */
-public class RelationalExpressionContext {
+public class RelationalExpressionOutputChain {
     private Command left;
     private Command right;
     private AbstractBinaryOperator operator;
 
     public Command left() {
-        Preconditions.checkState(Objects.nonNull(left));
-        return left;
+        return Preconditions.checkNotNull(left);
     }
 
     public void setLeft(Command left) {
@@ -24,8 +21,7 @@ public class RelationalExpressionContext {
     }
 
     public Command right() {
-        Preconditions.checkState(Objects.nonNull(right));
-        return right;
+        return Preconditions.checkNotNull(right);
     }
 
     public void setRight(Command right) {
@@ -33,7 +29,7 @@ public class RelationalExpressionContext {
     }
 
     public AbstractBinaryOperator operator() {
-        return operator;
+        return Preconditions.checkNotNull(operator);
     }
 
     public void setOperator(AbstractBinaryOperator operator) {

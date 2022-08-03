@@ -3,6 +3,7 @@ package com.teamdev.meador.compiler.statement.function;
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.ExceptionThrower;
 import com.teamdev.fsm.InputSequenceReader;
+import com.teamdev.machine.function.FunctionHolder;
 import com.teamdev.machine.function.FunctionMachine;
 import com.teamdev.machine.function.ValidatedFunctionFactory;
 import com.teamdev.meador.compiler.CompilingException;
@@ -11,7 +12,6 @@ import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
 import com.teamdev.runtime.Command;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.teamdev.meador.compiler.ProgramElement.NUMERIC_EXPRESSION;
 
@@ -30,13 +30,13 @@ public class FunctionCompiler implements ProgramElementCompiler {
     @Override
     public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
 
-        var functionFSM = FunctionMachine.<CompileFunctionContext, CompilingException>create(
+        var functionFSM = FunctionMachine.<Command, CompilingException>create(
                 (inputSequence, outputSequence) -> {
 
                     var optionalCommand = compilerFactory.create(NUMERIC_EXPRESSION)
                             .compile(inputSequence);
 
-                    optionalCommand.ifPresent(outputSequence::addCommand);
+                    optionalCommand.ifPresent(outputSequence::addArgument);
 
                     return optionalCommand.isPresent();
                 },
@@ -44,19 +44,19 @@ public class FunctionCompiler implements ProgramElementCompiler {
                 new ExceptionThrower<>(CompilingException::new)
         );
 
-        var context = new CompileFunctionContext();
+        var context = new FunctionHolder<Command>();
 
         if (functionFSM.accept(reader, context) &&
                 functionFactory.hasFunction(context.functionName())) {
 
             var function = functionFactory.create(context.functionName());
 
-            if (context.commands().size() >= function.getMinArguments()
-                    && context.commands().size() <= function.getMaxArguments()) {
+            if (context.arguments().size() >= function.getMinArguments()
+                    && context.arguments().size() <= function.getMaxArguments()) {
 
                 return Optional.of(runtimeEnvironment -> {
 
-                    var doubles = context.commands()
+                    var doubles = context.arguments()
                             .stream()
                             .map(value -> {
                                 runtimeEnvironment.stack().create();

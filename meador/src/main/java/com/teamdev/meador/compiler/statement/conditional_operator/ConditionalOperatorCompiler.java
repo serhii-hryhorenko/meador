@@ -10,7 +10,7 @@ import com.teamdev.meador.fsmimpl.conditional_operator.ConditionalOperatorOutput
 import com.teamdev.meador.fsmimpl.conditional_operator.ConditionalOperatorMachine;
 import com.teamdev.meador.fsmimpl.conditional_operator.IfOperatorOutputChain;
 import com.teamdev.runtime.Command;
-import com.teamdev.runtime.value.type.bool.BooleanVisitor;
+import com.teamdev.runtime.value.type.bool.BooleanValueVisitor;
 import com.teamdev.runtime.value.type.Value;
 
 import java.util.Optional;
@@ -29,7 +29,7 @@ public class ConditionalOperatorCompiler implements ProgramElementCompiler {
 
         if (ConditionalOperatorMachine.create(factory).accept(reader, context)) {
             return Optional.of(runtimeEnvironment -> {
-                var booleanVisitor = new BooleanVisitor();
+                var booleanVisitor = new BooleanValueVisitor();
 
                 context.ifOperators().stream()
                         .filter((Predicate<IfOperatorOutputChain>) input -> {

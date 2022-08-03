@@ -24,20 +24,20 @@ public class OperatorAcceptor<T, O, E extends Exception> implements StateAccepto
     }
 
     @Override
-    public boolean accept(InputSequenceReader inputSequence, O outputSequence) {
+    public boolean accept(InputSequenceReader reader, O outputChain) {
         var operator = new StringBuilder();
 
-        while (inputSequence.canRead()) {
-            if (factory.acceptOperatorPrefix(operator.toString() + inputSequence.read())) {
-                operator.append(inputSequence.read());
-                inputSequence.next();
+        while (reader.canRead()) {
+            if (factory.acceptOperatorPrefix(operator.toString() + reader.read())) {
+                operator.append(reader.read());
+                reader.next();
             } else {
                 break;
             }
         }
 
         if (factory.acceptOperator(operator.toString())) {
-            resultConsumer.accept(outputSequence, factory.create(operator.toString()));
+            resultConsumer.accept(outputChain, factory.create(operator.toString()));
             return true;
         }
 

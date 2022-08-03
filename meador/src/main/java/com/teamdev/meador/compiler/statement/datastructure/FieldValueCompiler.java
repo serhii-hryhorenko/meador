@@ -19,7 +19,9 @@ public class FieldValueCompiler implements ProgramElementCompiler {
 
         if (DataStructureFieldMachine.create().accept(reader, outputChain)) {
             return Optional.of(runtimeEnvironment -> {
-                Value value = runtimeEnvironment.memory().getVariable(outputChain.variableName());
+                String name = outputChain.variableName();
+
+                Value value = runtimeEnvironment.memory().getVariable(name);
 
                 var visitor = new DataStructureValueVisitor();
                 value.acceptVisitor(visitor);

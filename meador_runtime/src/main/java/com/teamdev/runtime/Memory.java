@@ -16,7 +16,10 @@ public final class Memory {
     private final Set<DataStructureTemplate> dataStructures = new HashSet<>();
 
     public Value getVariable(String name) {
-        return variables.get(Preconditions.checkNotNull(name));
+        Preconditions.checkState(variables.containsKey(Preconditions.checkNotNull(name)),
+                String.format("`%s` variable is not initialized.", name));
+
+        return variables.get(name);
     }
 
     public void putVariable(String name, Value value) {

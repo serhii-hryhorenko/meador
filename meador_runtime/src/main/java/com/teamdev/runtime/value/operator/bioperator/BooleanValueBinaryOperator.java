@@ -1,9 +1,8 @@
 package com.teamdev.runtime.value.operator.bioperator;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperator;
 import com.teamdev.runtime.value.type.bool.BooleanValue;
-import com.teamdev.runtime.value.type.bool.BooleanVisitor;
+import com.teamdev.runtime.value.type.bool.BooleanValueVisitor;
 import com.teamdev.runtime.value.type.Value;
 
 import java.util.function.BiPredicate;
@@ -19,7 +18,7 @@ public class BooleanValueBinaryOperator extends AbstractBinaryOperator {
 
     @Override
     public Value apply(Value left, Value right) {
-        var visitor = new BooleanVisitor();
+        var visitor = new BooleanValueVisitor();
 
         left.acceptVisitor(visitor);
         boolean one = visitor.value();

@@ -2,7 +2,7 @@ package com.teamdev.runtime.value.operator.unaryoperator;
 
 import com.google.common.base.Preconditions;
 import com.teamdev.runtime.value.type.bool.BooleanValue;
-import com.teamdev.runtime.value.type.bool.BooleanVisitor;
+import com.teamdev.runtime.value.type.bool.BooleanValueVisitor;
 import com.teamdev.runtime.value.type.Value;
 
 import java.util.function.UnaryOperator;
@@ -23,7 +23,7 @@ public class BooleanUnaryOperator extends AbstractUnaryOperator {
 
     @Override
     public Value apply(Value value) {
-        var visitor = new BooleanVisitor();
+        var visitor = new BooleanValueVisitor();
         value.acceptVisitor(visitor);
 
         boolean booleanValue = visitor.value();

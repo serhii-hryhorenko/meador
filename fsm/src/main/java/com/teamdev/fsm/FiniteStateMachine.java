@@ -56,21 +56,21 @@ public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor
     }
 
     @Override
-    public boolean accept(InputSequenceReader input, O output) throws E {
-        Preconditions.checkNotNull(input, output);
+    public boolean accept(InputSequenceReader reader, O outputChain) throws E {
+        Preconditions.checkNotNull(reader, outputChain);
 
         if (logger.isInfoEnabled()) {
-            logger.info("[{}] runs with [{}] input sequence", this, input.getSequence());
+            logger.info("[{}] runs with [{}] input sequence", this, reader.getSequence());
         }
 
         var currentState = transitionMatrix.getStartState();
 
         while (true) {
             if (skippingWhitespaces) {
-                input.skipWhitespaces();
+                reader.skipWhitespaces();
             }
 
-            var nextState = getNextState(currentState, input, output);
+            var nextState = getNextState(currentState, reader, outputChain);
 
             if (nextState.isEmpty()) {
                 if (transitionMatrix.getStartState().equals(currentState)) {
@@ -92,7 +92,7 @@ public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor
                 }
 
                 if (currentState.isTemporary()) {
-                    input.restorePosition();
+                    reader.restorePosition();
                     return false;
                 }
 

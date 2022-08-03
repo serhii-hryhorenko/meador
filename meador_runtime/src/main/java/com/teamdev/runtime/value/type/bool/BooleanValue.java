@@ -1,5 +1,6 @@
 package com.teamdev.runtime.value.type.bool;
 
+import com.google.common.base.Preconditions;
 import com.teamdev.runtime.value.type.Value;
 import com.teamdev.runtime.value.type.ValueVisitor;
 
@@ -13,7 +14,7 @@ public class BooleanValue implements Value {
 
     @Override
     public void acceptVisitor(ValueVisitor visitor) {
-        visitor.visit(this);
+        Preconditions.checkNotNull(visitor).visit(this);
     }
 
     public boolean booleanValue() {

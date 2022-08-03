@@ -34,7 +34,7 @@ public interface StateAcceptor<O, E extends Exception> {
         };
     }
 
-    boolean accept(InputSequenceReader inputSequence, O outputSequence) throws E;
+    boolean accept(InputSequenceReader reader, O outputChain) throws E;
 
     default Integer parseInDepth(InputSequenceReader inputSequence, Supplier<O> outputSimulation) {
         var output = outputSimulation.get();
@@ -84,8 +84,8 @@ public interface StateAcceptor<O, E extends Exception> {
 
         return new StateAcceptor<>() {
             @Override
-            public boolean accept(InputSequenceReader inputSequence, O outputSequence) throws E {
-                return old.accept(inputSequence, outputSequence);
+            public boolean accept(InputSequenceReader reader, O outputChain) throws E {
+                return old.accept(reader, outputChain);
             }
 
             @Override

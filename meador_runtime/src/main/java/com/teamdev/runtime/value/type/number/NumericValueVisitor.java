@@ -1,5 +1,6 @@
 package com.teamdev.runtime.value.type.number;
 
+import com.google.common.base.Preconditions;
 import com.teamdev.runtime.value.type.datastructure.DataStructureValue;
 import com.teamdev.runtime.value.type.string.StringValue;
 import com.teamdev.runtime.value.type.ValueVisitor;
@@ -12,7 +13,7 @@ public class NumericValueVisitor implements ValueVisitor {
 
     @Override
     public void visit(NumericValue value) {
-        this.value = value.numericValue();
+        this.value = Preconditions.checkNotNull(value).numericValue();
     }
 
     @Override

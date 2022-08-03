@@ -14,7 +14,7 @@ public class StringValue implements Value {
 
     @Override
     public void acceptVisitor(ValueVisitor visitor) {
-        visitor.visit(this);
+        Preconditions.checkNotNull(visitor).visit(this);
     }
 
     public String string() {

@@ -12,6 +12,7 @@ import com.teamdev.machine.operand.OperandMachine;
 import com.teamdev.machine.util.ValidatedFunctionFactoryImpl;
 import com.teamdev.runtime.value.MathBinaryOperatorFactoryImpl;
 import com.teamdev.runtime.value.ShuntingYard;
+import com.teamdev.runtime.value.type.Value;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -65,7 +66,7 @@ public class MathElementResolverFactoryImpl implements MathElementResolverFactor
 
         resolvers.put(FUNCTION, input -> {
 
-            var argument = new ResolveMathElementAcceptor<>(
+            var argument = new ResolveMathElementAcceptor<FunctionHolder<Value>>(
                     this,
                     EXPRESSION,
                     FunctionHolder::addArgument);
@@ -74,17 +75,16 @@ public class MathElementResolverFactoryImpl implements MathElementResolverFactor
 
             var functionFSM = FunctionMachine.create(argument,
                     new ExceptionThrower<>(ResolvingException::new));
-            var holder = new FunctionHolder();
+
+            var holder = new FunctionHolder<Value>();
 
             if (functionFSM.accept(input, holder) &&
                     factory.hasFunction(holder.functionName())) {
 
                 var function = factory.create(holder.functionName());
 
-                if (holder.arguments()
-                        .size() >= function.getMinArguments()
-                        && holder.arguments()
-                        .size() <= function.getMaxArguments()) {
+                if (holder.arguments().size() >= function.getMinArguments()
+                        && holder.arguments().size() <= function.getMaxArguments()) {
 
                     return Optional.of(function.apply(holder.arguments()));
                 }

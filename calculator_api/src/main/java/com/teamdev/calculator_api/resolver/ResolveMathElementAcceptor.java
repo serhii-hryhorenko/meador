@@ -26,11 +26,11 @@ public class ResolveMathElementAcceptor<O> implements StateAcceptor<O, Resolving
     }
 
     @Override
-    public boolean accept(InputSequenceReader inputSequence, O outputSequence) throws ResolvingException {
+    public boolean accept(InputSequenceReader reader, O outputChain) throws ResolvingException {
         var resolver = factory.create(element);
 
-        var optionalResult = resolver.resolve(inputSequence);
-        optionalResult.ifPresent(value -> resultConsumer.accept(outputSequence, value));
+        var optionalResult = resolver.resolve(reader);
+        optionalResult.ifPresent(value -> resultConsumer.accept(outputChain, value));
 
         return optionalResult.isPresent();
     }

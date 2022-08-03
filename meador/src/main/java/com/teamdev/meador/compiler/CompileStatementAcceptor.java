@@ -26,12 +26,12 @@ public class CompileStatementAcceptor<O> implements StateAcceptor<O, CompilingEx
     }
 
     @Override
-    public boolean accept(InputSequenceReader inputSequence, O outputSequence) throws CompilingException {
+    public boolean accept(InputSequenceReader reader, O outputChain) throws CompilingException {
         var compiler = factory.create(type);
 
-        var optionalCommand = compiler.compile(inputSequence);
+        var optionalCommand = compiler.compile(reader);
 
-        optionalCommand.ifPresent(command -> resultConsumer.accept(outputSequence, command));
+        optionalCommand.ifPresent(command -> resultConsumer.accept(outputChain, command));
 
         return optionalCommand.isPresent();
     }

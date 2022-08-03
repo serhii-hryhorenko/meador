@@ -15,9 +15,9 @@ import com.teamdev.runtime.value.RelativeBinaryOperatorFactory;
 /**
  * {@link FiniteStateMachine} implementation for recognizing relational expressions in Meador programs.
  */
-public class RelationalExpressionMachine extends FiniteStateMachine<RelationalExpressionContext, CompilingException> {
+public class RelationalExpressionMachine extends FiniteStateMachine<RelationalExpressionOutputChain, CompilingException> {
 
-    protected RelationalExpressionMachine(TransitionMatrix<RelationalExpressionContext, CompilingException> transitionMatrix,
+    protected RelationalExpressionMachine(TransitionMatrix<RelationalExpressionOutputChain, CompilingException> transitionMatrix,
                                           ExceptionThrower<CompilingException> thrower) {
         super(transitionMatrix, thrower);
     }
@@ -25,24 +25,24 @@ public class RelationalExpressionMachine extends FiniteStateMachine<RelationalEx
     public static RelationalExpressionMachine create(ProgramElementCompilerFactory factory) {
         Preconditions.checkNotNull(factory);
 
-        var left = new State.Builder<RelationalExpressionContext, CompilingException>()
+        var left = new State.Builder<RelationalExpressionOutputChain, CompilingException>()
                 .setName("LEFT EXPRESSION")
                 .setAcceptor(new CompileStatementAcceptor<>(factory,
                         ProgramElement.NUMERIC_EXPRESSION,
-                        RelationalExpressionContext::setLeft))
+                        RelationalExpressionOutputChain::setLeft))
                 .setTemporary()
                 .build();
 
-        var relationOperator = new State.Builder<RelationalExpressionContext, CompilingException>()
+        var relationOperator = new State.Builder<RelationalExpressionOutputChain, CompilingException>()
                 .setName("RELATION OPERATOR")
-                .setAcceptor(new OperatorAcceptor<>(new RelativeBinaryOperatorFactory(), RelationalExpressionContext::setOperator))
+                .setAcceptor(new OperatorAcceptor<>(new RelativeBinaryOperatorFactory(), RelationalExpressionOutputChain::setOperator))
                 .build();
 
-        var right = new State.Builder<RelationalExpressionContext, CompilingException>()
+        var right = new State.Builder<RelationalExpressionOutputChain, CompilingException>()
                 .setName("RIGHT EXPRESSION")
                 .setAcceptor(new CompileStatementAcceptor<>(factory,
                         ProgramElement.NUMERIC_EXPRESSION,
-                        RelationalExpressionContext::setRight))
+                        RelationalExpressionOutputChain::setRight))
                 .setFinal()
                 .build();
 

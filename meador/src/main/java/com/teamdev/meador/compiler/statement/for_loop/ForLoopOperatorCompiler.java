@@ -9,7 +9,7 @@ import com.teamdev.meador.fsmimpl.for_loop.ForLoopOperatorMachine;
 import com.teamdev.meador.fsmimpl.for_loop.ForLoopOperatorOutputChain;
 import com.teamdev.runtime.Command;
 import com.teamdev.runtime.RuntimeEnvironment;
-import com.teamdev.runtime.value.type.bool.BooleanVisitor;
+import com.teamdev.runtime.value.type.bool.BooleanValueVisitor;
 import com.teamdev.runtime.value.type.Value;
 
 import java.util.Optional;
@@ -50,7 +50,7 @@ public class ForLoopOperatorCompiler implements ProgramElementCompiler {
                     booleanExpression.execute(runtimeEnvironment);
                     Value condition = runtimeEnvironment.stack().peek().popResult();
 
-                    var visitor = new BooleanVisitor();
+                    var visitor = new BooleanValueVisitor();
                     condition.acceptVisitor(visitor);
 
                     return visitor.value();
