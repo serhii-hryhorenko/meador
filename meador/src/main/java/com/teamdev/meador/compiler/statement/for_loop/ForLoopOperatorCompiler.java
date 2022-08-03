@@ -22,6 +22,7 @@ import java.util.Optional;
  * See details {@link ForLoopOperatorMachine}.
  */
 public class ForLoopOperatorCompiler implements ProgramElementCompiler {
+    private static final int MAX_ITERATIONS = 1000;
 
     private final ProgramElementCompilerFactory factory;
 
@@ -39,9 +40,15 @@ public class ForLoopOperatorCompiler implements ProgramElementCompiler {
                 public void execute(RuntimeEnvironment runtimeEnvironment) {
                     outputChain.variableDeclaration().execute(runtimeEnvironment);
 
+                    int iterations = 0;
+
                     while (checkCondition(runtimeEnvironment, outputChain.repeatCondition())) {
                         outputChain.loopBody().execute(runtimeEnvironment);
                         outputChain.updateVariableStatement().execute(runtimeEnvironment);
+
+                        if (++iterations == MAX_ITERATIONS) {
+                            throw new IllegalStateException("Infinite loop detected.");
+                        }
                     }
                 }
 

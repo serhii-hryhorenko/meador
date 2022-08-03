@@ -125,7 +125,13 @@ public class ForLoopOperatorTest extends MeadorTest {
                         for (i = 0; i < 4; i = i + 1;)
                              print(i);
                         }
-                        """, "Omitted curly bracket of loop body was ignored.")
+                        """, "Omitted curly bracket of loop body was ignored."),
+
+                of("""
+                        for (i = 0; true; i = 0;) {
+                            flush();
+                        }
+                        """, "Infinite loop is not detected.")
         );
     }
 }
