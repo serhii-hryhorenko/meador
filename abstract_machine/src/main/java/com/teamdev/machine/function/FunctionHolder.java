@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Util output sequence class for collecting interpreted input from {@link FunctionFSM}.
+ * Util output sequence class for collecting interpreted input from {@link FunctionMachine}.
  */
 public class FunctionHolder {
 

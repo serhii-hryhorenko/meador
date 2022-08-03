@@ -5,7 +5,7 @@ import com.teamdev.calculator_api.resolver.MathElementResolverFactory;
 import com.teamdev.calculator_api.resolver.ResolvingException;
 import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.runtime.value.ShuntingYard;
-import com.teamdev.runtime.value.type.DoubleValueVisitor;
+import com.teamdev.runtime.value.type.number.NumericValueVisitor;
 import com.teamdev.runtime.value.type.Value;
 
 /**
@@ -35,7 +35,7 @@ public class Calculator {
 
     public Output calculate(MathExpression expression) throws InvalidExpressionException {
         Preconditions.checkNotNull(expression);
-        var calculatorFSM = CalculatorFSM.create(factory);
+        var calculatorFSM = CalculatorMachine.create(factory);
 
         var inputChain = new InputSequenceReader(expression.getSource());
         var outputChain = new ShuntingYard();
@@ -50,7 +50,7 @@ public class Calculator {
         }
 
         Value value = outputChain.popResult();
-        DoubleValueVisitor visitor = new DoubleValueVisitor();
+        NumericValueVisitor visitor = new NumericValueVisitor();
         value.acceptVisitor(visitor);
         return new Output(visitor.value());
     }

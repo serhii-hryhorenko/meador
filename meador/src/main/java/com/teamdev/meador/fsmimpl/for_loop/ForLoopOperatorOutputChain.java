@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import com.teamdev.runtime.Command;
 
 /**
- * Output chain for {@link ForLoopOperatorFSM}.
+ * Output chain for {@link ForLoopOperatorMachine}.
  */
 public class ForLoopOperatorOutputChain {
 

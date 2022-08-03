@@ -3,24 +3,24 @@ package com.teamdev.meador.compiler.statement.function;
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.ExceptionThrower;
 import com.teamdev.fsm.InputSequenceReader;
-import com.teamdev.machine.function.FunctionFSM;
+import com.teamdev.machine.function.FunctionMachine;
 import com.teamdev.machine.function.ValidatedFunctionFactory;
 import com.teamdev.meador.compiler.CompilingException;
-import com.teamdev.meador.compiler.StatementCompiler;
-import com.teamdev.meador.compiler.StatementCompilerFactory;
+import com.teamdev.meador.compiler.ProgramElementCompiler;
+import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
 import com.teamdev.runtime.Command;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.teamdev.meador.compiler.StatementType.NUMERIC_EXPRESSION;
+import static com.teamdev.meador.compiler.ProgramElement.NUMERIC_EXPRESSION;
 
-public class FunctionCompiler implements StatementCompiler {
+public class FunctionCompiler implements ProgramElementCompiler {
 
-    private final StatementCompilerFactory compilerFactory;
+    private final ProgramElementCompilerFactory compilerFactory;
     private final ValidatedFunctionFactory functionFactory;
 
-    public FunctionCompiler(StatementCompilerFactory compilerFactory,
+    public FunctionCompiler(ProgramElementCompilerFactory compilerFactory,
                             ValidatedFunctionFactory functionFactory) {
 
         this.compilerFactory = Preconditions.checkNotNull(compilerFactory);
@@ -28,9 +28,9 @@ public class FunctionCompiler implements StatementCompiler {
     }
 
     @Override
-    public Optional<Command> compile(InputSequenceReader input) throws CompilingException {
+    public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
 
-        var functionFSM = FunctionFSM.<CompileFunctionContext, CompilingException>create(
+        var functionFSM = FunctionMachine.<CompileFunctionContext, CompilingException>create(
                 (inputSequence, outputSequence) -> {
 
                     var optionalCommand = compilerFactory.create(NUMERIC_EXPRESSION)
@@ -46,7 +46,7 @@ public class FunctionCompiler implements StatementCompiler {
 
         var context = new CompileFunctionContext();
 
-        if (functionFSM.accept(input, context) &&
+        if (functionFSM.accept(reader, context) &&
                 functionFactory.hasFunction(context.functionName())) {
 
             var function = functionFactory.create(context.functionName());

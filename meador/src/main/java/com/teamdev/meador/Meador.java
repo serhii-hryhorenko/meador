@@ -5,7 +5,7 @@ import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.runtime.RuntimeEnvironment;
 
 /**
- * Entry point for Meador user. Takes users {@link Program} and returns a system output as a result of executing.
+ * Entry point for Meador programmer. Takes user's {@link Program} and returns a system output as a result of executing.
  */
 public class Meador {
     public Output execute(Program program) throws InvalidProgramException {

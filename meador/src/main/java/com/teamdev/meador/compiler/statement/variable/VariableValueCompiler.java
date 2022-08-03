@@ -3,34 +3,31 @@ package com.teamdev.meador.compiler.statement.variable;
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.ExceptionThrower;
 import com.teamdev.fsm.InputSequenceReader;
-import com.teamdev.machine.util.TextIdentifierFSM;
+import com.teamdev.machine.util.TextIdentifierMachine;
 import com.teamdev.meador.compiler.CompilingException;
-import com.teamdev.meador.compiler.StatementCompiler;
+import com.teamdev.meador.compiler.ProgramElementCompiler;
 import com.teamdev.runtime.Command;
 
 import java.util.Optional;
 
-public class VariableValueCompiler implements StatementCompiler {
+public class VariableValueCompiler implements ProgramElementCompiler {
 
     @Override
-    public Optional<Command> compile(InputSequenceReader inputSequence) throws CompilingException {
+    public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
+        var optionalName = TextIdentifierMachine.parseIdentifier(reader,
+                new ExceptionThrower<>(CompilingException::new));
 
-        var variableName = new StringBuilder(16);
-        if (TextIdentifierFSM.create(new ExceptionThrower<>(CompilingException::new))
-                .accept(inputSequence, variableName)) {
+        return optionalName.map(variableName -> runtimeEnvironment -> {
 
-            return Optional.of(runtimeEnvironment -> {
-                var value = runtimeEnvironment
-                        .memory()
-                        .getVariable(variableName.toString());
+            var value = runtimeEnvironment
+                    .memory()
+                    .getVariable(variableName);
 
-                runtimeEnvironment.stack()
-                        .peek()
-                        .pushOperand(value);
-            });
-        }
+            runtimeEnvironment.stack()
+                    .peek()
+                    .pushOperand(value);
+        });
 
-        return Optional.empty();
     }
 
     public Optional<Command> compile(String variableName) {

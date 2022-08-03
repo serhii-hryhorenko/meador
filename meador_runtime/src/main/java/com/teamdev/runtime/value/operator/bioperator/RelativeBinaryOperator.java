@@ -1,8 +1,8 @@
 package com.teamdev.runtime.value.operator.bioperator;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.runtime.value.type.BooleanValue;
-import com.teamdev.runtime.value.type.DoubleValueVisitor;
+import com.teamdev.runtime.value.type.bool.BooleanValue;
+import com.teamdev.runtime.value.type.number.NumericValueVisitor;
 import com.teamdev.runtime.value.type.Value;
 
 import java.util.function.BiPredicate;
@@ -21,7 +21,7 @@ public class RelativeBinaryOperator extends AbstractBinaryOperator {
 
     @Override
     public Value apply(Value a, Value b) {
-        var visitor = new DoubleValueVisitor();
+        var visitor = new NumericValueVisitor();
 
         a.acceptVisitor(visitor);
         double one = visitor.value();

@@ -2,21 +2,21 @@ package com.teamdev.meador.compiler.statement.expression.string;
 
 import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.meador.compiler.CompilingException;
-import com.teamdev.meador.compiler.StatementCompiler;
-import com.teamdev.meador.fsmimpl.expression.string.StringLiteralFSM;
+import com.teamdev.meador.compiler.ProgramElementCompiler;
+import com.teamdev.meador.fsmimpl.expression.string.StringLiteralMachine;
 import com.teamdev.meador.fsmimpl.expression.string.StringLiteralOutputChain;
 import com.teamdev.runtime.Command;
-import com.teamdev.runtime.value.type.StringValue;
+import com.teamdev.runtime.value.type.string.StringValue;
 
 import java.util.Optional;
 
-public class StringLiteralCompiler implements StatementCompiler {
+public class StringLiteralCompiler implements ProgramElementCompiler {
 
     @Override
     public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
         var outputChain = new StringLiteralOutputChain();
 
-        if (StringLiteralFSM.create().accept(reader, outputChain)) {
+        if (StringLiteralMachine.create().accept(reader, outputChain)) {
             return Optional.of(runtimeEnvironment ->
                     runtimeEnvironment.stack().peek().pushOperand(new StringValue(outputChain.string())));
         }

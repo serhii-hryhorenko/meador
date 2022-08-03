@@ -3,45 +3,46 @@ package com.teamdev.meador.compiler.statement.procedure;
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.ExceptionThrower;
 import com.teamdev.fsm.InputSequenceReader;
-import com.teamdev.machine.function.FunctionFSM;
+import com.teamdev.fsm.StateAcceptor;
+import com.teamdev.machine.function.FunctionMachine;
 import com.teamdev.meador.ValidatedProcedureFactoryImpl;
 import com.teamdev.meador.compiler.CompileStatementAcceptor;
 import com.teamdev.meador.compiler.CompilingException;
-import com.teamdev.meador.compiler.StatementCompiler;
-import com.teamdev.meador.compiler.StatementCompilerFactory;
+import com.teamdev.meador.compiler.ProgramElementCompiler;
+import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
 import com.teamdev.meador.compiler.statement.function.CompileFunctionContext;
 import com.teamdev.runtime.Command;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.teamdev.meador.compiler.StatementType.EXPRESSION;
+import static com.teamdev.meador.compiler.ProgramElement.EXPRESSION;
 
 /**
- * {@link StatementCompiler} implementation for compiling procedure statements.
- * Uses {@link FunctionFSM} for filling {@link CompileFunctionContext} output chain.
+ * {@link ProgramElementCompiler} implementation for compiling procedure statements.
+ * Uses {@link FunctionMachine} for filling {@link CompileFunctionContext} output chain.
  */
-public class ProcedureCompiler implements StatementCompiler {
+public class ProcedureCompiler implements ProgramElementCompiler {
 
-    private final StatementCompilerFactory compilerFactory;
+    private final ProgramElementCompilerFactory compilerFactory;
 
     private final ValidatedProcedureFactory factory = new ValidatedProcedureFactoryImpl();
 
-    public ProcedureCompiler(StatementCompilerFactory factory) {
+    public ProcedureCompiler(ProgramElementCompilerFactory factory) {
         this.compilerFactory = Preconditions.checkNotNull(factory);
     }
 
     @Override
-    public Optional<Command> compile(InputSequenceReader input) throws CompilingException {
+    public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
 
-        var functionFSM = FunctionFSM.create(
+        var functionFSM = FunctionMachine.create(
                 new CompileStatementAcceptor<>(compilerFactory, EXPRESSION, CompileFunctionContext::addCommand),
-                new ExceptionThrower<>(CompilingException::new)
-        );
+                new ExceptionThrower<>(CompilingException::new))
+                .and(StateAcceptor.acceptChar(';'));
 
         var context = new CompileFunctionContext();
 
-        if (functionFSM.accept(input, context) &&
+        if (functionFSM.accept(reader, context) &&
                 factory.hasProcedure(context.functionName())) {
 
             var procedure = factory.create(context.functionName());
@@ -64,7 +65,7 @@ public class ProcedureCompiler implements StatementCompiler {
                                         .pop()
                                         .popResult();
                             })
-                            .collect(Collectors.toUnmodifiableList());
+                            .toList();
 
                     procedure.accept(values, runtimeEnvironment);
                 });

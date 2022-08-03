@@ -14,7 +14,8 @@ import java.util.Optional;
  * Compiles a certain Meador statement on detached {@link ShuntingYard} and puts a result
  * of computation on a top stack.
  */
-public class DetachedStackStatementCompiler implements StatementCompiler {
+public class DetachedStackStatementCompiler implements ProgramElementCompiler {
+
     private final StateAcceptor<List<Command>, CompilingException> machine;
 
     public DetachedStackStatementCompiler(StateAcceptor<List<Command>, CompilingException> machine) {
@@ -22,11 +23,11 @@ public class DetachedStackStatementCompiler implements StatementCompiler {
     }
 
     @Override
-    public Optional<Command> compile(InputSequenceReader inputSequence) throws CompilingException {
+    public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
 
         List<Command> outputSequence = new ArrayList<>();
 
-        if (machine.accept(inputSequence, outputSequence)) {
+        if (machine.accept(reader, outputSequence)) {
             return Optional.of(runtimeEnvironment -> {
 
                 runtimeEnvironment.stack().create();

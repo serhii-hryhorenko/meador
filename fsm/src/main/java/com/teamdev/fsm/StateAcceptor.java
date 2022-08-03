@@ -21,8 +21,11 @@ public interface StateAcceptor<O, E extends Exception> {
 
     static <O, E extends Exception> StateAcceptor<O, E> acceptChar(Character... chars) {
         return (inputSequence, outputSequence) -> {
-            if (inputSequence.canRead() && List.of(chars)
-                    .contains(inputSequence.read())) {
+            if (inputSequence.canRead() && List.of(chars).contains(inputSequence.read())) {
+                if (logger.isInfoEnabled()) {
+                    logger.info("Parsed {} symbol.", inputSequence.read());
+                }
+
                 inputSequence.next();
                 return true;
             }
