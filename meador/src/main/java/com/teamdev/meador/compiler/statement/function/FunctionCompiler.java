@@ -64,7 +64,8 @@ public class FunctionCompiler implements ProgramElementCompiler {
                                 value.execute(runtimeEnvironment);
 
                                 return runtimeEnvironment.stack().pop().popResult();
-                            }).toList();
+                            })
+                            .toList();
 
                     runtimeEnvironment.stack().peek().pushOperand(function.apply(doubles));
                 });

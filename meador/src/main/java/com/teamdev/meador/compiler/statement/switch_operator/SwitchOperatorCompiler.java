@@ -14,7 +14,7 @@ import java.util.Optional;
 /**
  * {@link ProgramElementCompiler} implementation for {@code switch} Meador operator.
  */
-public final class SwitchOperatorCompiler implements ProgramElementCompiler {
+public class SwitchOperatorCompiler implements ProgramElementCompiler {
     private final ProgramElementCompilerFactoryImpl compilerFactory;
 
     public SwitchOperatorCompiler(ProgramElementCompilerFactoryImpl compilerFactory) {
@@ -29,17 +29,18 @@ public final class SwitchOperatorCompiler implements ProgramElementCompiler {
             return Optional.of(runtimeEnvironment -> {
 
                 runtimeEnvironment.stack().create();
-                context.value().execute(runtimeEnvironment);
-
-                Value matchedValue = runtimeEnvironment.stack().pop().popResult();
+                context.mappedValue().execute(runtimeEnvironment);
+                Value mappedValue = runtimeEnvironment.stack().pop().popResult();
 
                 context.options().stream()
                         .filter(switchOptionContext -> {
                             Command condition = switchOptionContext.condition();
+
                             runtimeEnvironment.stack().create();
                             condition.execute(runtimeEnvironment);
                             Value conditionValue = runtimeEnvironment.stack().pop().popResult();
-                            return matchedValue.equals(conditionValue);
+
+                            return mappedValue.equals(conditionValue);
                         })
                         .findFirst()
                         .ifPresentOrElse(switchOptionContext -> switchOptionContext.statement().execute(runtimeEnvironment),

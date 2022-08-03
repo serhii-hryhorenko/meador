@@ -19,13 +19,9 @@ public class VariableValueCompiler implements ProgramElementCompiler {
 
         return optionalName.map(variableName -> runtimeEnvironment -> {
 
-            var value = runtimeEnvironment
-                    .memory()
-                    .getVariable(variableName);
+            var value = runtimeEnvironment.memory().getVariable(variableName);
 
-            runtimeEnvironment.stack()
-                    .peek()
-                    .pushOperand(value);
+            runtimeEnvironment.stack().peek().pushOperand(value);
         });
 
     }
@@ -33,13 +29,9 @@ public class VariableValueCompiler implements ProgramElementCompiler {
     public Optional<Command> compile(String variableName) {
         return Optional.of(runtimeEnvironment -> {
 
-            var variable = runtimeEnvironment
-                    .memory()
-                    .getVariable(Preconditions.checkNotNull(variableName));
+            var variable = runtimeEnvironment.memory().getVariable(Preconditions.checkNotNull(variableName));
 
-            runtimeEnvironment.stack()
-                    .peek()
-                    .pushOperand(variable);
+            runtimeEnvironment.stack().peek().pushOperand(variable);
         });
     }
 }

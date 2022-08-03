@@ -17,7 +17,7 @@ import java.util.Optional;
 /**
  * {@link ProgramElementCompiler} implementation for creating commands of Meador {@code for} loops.
  * Variable declaration is required.
- * The loop body is not executed if repeat condition is failed.
+ * The loop body is not executed if repeat condition is false.
  * Update variable statement is a usual variable declaration.
  * See details {@link ForLoopOperatorMachine}.
  */
@@ -48,7 +48,7 @@ public class ForLoopOperatorCompiler implements ProgramElementCompiler {
                 private boolean checkCondition(RuntimeEnvironment runtimeEnvironment, Command booleanExpression) {
                     runtimeEnvironment.stack().create();
                     booleanExpression.execute(runtimeEnvironment);
-                    Value condition = runtimeEnvironment.stack().peek().popResult();
+                    Value condition = runtimeEnvironment.stack().pop().popResult();
 
                     var visitor = new BooleanValueVisitor();
                     condition.acceptVisitor(visitor);

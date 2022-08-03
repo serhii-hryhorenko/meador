@@ -53,7 +53,7 @@ public class SwitchOperatorMachine extends FiniteStateMachine<SwitchOperatorOutp
 
         var expressionToMatch = new State.Builder<SwitchOperatorOutputChain, CompilingException>()
                 .setName("EXPRESSION TO MATCH")
-                .setAcceptor(new CompileStatementAcceptor<>(factory, READ_VARIABLE, SwitchOperatorOutputChain::setValueToMatch))
+                .setAcceptor(new CompileStatementAcceptor<>(factory, READ_VARIABLE, SwitchOperatorOutputChain::setMappedValue))
                 .build();
 
         var closeBracket = new State.Builder<SwitchOperatorOutputChain, CompilingException>()

@@ -36,8 +36,8 @@ public interface StateAcceptor<O, E extends Exception> {
 
     boolean accept(InputSequenceReader reader, O outputChain) throws E;
 
-    default Integer parseInDepth(InputSequenceReader inputSequence, Supplier<O> outputSimulation) {
-        var output = outputSimulation.get();
+    default int parseInDepth(InputSequenceReader inputSequence, Supplier<O> outputChainSupplier) {
+        var output = outputChainSupplier.get();
         final int startPosition = inputSequence.getPosition();
 
         inputSequence.savePosition();

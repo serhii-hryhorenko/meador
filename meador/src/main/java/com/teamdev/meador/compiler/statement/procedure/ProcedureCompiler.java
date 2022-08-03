@@ -53,14 +53,11 @@ public class ProcedureCompiler implements ProgramElementCompiler {
                     var values = context.arguments()
                             .stream()
                             .map(value -> {
-                                runtimeEnvironment.stack()
-                                        .create();
+                                runtimeEnvironment.stack().create();
 
                                 value.execute(runtimeEnvironment);
 
-                                return runtimeEnvironment.stack()
-                                        .pop()
-                                        .popResult();
+                                return runtimeEnvironment.stack().pop().popResult();
                             })
                             .toList();
 

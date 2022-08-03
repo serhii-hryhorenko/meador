@@ -12,15 +12,15 @@ import java.util.List;
  */
 public class SwitchOperatorOutputChain {
     private final List<SwitchOptionContext> options = new ArrayList<>();
-    private Command valueToMatch;
+    private Command mappedValue;
     private Command defaultCommand;
 
-    public Command value() {
-        return Preconditions.checkNotNull(valueToMatch);
+    public Command mappedValue() {
+        return Preconditions.checkNotNull(mappedValue);
     }
 
-    public void setValueToMatch(Command valueToMatch) {
-        this.valueToMatch = Preconditions.checkNotNull(valueToMatch);
+    public void setMappedValue(Command mappedValue) {
+        this.mappedValue = Preconditions.checkNotNull(mappedValue);
     }
 
     public List<SwitchOptionContext> options() {

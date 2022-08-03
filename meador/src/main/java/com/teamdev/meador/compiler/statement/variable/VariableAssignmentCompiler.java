@@ -8,6 +8,7 @@ import com.teamdev.meador.compiler.ProgramElementCompiler;
 import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
 import com.teamdev.meador.fsmimpl.variable.VariableDeclarationMachine;
 import com.teamdev.runtime.Command;
+import com.teamdev.runtime.value.type.Value;
 import com.teamdev.runtime.variable.VariableHolder;
 
 import java.util.Optional;
@@ -27,11 +28,7 @@ public class VariableAssignmentCompiler implements ProgramElementCompiler {
     @Override
     public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
         var variableMachine = VariableDeclarationMachine.create(
-                new CompileStatementAcceptor<>(factory,
-                        EXPRESSION,
-                        VariableHolder::setCommand));
-
-
+                new CompileStatementAcceptor<>(factory, EXPRESSION, VariableHolder::setCommand));
 
         var builder = new VariableHolder();
 
@@ -39,14 +36,10 @@ public class VariableAssignmentCompiler implements ProgramElementCompiler {
             return Optional.of(runtimeEnvironment -> {
 
                 runtimeEnvironment.stack().create();
-
                 builder.command().execute(runtimeEnvironment);
+                Value variableValue = runtimeEnvironment.stack().pop().popResult();
 
-                runtimeEnvironment.memory()
-                        .putVariable(builder.name(),
-                                runtimeEnvironment.stack()
-                                        .pop()
-                                        .popResult());
+                runtimeEnvironment.memory().putVariable(builder.name(), variableValue);
             });
         }
 

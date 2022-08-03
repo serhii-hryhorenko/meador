@@ -26,6 +26,7 @@ public final class SystemStack {
     }
 
     public ShuntingYard pop() {
+        Preconditions.checkState(!stack.isEmpty());
         return stack.pop();
     }
 }

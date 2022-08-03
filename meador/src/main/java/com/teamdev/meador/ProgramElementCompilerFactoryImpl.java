@@ -164,7 +164,7 @@ public class ProgramElementCompilerFactoryImpl implements ProgramElementCompiler
 
         compilers.put(NUMBER, numberAcceptor.get());
 
-        compilers.put(SWITCH, new SwitchOperatorCompiler(this));
+        compilers.put(SWITCH_OPERATOR, new SwitchOperatorCompiler(this));
 
         compilers.put(EXPRESSION, expressionAcceptor.get());
 
@@ -198,7 +198,7 @@ public class ProgramElementCompilerFactoryImpl implements ProgramElementCompiler
 
         compilers.put(STRING_EXPRESSION, new DetachedStackStatementCompiler(stringExpression.get()));
 
-        compilers.put(FOR, new ForLoopOperatorCompiler(this));
+        compilers.put(FOR_LOOP, new ForLoopOperatorCompiler(this));
 
         compilers.put(UNARY_PREFIX_EXPRESSION, new UnaryPrefixExpressionCompiler(this, new UnaryOperatorFactory()));
 
