@@ -1,7 +1,7 @@
 package com.teamdev.runtime.value;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.runtime.value.bioperator.StringBinaryOperator;
+import com.teamdev.runtime.value.operator.bioperator.StringBinaryOperator;
 import com.teamdev.runtime.value.operator.AbstractOperatorFactory;
 import com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperator;
 

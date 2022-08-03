@@ -4,35 +4,35 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.meador.compiler.CompilingException;
-import com.teamdev.meador.compiler.StatementCompiler;
-import com.teamdev.meador.compiler.StatementCompilerFactory;
-import com.teamdev.meador.fsmimpl.conditional_operator.ConditionalOperatorContext;
-import com.teamdev.meador.fsmimpl.conditional_operator.ConditionalOperatorFSM;
-import com.teamdev.meador.fsmimpl.conditional_operator.IfOperatorContext;
+import com.teamdev.meador.compiler.ProgramElementCompiler;
+import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
+import com.teamdev.meador.fsmimpl.conditional_operator.ConditionalOperatorOutputChain;
+import com.teamdev.meador.fsmimpl.conditional_operator.ConditionalOperatorMachine;
+import com.teamdev.meador.fsmimpl.conditional_operator.IfOperatorOutputChain;
 import com.teamdev.runtime.Command;
-import com.teamdev.runtime.value.type.BooleanVisitor;
+import com.teamdev.runtime.value.type.bool.BooleanVisitor;
 import com.teamdev.runtime.value.type.Value;
 
 import java.util.Optional;
 
-public class ConditionalOperatorCompiler implements StatementCompiler {
+public class ConditionalOperatorCompiler implements ProgramElementCompiler {
 
-    private final StatementCompilerFactory factory;
+    private final ProgramElementCompilerFactory factory;
 
-    public ConditionalOperatorCompiler(StatementCompilerFactory factory) {
+    public ConditionalOperatorCompiler(ProgramElementCompilerFactory factory) {
         this.factory = Preconditions.checkNotNull(factory);
     }
 
     @Override
-    public Optional<Command> compile(InputSequenceReader inputSequence) throws CompilingException {
-        var context = new ConditionalOperatorContext();
+    public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
+        var context = new ConditionalOperatorOutputChain();
 
-        if (ConditionalOperatorFSM.create(factory).accept(inputSequence, context)) {
+        if (ConditionalOperatorMachine.create(factory).accept(reader, context)) {
             return Optional.of(runtimeEnvironment -> {
                 var booleanVisitor = new BooleanVisitor();
 
                 context.ifOperators().stream()
-                        .filter((Predicate<IfOperatorContext>) input -> {
+                        .filter((Predicate<IfOperatorOutputChain>) input -> {
                             runtimeEnvironment.stack().create();
                             input.condition().execute(runtimeEnvironment);
                             Value conditionValue = runtimeEnvironment.stack().pop().popResult();

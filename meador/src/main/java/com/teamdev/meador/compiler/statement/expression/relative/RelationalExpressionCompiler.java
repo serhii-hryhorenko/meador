@@ -1,33 +1,33 @@
 package com.teamdev.meador.compiler.statement.expression.relative;
 
 import com.teamdev.fsm.InputSequenceReader;
-import com.teamdev.meador.StatementCompilerFactoryImpl;
+import com.teamdev.meador.ProgramElementCompilerFactoryImpl;
 import com.teamdev.meador.compiler.CompilingException;
-import com.teamdev.meador.compiler.StatementCompiler;
+import com.teamdev.meador.compiler.ProgramElementCompiler;
 import com.teamdev.meador.fsmimpl.expression.relative.RelationalExpressionContext;
-import com.teamdev.meador.fsmimpl.expression.relative.RelationalExpressionFSM;
+import com.teamdev.meador.fsmimpl.expression.relative.RelationalExpressionMachine;
 import com.teamdev.runtime.Command;
 import com.teamdev.runtime.value.type.Value;
 
 import java.util.Optional;
 
 /**
- * {@link StatementCompiler} implementation for compiling Meador relational expressions.
+ * {@link ProgramElementCompiler} implementation for compiling Meador relational expressions.
  */
-public class RelationalExpressionCompiler implements StatementCompiler {
-    private final StatementCompilerFactoryImpl compilerFactory;
+public class RelationalExpressionCompiler implements ProgramElementCompiler {
+    private final ProgramElementCompilerFactoryImpl compilerFactory;
 
-    public RelationalExpressionCompiler(StatementCompilerFactoryImpl compilerFactory) {
+    public RelationalExpressionCompiler(ProgramElementCompilerFactoryImpl compilerFactory) {
         this.compilerFactory = compilerFactory;
     }
 
     @Override
-    public Optional<Command> compile(InputSequenceReader inputSequence) throws CompilingException {
-        var relationalExpressionFSM = RelationalExpressionFSM.create(compilerFactory);
+    public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
+        var relationalExpressionFSM = RelationalExpressionMachine.create(compilerFactory);
 
         var context = new RelationalExpressionContext();
 
-        if (relationalExpressionFSM.accept(inputSequence, context)) {
+        if (relationalExpressionFSM.accept(reader, context)) {
             return Optional.of(runtimeEnvironment -> {
                 runtimeEnvironment.stack().create();
 

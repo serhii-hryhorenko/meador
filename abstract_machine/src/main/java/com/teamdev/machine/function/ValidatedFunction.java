@@ -2,8 +2,8 @@ package com.teamdev.machine.function;
 
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.InputSequenceReader;
-import com.teamdev.runtime.value.type.DoubleValue;
-import com.teamdev.runtime.value.type.DoubleValueVisitor;
+import com.teamdev.runtime.value.type.number.NumericValue;
+import com.teamdev.runtime.value.type.number.NumericValueVisitor;
 import com.teamdev.runtime.value.type.Value;
 
 import java.util.List;
@@ -39,14 +39,13 @@ public class ValidatedFunction implements Function<List<Value>, Value> {
     public Value apply(List<Value> values) {
         var doubles = values.stream()
                 .mapToDouble(value -> {
-                    var visitor = new DoubleValueVisitor();
+                    var visitor = new NumericValueVisitor();
                     value.acceptVisitor(visitor);
                     return visitor.value();
                 })
-                .boxed()
-                .collect(Collectors.toUnmodifiableList());
+                .boxed().toList();
 
-        return new DoubleValue(function.apply(doubles));
+        return new NumericValue(function.apply(doubles));
     }
 
     public static class Builder {

@@ -38,7 +38,7 @@ public class ForLoopOperatorTest extends MeadorTest {
                 of("""
                                 a = 0;
                                                                 
-                                for (i = 4; i > 0; i = i - 1;){
+                                for (i = 4; i > 0; i = i - 1;) {
                                      print(i);
                                      a = a + 1;
                                 }

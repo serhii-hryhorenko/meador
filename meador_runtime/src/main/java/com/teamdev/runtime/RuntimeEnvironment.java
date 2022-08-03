@@ -6,7 +6,7 @@ import java.io.PrintStream;
 
 /**
  * Environment where a program is executed.
- * Provides an access to {@link Memory}, {@link SystemStack}, and IO.
+ * Provides access to {@link Memory}, {@link SystemStack}, and IO.
  */
 public class RuntimeEnvironment {
 
@@ -25,7 +25,6 @@ public class RuntimeEnvironment {
     public SystemStack stack() {
         return stack;
     }
-
 
     public PrintStream output() {
         return outputStream;

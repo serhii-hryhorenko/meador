@@ -13,12 +13,12 @@ import java.util.function.BiConsumer;
  * @param <O> custom output chain
  */
 public class CompileStatementAcceptor<O> implements StateAcceptor<O, CompilingException> {
-    private final StatementCompilerFactory factory;
-    private final StatementType type;
+    private final ProgramElementCompilerFactory factory;
+    private final ProgramElement type;
     private final BiConsumer<O, Command> resultConsumer;
 
-    public CompileStatementAcceptor(StatementCompilerFactory factory,
-                                    StatementType type,
+    public CompileStatementAcceptor(ProgramElementCompilerFactory factory,
+                                    ProgramElement type,
                                     BiConsumer<O, Command> resultConsumer) {
         this.factory = Preconditions.checkNotNull(factory);
         this.type = Preconditions.checkNotNull(type);

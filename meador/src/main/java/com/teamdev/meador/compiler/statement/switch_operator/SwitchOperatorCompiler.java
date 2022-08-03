@@ -2,30 +2,30 @@ package com.teamdev.meador.compiler.statement.switch_operator;
 
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.InputSequenceReader;
-import com.teamdev.meador.StatementCompilerFactoryImpl;
+import com.teamdev.meador.ProgramElementCompilerFactoryImpl;
 import com.teamdev.meador.compiler.CompilingException;
-import com.teamdev.meador.compiler.StatementCompiler;
-import com.teamdev.meador.fsmimpl.switch_operator.SwitchFSM;
+import com.teamdev.meador.compiler.ProgramElementCompiler;
+import com.teamdev.meador.fsmimpl.switch_operator.SwitchOperatorMachine;
 import com.teamdev.runtime.Command;
 import com.teamdev.runtime.value.type.Value;
 
 import java.util.Optional;
 
 /**
- * {@link StatementCompiler} implementation for {@code switch} Meador operator.
+ * {@link ProgramElementCompiler} implementation for {@code switch} Meador operator.
  */
-public final class SwitchOperatorCompiler implements StatementCompiler {
-    private final StatementCompilerFactoryImpl compilerFactory;
+public final class SwitchOperatorCompiler implements ProgramElementCompiler {
+    private final ProgramElementCompilerFactoryImpl compilerFactory;
 
-    public SwitchOperatorCompiler(StatementCompilerFactoryImpl compilerFactory) {
+    public SwitchOperatorCompiler(ProgramElementCompilerFactoryImpl compilerFactory) {
         this.compilerFactory = Preconditions.checkNotNull(compilerFactory);
     }
 
     @Override
-    public Optional<Command> compile(InputSequenceReader inputSequence) throws CompilingException {
-        var context = new SwitchContext();
+    public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
+        var context = new SwitchOperatorOutputChain();
 
-        if (SwitchFSM.create(compilerFactory).accept(inputSequence, context)) {
+        if (SwitchOperatorMachine.create(compilerFactory).accept(reader, context)) {
             return Optional.of(runtimeEnvironment -> {
 
                 runtimeEnvironment.stack().create();

@@ -3,12 +3,12 @@ package com.teamdev.calculator_api;
 import com.teamdev.calculator_api.resolver.*;
 import com.teamdev.fsm.ExceptionThrower;
 import com.teamdev.fsm.TransitionOneOfMatrixBuilder;
-import com.teamdev.machine.brackets.BracketsFSM;
-import com.teamdev.machine.expression.ExpressionFSM;
-import com.teamdev.machine.function.FunctionFSM;
+import com.teamdev.machine.brackets.BracketsMachine;
+import com.teamdev.machine.expression.ExpressionMachine;
+import com.teamdev.machine.function.FunctionMachine;
 import com.teamdev.machine.function.FunctionHolder;
-import com.teamdev.machine.number.NumberFSM;
-import com.teamdev.machine.operand.OperandFSM;
+import com.teamdev.machine.number.NumberMachine;
+import com.teamdev.machine.operand.OperandMachine;
 import com.teamdev.machine.util.ValidatedFunctionFactoryImpl;
 import com.teamdev.runtime.value.MathBinaryOperatorFactoryImpl;
 import com.teamdev.runtime.value.ShuntingYard;
@@ -26,14 +26,14 @@ public class MathElementResolverFactoryImpl implements MathElementResolverFactor
 
     public MathElementResolverFactoryImpl() {
 
-        resolvers.put(EXPRESSION, new ShuntingYardResolver(ExpressionFSM.create(
+        resolvers.put(EXPRESSION, new ShuntingYardResolver(ExpressionMachine.create(
                 new ResolveMathElementAcceptor<>(this, OPERAND, ShuntingYard::pushOperand),
                 new MathBinaryOperatorFactoryImpl(),
                 ShuntingYard::pushOperator,
                 new ExceptionThrower<>(ResolvingException::new)))
         );
 
-        resolvers.put(OPERAND, new ShuntingYardResolver(OperandFSM.create(
+        resolvers.put(OPERAND, new ShuntingYardResolver(OperandMachine.create(
                         new TransitionOneOfMatrixBuilder<ShuntingYard, ResolvingException>()
                                 .allowTransition(new ResolveMathElementAcceptor<>(this, NUMBER,
                                         ShuntingYard::pushOperand))
@@ -47,8 +47,8 @@ public class MathElementResolverFactoryImpl implements MathElementResolverFactor
         );
 
         resolvers.put(BRACKETS, new ShuntingYardResolver(
-                        BracketsFSM.create(
-                                ExpressionFSM.create(
+                        BracketsMachine.create(
+                                ExpressionMachine.create(
                                         new ResolveMathElementAcceptor<>(this,
                                                 EXPRESSION,
                                                 ShuntingYard::pushOperand),
@@ -60,7 +60,7 @@ public class MathElementResolverFactoryImpl implements MathElementResolverFactor
                 )
         );
 
-        resolvers.put(NUMBER, input -> NumberFSM.execute(input, new ExceptionThrower<>(
+        resolvers.put(NUMBER, input -> NumberMachine.execute(input, new ExceptionThrower<>(
                 ResolvingException::new)));
 
         resolvers.put(FUNCTION, input -> {
@@ -72,7 +72,7 @@ public class MathElementResolverFactoryImpl implements MathElementResolverFactor
 
             var factory = new ValidatedFunctionFactoryImpl();
 
-            var functionFSM = FunctionFSM.create(argument,
+            var functionFSM = FunctionMachine.create(argument,
                     new ExceptionThrower<>(ResolvingException::new));
             var holder = new FunctionHolder();
 

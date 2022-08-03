@@ -7,7 +7,7 @@ import com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperator;
 import java.util.Objects;
 
 /**
- * Output chain for {@link RelationalExpressionFSM}.
+ * Output chain for {@link RelationalExpressionMachine}.
  */
 public class RelationalExpressionContext {
     private Command left;
