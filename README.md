@@ -13,4 +13,4 @@ Already implemented features:
 5. `for` loop operator
 6. `string` type
     1. `string` literal
-    2. concatenation
+    2. Сoncatenation
