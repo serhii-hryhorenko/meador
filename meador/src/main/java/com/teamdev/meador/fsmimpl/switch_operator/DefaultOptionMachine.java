@@ -5,7 +5,7 @@ import com.teamdev.fsm.*;
 import com.teamdev.machine.util.TextIdentifierMachine;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
-import com.teamdev.meador.compiler.statement.switch_operator.SwitchOperatorOutputChain;
+import com.teamdev.meador.compiler.element.switch_operator.SwitchOperatorOutputChain;
 import com.teamdev.meador.fsmimpl.util.CodeBlockMachine;
 
 /**

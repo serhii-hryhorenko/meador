@@ -1,8 +1,8 @@
 package com.teamdev.meador;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.meador.compiler.statement.procedure.ValidatedProcedure;
-import com.teamdev.meador.compiler.statement.procedure.ValidatedProcedureFactory;
+import com.teamdev.meador.compiler.element.procedure.ValidatedProcedure;
+import com.teamdev.meador.compiler.element.procedure.ValidatedProcedureFactory;
 
 import java.util.HashMap;
 import java.util.Map;

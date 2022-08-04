@@ -7,7 +7,7 @@ import com.teamdev.meador.compiler.CompileStatementAcceptor;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
 import com.teamdev.meador.compiler.ProgramElement;
-import com.teamdev.meador.compiler.statement.switch_operator.CaseOptionOutputChain;
+import com.teamdev.meador.compiler.element.switch_operator.CaseOptionOutputChain;
 import com.teamdev.meador.fsmimpl.util.CodeBlockMachine;
 
 /**

@@ -5,8 +5,8 @@ import com.teamdev.fsm.*;
 import com.teamdev.machine.util.TextIdentifierMachine;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
-import com.teamdev.meador.compiler.statement.switch_operator.SwitchOperatorOutputChain;
-import com.teamdev.meador.compiler.statement.switch_operator.CaseOptionOutputChain;
+import com.teamdev.meador.compiler.element.switch_operator.SwitchOperatorOutputChain;
+import com.teamdev.meador.compiler.element.switch_operator.CaseOptionOutputChain;
 import com.teamdev.meador.fsmimpl.util.BracketedValueMachine;
 
 import static com.teamdev.meador.compiler.ProgramElement.READ_VARIABLE;

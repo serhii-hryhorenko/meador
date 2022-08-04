@@ -27,6 +27,8 @@ public class CompilerMachine {
                 new TransitionOneOfMatrixBuilder<List<Command>, CompilingException>()
                         .allowTransition(new CompileStatementAcceptor<List<Command>>(factory, CONDITIONAL_OPERATOR, List::add)
                                 .named("CONDITIONAL OPERATOR"), true)
+                        .allowTransition(new CompileStatementAcceptor<List<Command>>(factory, WHILE_LOOP, List::add)
+                                .named("WHILE LOOP"), true)
                         .allowTransition(new CompileStatementAcceptor<List<Command>>(factory, FOR_LOOP, List::add)
                                 .named("FOR LOOP"), true)
                         .allowTransition(new CompileStatementAcceptor<List<Command>>(factory, SWITCH_OPERATOR, List::add)

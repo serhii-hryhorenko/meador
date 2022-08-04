@@ -10,22 +10,23 @@ import com.teamdev.machine.expression.ExpressionMachine;
 import com.teamdev.machine.number.NumberMachine;
 import com.teamdev.machine.util.ValidatedFunctionFactoryImpl;
 import com.teamdev.meador.compiler.*;
-import com.teamdev.meador.compiler.statement.conditional_operator.ConditionalOperatorCompiler;
-import com.teamdev.meador.compiler.statement.datastructure.DataStructureDeclarationCompiler;
-import com.teamdev.meador.compiler.statement.datastructure.DataStructureInstanceCompiler;
-import com.teamdev.meador.compiler.statement.datastructure.FieldAssignmentCompiler;
-import com.teamdev.meador.compiler.statement.datastructure.FieldValueCompiler;
-import com.teamdev.meador.compiler.statement.expression.bool.BooleanLiteralCompiler;
-import com.teamdev.meador.compiler.statement.expression.relative.RelationalExpressionCompiler;
-import com.teamdev.meador.compiler.statement.expression.string.StringLiteralCompiler;
-import com.teamdev.meador.compiler.statement.for_loop.ForLoopOperatorCompiler;
-import com.teamdev.meador.compiler.statement.function.FunctionCompiler;
-import com.teamdev.meador.compiler.statement.procedure.ProcedureCompiler;
-import com.teamdev.meador.compiler.statement.switch_operator.SwitchOperatorCompiler;
-import com.teamdev.meador.compiler.statement.unary_operator.UnaryPostfixExpressionCompiler;
-import com.teamdev.meador.compiler.statement.unary_operator.UnaryPrefixExpressionCompiler;
-import com.teamdev.meador.compiler.statement.variable.VariableAssignmentCompiler;
-import com.teamdev.meador.compiler.statement.variable.VariableValueCompiler;
+import com.teamdev.meador.compiler.element.conditional_operator.ConditionalOperatorCompiler;
+import com.teamdev.meador.compiler.element.datastructure.DataStructureDeclarationCompiler;
+import com.teamdev.meador.compiler.element.datastructure.DataStructureInstanceCompiler;
+import com.teamdev.meador.compiler.element.datastructure.FieldAssignmentCompiler;
+import com.teamdev.meador.compiler.element.datastructure.FieldValueCompiler;
+import com.teamdev.meador.compiler.element.expression.bool.BooleanLiteralCompiler;
+import com.teamdev.meador.compiler.element.expression.relative.RelationalExpressionCompiler;
+import com.teamdev.meador.compiler.element.expression.string.StringLiteralCompiler;
+import com.teamdev.meador.compiler.element.for_loop.ForLoopOperatorCompiler;
+import com.teamdev.meador.compiler.element.function.FunctionCompiler;
+import com.teamdev.meador.compiler.element.procedure.ProcedureCompiler;
+import com.teamdev.meador.compiler.element.switch_operator.SwitchOperatorCompiler;
+import com.teamdev.meador.compiler.element.unary_operator.UnaryPostfixExpressionCompiler;
+import com.teamdev.meador.compiler.element.unary_operator.UnaryPrefixExpressionCompiler;
+import com.teamdev.meador.compiler.element.variable.VariableAssignmentCompiler;
+import com.teamdev.meador.compiler.element.variable.VariableValueCompiler;
+import com.teamdev.meador.compiler.element.while_loop.WhileLoopCompiler;
 import com.teamdev.meador.fsmimpl.compiler.CompilerMachine;
 import com.teamdev.meador.fsmimpl.util.DeepestParsedInputAcceptor;
 import com.teamdev.runtime.Command;
@@ -206,6 +207,8 @@ public class ProgramElementCompilerFactoryImpl implements ProgramElementCompiler
         compilers.put(STRING_EXPRESSION, new DetachedStackStatementCompiler(stringExpression.get()));
 
         compilers.put(FOR_LOOP, new ForLoopOperatorCompiler(this));
+
+        compilers.put(WHILE_LOOP, new WhileLoopCompiler(this));
 
         compilers.put(UNARY_PREFIX_EXPRESSION, new UnaryPrefixExpressionCompiler(this, new UnaryOperatorFactory()));
 
