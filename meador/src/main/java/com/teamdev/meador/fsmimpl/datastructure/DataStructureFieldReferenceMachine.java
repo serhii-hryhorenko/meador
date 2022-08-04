@@ -4,9 +4,12 @@ import com.teamdev.fsm.*;
 import com.teamdev.machine.util.TextIdentifierMachine;
 import com.teamdev.meador.compiler.CompilingException;
 
-public class DataStructureFieldMachine extends FiniteStateMachine<FieldReferenceOutputChain, CompilingException> {
+/**
+ * {@link FiniteStateMachine} implementation for parsing data structure field referencing.
+ */
+public class DataStructureFieldReferenceMachine extends FiniteStateMachine<FieldReferenceOutputChain, CompilingException> {
 
-    public static DataStructureFieldMachine create() {
+    public static DataStructureFieldReferenceMachine create() {
         var exceptionThrower = new ExceptionThrower<>(CompilingException::new);
 
         var variableName = new State.Builder<FieldReferenceOutputChain, CompilingException>()
@@ -30,11 +33,11 @@ public class DataStructureFieldMachine extends FiniteStateMachine<FieldReference
                 .setFinal()
                 .build();
 
-        return new DataStructureFieldMachine(TransitionMatrix.chainedTransitions(variableName, dot, fieldName), exceptionThrower);
+        return new DataStructureFieldReferenceMachine(TransitionMatrix.chainedTransitions(variableName, dot, fieldName), exceptionThrower);
     }
 
-    private DataStructureFieldMachine(TransitionMatrix<FieldReferenceOutputChain, CompilingException> transitionMatrix,
-                                        ExceptionThrower<CompilingException> thrower) {
+    private DataStructureFieldReferenceMachine(TransitionMatrix<FieldReferenceOutputChain, CompilingException> transitionMatrix,
+                                               ExceptionThrower<CompilingException> thrower) {
         super(transitionMatrix, thrower, false);
     }
 }

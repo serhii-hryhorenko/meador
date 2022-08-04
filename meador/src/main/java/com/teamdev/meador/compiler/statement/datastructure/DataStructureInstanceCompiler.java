@@ -15,7 +15,18 @@ import com.teamdev.runtime.value.type.datastructure.DataStructureValue;
 import java.util.Optional;
 
 /**
- * {@link ProgramElementCompiler} implementation for compiling data structure instantiating statements.
+ * {@link ProgramElementCompiler} implementation for compiling structure instantiating statements.
+ * <br/>
+ * Data structure instantiating grammar reference:
+ * <pre>
+ *     Point { x, y };
+ *
+ *     point = Point { 1, 2 };
+ *
+ *     print(point.x, point.y);
+ * </pre>
+ *
+ * Parsed structure instance is represented as {@link DataStructureValue}.
  */
 public class DataStructureInstanceCompiler implements ProgramElementCompiler {
     private final ProgramElementCompilerFactory factory;

@@ -3,6 +3,9 @@ package com.teamdev.meador.fsmimpl.datastructure;
 import com.google.common.base.Preconditions;
 import com.teamdev.runtime.Command;
 
+/**
+ * Output chain for {@link FieldAssignmentMachine}.
+ */
 public class FieldAssignmentOutputChain {
     private FieldReferenceOutputChain field;
     private Command command;

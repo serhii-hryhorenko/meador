@@ -12,12 +12,12 @@ import com.teamdev.runtime.value.type.datastructure.DataStructureValueVisitor;
 
 import java.util.Optional;
 
+/**
+ * {@link ProgramElementCompiler} implementation for compiling field value reassignment statements.
+ */
 public class FieldAssignmentCompiler implements ProgramElementCompiler {
     private final ProgramElementCompilerFactory factory;
 
-    /**
-     * {@link ProgramElementCompiler} implementation for compiling field value assignment statements.
-     */
     public FieldAssignmentCompiler(ProgramElementCompilerFactory factory) {
         this.factory = Preconditions.checkNotNull(factory);
     }

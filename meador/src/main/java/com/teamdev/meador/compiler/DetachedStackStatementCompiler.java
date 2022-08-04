@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Compiles a certain Meador statement on detached {@link ShuntingYard} and puts a result
+ * Compiles a certain Meador program element on detached {@link ShuntingYard} and puts a result
  * of computation on a top stack.
  */
 public class DetachedStackStatementCompiler implements ProgramElementCompiler {

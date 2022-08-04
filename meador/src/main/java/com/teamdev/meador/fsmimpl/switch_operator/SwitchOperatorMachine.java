@@ -3,11 +3,11 @@ package com.teamdev.meador.fsmimpl.switch_operator;
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.*;
 import com.teamdev.machine.util.TextIdentifierMachine;
-import com.teamdev.meador.compiler.CompileStatementAcceptor;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
 import com.teamdev.meador.compiler.statement.switch_operator.SwitchOperatorOutputChain;
-import com.teamdev.meador.compiler.statement.switch_operator.SwitchOptionContext;
+import com.teamdev.meador.compiler.statement.switch_operator.CaseOptionOutputChain;
+import com.teamdev.meador.fsmimpl.util.BracketedValueMachine;
 
 import static com.teamdev.meador.compiler.ProgramElement.READ_VARIABLE;
 
@@ -42,23 +42,13 @@ public class SwitchOperatorMachine extends FiniteStateMachine<SwitchOperatorOutp
 
         var switchKeyword = new State.Builder<SwitchOperatorOutputChain, CompilingException>()
                 .setName("SWITCH")
-                .setAcceptor((inputSequence, outputSequence) ->
-                        TextIdentifierMachine.acceptKeyword(inputSequence, SWITCH, exceptionThrower))
+                .setAcceptor((reader, outputSequence) ->
+                        TextIdentifierMachine.acceptKeyword(reader, SWITCH, exceptionThrower))
                 .build();
 
-        var openBracket = new State.Builder<SwitchOperatorOutputChain, CompilingException>()
-                .setName("OPEN BRACKET")
-                .setAcceptor(StateAcceptor.acceptChar('('))
-                .build();
-
-        var expressionToMatch = new State.Builder<SwitchOperatorOutputChain, CompilingException>()
-                .setName("EXPRESSION TO MATCH")
-                .setAcceptor(new CompileStatementAcceptor<>(factory, READ_VARIABLE, SwitchOperatorOutputChain::setMappedValue))
-                .build();
-
-        var closeBracket = new State.Builder<SwitchOperatorOutputChain, CompilingException>()
-                .setName("CLOSE BRACKET")
-                .setAcceptor(StateAcceptor.acceptChar(')'))
+        var matchedValue = new State.Builder<SwitchOperatorOutputChain, CompilingException>()
+                .setName("MATCHED VALUE")
+                .setAcceptor(BracketedValueMachine.create(factory, READ_VARIABLE, SwitchOperatorOutputChain::setMappedValue))
                 .build();
 
         var openCurlyBracket = new State.Builder<SwitchOperatorOutputChain, CompilingException>()
@@ -69,7 +59,7 @@ public class SwitchOperatorMachine extends FiniteStateMachine<SwitchOperatorOutp
         var caseOption = new State.Builder<SwitchOperatorOutputChain, CompilingException>()
                 .setName("CASE OPTION")
                 .setAcceptor((inputSequence, outputSequence) -> {
-                    var context = new SwitchOptionContext();
+                    var context = new CaseOptionOutputChain();
 
                     if (CaseOptionMachine.create(factory).accept(inputSequence, context)) {
                         outputSequence.addOption(context);
@@ -95,10 +85,8 @@ public class SwitchOperatorMachine extends FiniteStateMachine<SwitchOperatorOutp
         var matrix = new TransitionMatrixBuilder<SwitchOperatorOutputChain, CompilingException>()
                 .withStartState(initial)
                 .allowTransition(initial, switchKeyword)
-                .allowTransition(switchKeyword, openBracket)
-                .allowTransition(openBracket, expressionToMatch)
-                .allowTransition(expressionToMatch, closeBracket)
-                .allowTransition(closeBracket, openCurlyBracket)
+                .allowTransition(switchKeyword, matchedValue)
+                .allowTransition(matchedValue, openCurlyBracket)
                 .allowTransition(openCurlyBracket, caseOption)
                 .allowTransition(caseOption, caseOption, defaultOption)
                 .allowTransition(defaultOption, closeCurlyBracket)

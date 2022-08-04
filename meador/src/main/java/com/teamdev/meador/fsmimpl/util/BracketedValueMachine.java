@@ -10,11 +10,15 @@ import com.teamdev.runtime.Command;
 
 import java.util.function.BiConsumer;
 
-public class ConditionOperandMachine<O> extends FiniteStateMachine<O, CompilingException> {
+/**
+ * {@link FiniteStateMachine} implementation for parsing value expression in parentheses.
+ * @param <O> output chain
+ */
+public class BracketedValueMachine<O> extends FiniteStateMachine<O, CompilingException> {
 
-    public static <O> ConditionOperandMachine<O> create(ProgramElementCompilerFactory factory,
-                                                        ProgramElement type,
-                                                        BiConsumer<O, Command> resultConsumer) {
+    public static <O> BracketedValueMachine<O> create(ProgramElementCompilerFactory factory,
+                                                      ProgramElement type,
+                                                      BiConsumer<O, Command> resultConsumer) {
         Preconditions.checkNotNull(factory, type);
 
         var openBracket = new State.Builder<O, CompilingException>()
@@ -35,11 +39,11 @@ public class ConditionOperandMachine<O> extends FiniteStateMachine<O, CompilingE
 
         var matrix = TransitionMatrix.chainedTransitions(openBracket, expressionToMatch, closeBracket);
 
-        return new ConditionOperandMachine<>(matrix, new ExceptionThrower<>(CompilingException::new));
+        return new BracketedValueMachine<>(matrix, new ExceptionThrower<>(CompilingException::new));
     }
 
-    private ConditionOperandMachine(TransitionMatrix<O, CompilingException> transitionMatrix,
-                                    ExceptionThrower<CompilingException> thrower) {
+    private BracketedValueMachine(TransitionMatrix<O, CompilingException> transitionMatrix,
+                                  ExceptionThrower<CompilingException> thrower) {
         super(transitionMatrix, thrower);
     }
 }

@@ -1,9 +1,11 @@
 package com.teamdev.meador.compiler.statement.expression.relative;
 
+import com.google.common.base.Preconditions;
 import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.meador.ProgramElementCompilerFactoryImpl;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.ProgramElementCompiler;
+import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
 import com.teamdev.meador.fsmimpl.expression.relative.RelationalExpressionOutputChain;
 import com.teamdev.meador.fsmimpl.expression.relative.RelationalExpressionMachine;
 import com.teamdev.runtime.Command;
@@ -15,10 +17,10 @@ import java.util.Optional;
  * {@link ProgramElementCompiler} implementation for compiling Meador relational expressions.
  */
 public class RelationalExpressionCompiler implements ProgramElementCompiler {
-    private final ProgramElementCompilerFactoryImpl compilerFactory;
+    private final ProgramElementCompilerFactory compilerFactory;
 
-    public RelationalExpressionCompiler(ProgramElementCompilerFactoryImpl compilerFactory) {
-        this.compilerFactory = compilerFactory;
+    public RelationalExpressionCompiler(ProgramElementCompilerFactory factory) {
+        this.compilerFactory = Preconditions.checkNotNull(factory);
     }
 
     @Override

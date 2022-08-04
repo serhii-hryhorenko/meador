@@ -41,6 +41,9 @@ import java.util.function.Supplier;
 
 import static com.teamdev.meador.compiler.ProgramElement.*;
 
+/**
+ * {@link ProgramElementCompilerFactoryImpl} which provides creation of any implemented Meador program element.
+ */
 public class ProgramElementCompilerFactoryImpl implements ProgramElementCompilerFactory {
 
     private final Map<ProgramElement, ProgramElementCompiler> compilers = new EnumMap<>(ProgramElement.class);

@@ -6,6 +6,9 @@ import com.teamdev.meador.compiler.CompilingException;
 
 import java.util.Optional;
 
+/**
+ * {@link FiniteStateMachine} implementation for parsing string literal value.
+ */
 public class StringLiteralValueParser extends FiniteStateMachine<StringBuilder, CompilingException> {
 
     public static Optional<String> parse(InputSequenceReader reader) throws CompilingException {

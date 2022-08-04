@@ -21,7 +21,7 @@ public class FieldAssignmentMachine extends FiniteStateMachine<FieldAssignmentOu
                 .setAcceptor((reader, outputSequence) -> {
                     var field = new FieldReferenceOutputChain();
 
-                    if (DataStructureFieldMachine.create().accept(reader, field)) {
+                    if (DataStructureFieldReferenceMachine.create().accept(reader, field)) {
                         outputSequence.setField(field);
                         return true;
                     }

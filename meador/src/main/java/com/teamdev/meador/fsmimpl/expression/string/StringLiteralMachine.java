@@ -3,6 +3,9 @@ package com.teamdev.meador.fsmimpl.expression.string;
 import com.teamdev.fsm.*;
 import com.teamdev.meador.compiler.CompilingException;
 
+/**
+ * {@link FiniteStateMachine} implementation for parsing Meador string literals.
+ */
 public class StringLiteralMachine extends FiniteStateMachine<StringLiteralOutputChain, CompilingException> {
 
     public static StringLiteralMachine create() {

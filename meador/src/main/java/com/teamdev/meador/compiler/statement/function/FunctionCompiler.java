@@ -18,6 +18,9 @@ import java.util.Optional;
 
 import static com.teamdev.meador.compiler.ProgramElement.NUMERIC_EXPRESSION;
 
+/**
+ * {@link ProgramElementCompiler} implementation for recognizing math functions in numeric expressions.
+ */
 public class FunctionCompiler implements ProgramElementCompiler {
 
     private final ProgramElementCompilerFactory compilerFactory;

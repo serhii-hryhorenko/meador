@@ -11,8 +11,8 @@ import java.util.List;
  * Output chain for {@link SwitchOperatorMachine}.
  */
 public class SwitchOperatorOutputChain {
-    private final List<SwitchOptionContext> options = new ArrayList<>();
     private Command mappedValue;
+    private final List<CaseOptionOutputChain> options = new ArrayList<>();
     private Command defaultCommand;
 
     public Command mappedValue() {
@@ -23,11 +23,11 @@ public class SwitchOperatorOutputChain {
         this.mappedValue = Preconditions.checkNotNull(mappedValue);
     }
 
-    public List<SwitchOptionContext> options() {
+    public List<CaseOptionOutputChain> options() {
         return Preconditions.checkNotNull(options);
     }
 
-    public void addOption(SwitchOptionContext option) {
+    public void addOption(CaseOptionOutputChain option) {
         options.add(Preconditions.checkNotNull(option));
     }
 

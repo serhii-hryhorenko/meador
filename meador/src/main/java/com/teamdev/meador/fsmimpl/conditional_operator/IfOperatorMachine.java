@@ -9,12 +9,15 @@ import com.teamdev.machine.util.TextIdentifierMachine;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
 import com.teamdev.meador.fsmimpl.util.CodeBlockMachine;
-import com.teamdev.meador.fsmimpl.util.ConditionOperandMachine;
+import com.teamdev.meador.fsmimpl.util.BracketedValueMachine;
 
 import static com.teamdev.meador.compiler.ProgramElement.BOOLEAN_EXPRESSION;
 
+/**
+ * {@link FiniteStateMachine} implementation for parsing {@code if} operator.
+ * Parsing result is stored at {@link IfOperatorOutputChain}.
+ */
 public class IfOperatorMachine extends FiniteStateMachine<IfOperatorOutputChain, CompilingException> {
-
     private static final String IF = "if";
 
     public static IfOperatorMachine create(ProgramElementCompilerFactory factory) {
@@ -29,7 +32,7 @@ public class IfOperatorMachine extends FiniteStateMachine<IfOperatorOutputChain,
 
         var condition = new State.Builder<IfOperatorOutputChain, CompilingException>()
                 .setName("IF CONDITION")
-                .setAcceptor(ConditionOperandMachine.create(factory, BOOLEAN_EXPRESSION, IfOperatorOutputChain::setCondition))
+                .setAcceptor(BracketedValueMachine.create(factory, BOOLEAN_EXPRESSION, IfOperatorOutputChain::setCondition))
                 .build();
 
         var ifCodeBlock = new State.Builder<IfOperatorOutputChain, CompilingException>()

@@ -5,6 +5,7 @@ import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.meador.ProgramElementCompilerFactoryImpl;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.ProgramElementCompiler;
+import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
 import com.teamdev.meador.compiler.statement.variable.VariableValueCompiler;
 import com.teamdev.meador.fsmimpl.unary_operator.PostfixUnaryOperatorMachine;
 import com.teamdev.meador.fsmimpl.unary_operator.UnaryExpressionOutputChain;
@@ -20,10 +21,10 @@ import java.util.Optional;
  */
 public class UnaryPostfixExpressionCompiler implements ProgramElementCompiler {
 
-    private final ProgramElementCompilerFactoryImpl statementCompilerFactory;
+    private final ProgramElementCompilerFactory statementCompilerFactory;
     private final AbstractOperatorFactory<AbstractUnaryOperator> unaryOperatorFactory;
 
-    public UnaryPostfixExpressionCompiler(ProgramElementCompilerFactoryImpl statementCompilerFactory,
+    public UnaryPostfixExpressionCompiler(ProgramElementCompilerFactory statementCompilerFactory,
                                           AbstractOperatorFactory<AbstractUnaryOperator> unaryOperatorFactory) {
 
         this.statementCompilerFactory = Preconditions.checkNotNull(statementCompilerFactory);

@@ -10,6 +10,9 @@ import com.teamdev.runtime.Command;
 
 import java.util.Optional;
 
+/**
+ * {@link ProgramElementCompiler} implementation for providing access to variable values stored at {@link com.teamdev.runtime.Memory}.
+ */
 public class VariableValueCompiler implements ProgramElementCompiler {
 
     @Override

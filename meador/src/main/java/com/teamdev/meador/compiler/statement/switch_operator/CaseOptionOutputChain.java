@@ -3,13 +3,15 @@ package com.teamdev.meador.compiler.statement.switch_operator;
 import com.google.common.base.Preconditions;
 import com.teamdev.runtime.Command;
 
-public class SwitchOptionContext {
-
+/**
+ * Output chain for {@link com.teamdev.meador.fsmimpl.switch_operator.CaseOptionMachine}.
+ */
+public class CaseOptionOutputChain {
     private Command condition;
     private Command statement;
 
     public Command condition() {
-        return condition;
+        return Preconditions.checkNotNull(condition);
     }
 
     public void setCondition(Command condition) {
@@ -17,7 +19,7 @@ public class SwitchOptionContext {
     }
 
     public Command statement() {
-        return statement;
+        return Preconditions.checkNotNull(statement);
     }
 
     public void setStatement(Command statement) {

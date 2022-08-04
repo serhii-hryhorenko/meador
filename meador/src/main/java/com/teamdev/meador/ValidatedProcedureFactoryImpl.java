@@ -14,7 +14,6 @@ public class ValidatedProcedureFactoryImpl implements ValidatedProcedureFactory 
     private final Map<String, ValidatedProcedure> procedures = new HashMap<>();
 
     public ValidatedProcedureFactoryImpl() {
-
         procedures.put("print", new ValidatedProcedure.Builder()
                 .setAction((values, environment) -> environment.output().println(values.toString()))
                 .setMinArguments(1)

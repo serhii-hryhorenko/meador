@@ -7,13 +7,13 @@ import com.teamdev.meador.compiler.CompileStatementAcceptor;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
 import com.teamdev.meador.compiler.ProgramElement;
-import com.teamdev.meador.compiler.statement.switch_operator.SwitchOptionContext;
+import com.teamdev.meador.compiler.statement.switch_operator.CaseOptionOutputChain;
 import com.teamdev.meador.fsmimpl.util.CodeBlockMachine;
 
 /**
  * {@link FiniteStateMachine} implementation for parsing {@code case: value { code; }} structure.
  */
-public class CaseOptionMachine extends FiniteStateMachine<SwitchOptionContext, CompilingException> {
+public class CaseOptionMachine extends FiniteStateMachine<CaseOptionOutputChain, CompilingException> {
 
     private static final String CASE = "case";
 
@@ -22,25 +22,25 @@ public class CaseOptionMachine extends FiniteStateMachine<SwitchOptionContext, C
 
         var exceptionThrower = new ExceptionThrower<>(CompilingException::new);
 
-        var keyword = new State.Builder<SwitchOptionContext, CompilingException>()
+        var keyword = new State.Builder<CaseOptionOutputChain, CompilingException>()
                 .setName("CASE KEYWORD")
                 .setAcceptor((inputSequence, outputSequence) ->
                         TextIdentifierMachine.acceptKeyword(inputSequence, CASE, exceptionThrower))
                 .build();
 
-        var statement = new State.Builder<SwitchOptionContext, CompilingException>()
+        var statement = new State.Builder<CaseOptionOutputChain, CompilingException>()
                 .setName("CASE VALUE")
-                .setAcceptor(new CompileStatementAcceptor<>(factory, ProgramElement.EXPRESSION, SwitchOptionContext::setCondition))
+                .setAcceptor(new CompileStatementAcceptor<>(factory, ProgramElement.EXPRESSION, CaseOptionOutputChain::setCondition))
                 .build();
 
-        var colon = new State.Builder<SwitchOptionContext, CompilingException>()
+        var colon = new State.Builder<CaseOptionOutputChain, CompilingException>()
                 .setName("COLON")
                 .setAcceptor(StateAcceptor.acceptChar(':'))
                 .build();
 
-        var executableExpression = new State.Builder<SwitchOptionContext, CompilingException>()
+        var executableExpression = new State.Builder<CaseOptionOutputChain, CompilingException>()
                 .setName("EXPRESSION BLOCK")
-                .setAcceptor(CodeBlockMachine.create(factory, SwitchOptionContext::setStatement))
+                .setAcceptor(CodeBlockMachine.create(factory, CaseOptionOutputChain::setStatement))
                 .setFinal()
                 .build();
 
@@ -51,7 +51,7 @@ public class CaseOptionMachine extends FiniteStateMachine<SwitchOptionContext, C
         return new CaseOptionMachine(matrix, exceptionThrower);
     }
 
-    private CaseOptionMachine(TransitionMatrix<SwitchOptionContext, CompilingException> transitionMatrix,
+    private CaseOptionMachine(TransitionMatrix<CaseOptionOutputChain, CompilingException> transitionMatrix,
                               ExceptionThrower<CompilingException> exceptionThrower) {
         super(transitionMatrix, exceptionThrower);
     }

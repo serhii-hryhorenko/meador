@@ -2,6 +2,9 @@ package com.teamdev.meador.compiler;
 
 import java.io.Serial;
 
+/**
+ * Exception thrown by {@link ProgramElementCompiler}. Indicates grammar mistake at Meador program.
+ */
 public class CompilingException extends Exception {
 
     public CompilingException(String message) {

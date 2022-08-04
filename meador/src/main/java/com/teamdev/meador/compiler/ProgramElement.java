@@ -1,5 +1,8 @@
 package com.teamdev.meador.compiler;
 
+/**
+ * Enumeration of implemented Meador program elements.
+ */
 public enum ProgramElement {
     LIST_OF_STATEMENTS,
 
@@ -8,11 +11,14 @@ public enum ProgramElement {
     CONDITIONAL_OPERATOR,
     FOR_LOOP,
     SWITCH_OPERATOR,
+    DATA_STRUCTURE_DECLARATION,
     PROCEDURE,
     STRUCTURE_FIELD_ASSIGNMENT,
     VARIABLE_ASSIGNMENT,
 
     EXPRESSION,
+
+    DATA_STRUCTURE_INSTANCE,
 
     NUMERIC_OPERAND,
     NUMERIC_BRACKETS,
@@ -33,5 +39,5 @@ public enum ProgramElement {
     UNARY_PREFIX_EXPRESSION,
     UNARY_POSTFIX_EXPRESSION,
     VARIABLE_VALUE,
-    STRUCTURE_FIELD_VALUE, DATA_STRUCTURE_DECLARATION, DATA_STRUCTURE_INSTANCE,
+    STRUCTURE_FIELD_VALUE,
 }

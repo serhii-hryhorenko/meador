@@ -7,16 +7,28 @@ import com.teamdev.meador.compiler.ProgramElementCompiler;
 import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
 import com.teamdev.meador.fsmimpl.conditional_operator.ConditionalOperatorMachine;
 import com.teamdev.meador.fsmimpl.conditional_operator.ConditionalOperatorOutputChain;
-import com.teamdev.meador.fsmimpl.conditional_operator.IfOperatorOutputChain;
 import com.teamdev.runtime.Command;
 import com.teamdev.runtime.value.type.Value;
 import com.teamdev.runtime.value.type.bool.BooleanValueVisitor;
 
 import java.util.Optional;
-import java.util.function.Predicate;
 
+/**
+ * {@link ProgramElementCompiler} implementation for recognizing Meador conditional operators.
+ * Implementation provides conditional branching as in Java.
+ * Curly braces are always required.
+ * Grammar reference:
+ * <pre>
+ * if (condition) {
+ *     list_of_statements
+ * } else if (condition2) {
+ *     list_of_statements
+ * } else {
+ *     list_of_statements
+ * }
+ * </pre>
+ */
 public class ConditionalOperatorCompiler implements ProgramElementCompiler {
-
     private final ProgramElementCompilerFactory factory;
 
     public ConditionalOperatorCompiler(ProgramElementCompilerFactory factory) {
@@ -31,7 +43,7 @@ public class ConditionalOperatorCompiler implements ProgramElementCompiler {
             return Optional.of(runtimeEnvironment -> {
                 var booleanVisitor = new BooleanValueVisitor();
 
-                for (var operator : context.ifOperators()) {
+                for (var operator : context.conditionalOperators()) {
                     runtimeEnvironment.stack().create();
                     operator.condition().execute(runtimeEnvironment);
                     Value conditionValue = runtimeEnvironment.stack().pop().popResult();
@@ -45,7 +57,7 @@ public class ConditionalOperatorCompiler implements ProgramElementCompiler {
                 }
 
                 if (context.elseInstructionPresent()) {
-                    context.elseStatements().execute(runtimeEnvironment);
+                    context.elseStatementList().execute(runtimeEnvironment);
                 }
             });
         }

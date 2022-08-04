@@ -6,7 +6,7 @@ import com.teamdev.runtime.Command;
 import java.util.Optional;
 
 /**
- * Abstract compiler for a Meador statement.
+ * Abstract compiler for a Meador program element.
  */
 @FunctionalInterface
 public interface ProgramElementCompiler {

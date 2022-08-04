@@ -10,6 +10,9 @@ import com.teamdev.runtime.value.type.string.StringValue;
 
 import java.util.Optional;
 
+/**
+ * {@link ProgramElementCompiler} implementation for recognizing string literals in Meador programs.
+ */
 public class StringLiteralCompiler implements ProgramElementCompiler {
 
     @Override

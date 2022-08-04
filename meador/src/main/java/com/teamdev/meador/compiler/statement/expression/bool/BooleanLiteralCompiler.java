@@ -10,6 +10,9 @@ import com.teamdev.runtime.value.type.bool.BooleanValue;
 
 import java.util.Optional;
 
+/**
+ * {@link ProgramElementCompiler} implementation for recognizing boolean literal values.
+ */
 public class BooleanLiteralCompiler implements ProgramElementCompiler {
 
     private static final String TRUE = "true";

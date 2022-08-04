@@ -8,7 +8,8 @@ import com.teamdev.runtime.Command;
 import java.util.function.BiConsumer;
 
 /**
- * {@link StateAcceptor} implementation for compiled statements
+ * {@link StateAcceptor} implementation for complex {@link com.teamdev.fsm.FiniteStateMachine}.
+ * Checks whether the element is compiled or not and performs an action over output chain if it does.
  *
  * @param <O> custom output chain
  */

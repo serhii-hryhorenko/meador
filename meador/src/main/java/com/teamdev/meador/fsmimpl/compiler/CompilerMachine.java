@@ -13,6 +13,7 @@ import static com.teamdev.meador.compiler.ProgramElement.*;
 
 /**
  * Provides {@link com.teamdev.meador.Meador} general language elements recognition.
+ * Basic "one of" machine.
  */
 public class CompilerMachine {
 

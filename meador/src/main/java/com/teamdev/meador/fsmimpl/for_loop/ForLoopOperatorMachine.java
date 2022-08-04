@@ -13,12 +13,13 @@ import static com.teamdev.meador.compiler.ProgramElement.VARIABLE_ASSIGNMENT;
 
 /**
  * {@link FiniteStateMachine} implementation for recognizing the for loop operator in Meador programs.
+ * <br>
  * Grammar reference:
- * {@code
+ * <pre>
  * for (i = 0; i < 5; i = i + 1;) {
- * print(i);
+ *      print(i);
  * }
- * }
+ * </pre>
  */
 public class ForLoopOperatorMachine extends FiniteStateMachine<ForLoopOperatorOutputChain, CompilingException> {
 

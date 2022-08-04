@@ -23,16 +23,16 @@ public class SwitchOperatorCompiler implements ProgramElementCompiler {
 
     @Override
     public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
-        var context = new SwitchOperatorOutputChain();
+        var outputChain = new SwitchOperatorOutputChain();
 
-        if (SwitchOperatorMachine.create(compilerFactory).accept(reader, context)) {
+        if (SwitchOperatorMachine.create(compilerFactory).accept(reader, outputChain)) {
             return Optional.of(runtimeEnvironment -> {
 
                 runtimeEnvironment.stack().create();
-                context.mappedValue().execute(runtimeEnvironment);
+                outputChain.mappedValue().execute(runtimeEnvironment);
                 Value mappedValue = runtimeEnvironment.stack().pop().popResult();
 
-                for (var option : context.options()) {
+                for (var option : outputChain.options()) {
                     var condition = option.condition();
 
                     runtimeEnvironment.stack().create();
@@ -45,9 +45,10 @@ public class SwitchOperatorCompiler implements ProgramElementCompiler {
                     }
                 }
 
-                context.defaultCommand().execute(runtimeEnvironment);
+                outputChain.defaultCommand().execute(runtimeEnvironment);
             });
         }
+
         return Optional.empty();
     }
 }

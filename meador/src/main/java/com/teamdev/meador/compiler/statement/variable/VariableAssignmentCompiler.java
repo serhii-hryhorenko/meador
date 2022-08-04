@@ -16,7 +16,7 @@ import java.util.Optional;
 import static com.teamdev.meador.compiler.ProgramElement.EXPRESSION;
 
 /**
- * {@link ProgramElementCompiler} implementation for variable declaration.
+ * {@link ProgramElementCompiler} implementation for variable declaration and reassignment.
  */
 public class VariableAssignmentCompiler implements ProgramElementCompiler {
     private final ProgramElementCompilerFactory factory;

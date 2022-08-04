@@ -13,6 +13,14 @@ import java.util.Optional;
 
 /**
  * {@link ProgramElementCompiler} implementation for compiling structure declaration statements.
+ * <br/>
+ * Data structure declaration grammar reference:
+ * <pre>
+ *     Point { x, y };
+ *     Person {name, age, job};
+ * </pre>
+ *
+ * Parsed structure template is being put in {@link com.teamdev.runtime.Memory}.
  */
 public class DataStructureDeclarationCompiler implements ProgramElementCompiler {
     private final ProgramElementCompilerFactory factory;

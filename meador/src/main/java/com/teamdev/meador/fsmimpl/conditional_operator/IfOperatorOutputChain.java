@@ -3,8 +3,11 @@ package com.teamdev.meador.fsmimpl.conditional_operator;
 import com.google.common.base.Preconditions;
 import com.teamdev.runtime.Command;
 
+/**
+ * Output chain for {@link IfOperatorMachine}.
+ * Provides access to the parsing result of an {@code if} operator.
+ */
 public class IfOperatorOutputChain {
-
     private Command condition;
     private Command statements;
 

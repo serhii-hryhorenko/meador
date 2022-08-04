@@ -3,32 +3,36 @@ package com.teamdev.meador.fsmimpl.conditional_operator;
 import com.google.common.base.Preconditions;
 import com.teamdev.runtime.Command;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Output chain for {@link ConditionalOperatorMachine}.
+ * Provides access to the parsing result of a sequence of conditional operators.
+ */
 public class ConditionalOperatorOutputChain {
-
-    private final List<IfOperatorOutputChain> ifOperators = new LinkedList<>();
-    private Command elseStatements;
+    private final List<IfOperatorOutputChain> conditionalOperators = new LinkedList<>();
+    private Command elseStatementList;
 
     public boolean elseInstructionPresent() {
-        return Objects.nonNull(elseStatements);
+        return Objects.nonNull(elseStatementList);
     }
 
-    public void addIfOperator(IfOperatorOutputChain ifOperator) {
-        ifOperators.add(Preconditions.checkNotNull(ifOperator));
+    public void addConditionalOperator(IfOperatorOutputChain ifOperator) {
+        conditionalOperators.add(Preconditions.checkNotNull(ifOperator));
     }
 
-    public List<IfOperatorOutputChain> ifOperators() {
-        return ifOperators;
+    public List<IfOperatorOutputChain> conditionalOperators() {
+        return Collections.unmodifiableList(conditionalOperators);
     }
 
-    public Command elseStatements() {
-        return Preconditions.checkNotNull(elseStatements);
+    public Command elseStatementList() {
+        return Preconditions.checkNotNull(elseStatementList);
     }
 
-    public void setElseStatements(Command elseStatements) {
-        this.elseStatements = Preconditions.checkNotNull(elseStatements);
+    public void setElseStatementList(Command elseStatementList) {
+        this.elseStatementList = Preconditions.checkNotNull(elseStatementList);
     }
 }

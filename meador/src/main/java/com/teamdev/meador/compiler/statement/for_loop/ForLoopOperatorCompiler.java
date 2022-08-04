@@ -23,7 +23,7 @@ import java.util.Optional;
  * See details {@link ForLoopOperatorMachine}.
  */
 public class ForLoopOperatorCompiler implements ProgramElementCompiler {
-    private static final int MAX_ITERATIONS = 1000;
+    private static final int MAX_ITERATIONS = 10000;
 
     private final ProgramElementCompilerFactory factory;
 

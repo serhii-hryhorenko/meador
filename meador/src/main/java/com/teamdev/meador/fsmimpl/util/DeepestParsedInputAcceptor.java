@@ -9,6 +9,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Supplier;
 
+/**
+ * "One of" {@link StateAcceptor} which executes run acceptor on detached output chain and executes one which parsed the most symbols.
+ * @param <O> output chain
+ */
 public class DeepestParsedInputAcceptor<O> implements StateAcceptor<O, CompilingException> {
 
     private final List<StateAcceptor<O, CompilingException>> acceptors;
