@@ -9,6 +9,7 @@ import java.io.PrintStream;
  * Provides access to {@link Memory}, {@link SystemStack}, and IO.
  */
 public class RuntimeEnvironment {
+    public static final int MAX_LOOP_ITERATIONS = 10000;
 
     private final Memory memory = new Memory();
 

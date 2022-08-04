@@ -6,8 +6,6 @@ package com.teamdev.meador.compiler;
 public enum ProgramElement {
     LIST_OF_STATEMENTS,
 
-    CODE_BLOCK,
-
     CONDITIONAL_OPERATOR,
     FOR_LOOP,
     WHILE_LOOP,

@@ -17,7 +17,7 @@ import static com.teamdev.meador.compiler.ProgramElement.LIST_OF_STATEMENTS;
  * @param <O> output chain
  */
 public class CodeBlockMachine<O> extends FiniteStateMachine<O, CompilingException> {
-    public static <O> CodeBlockMachine<O>   create(ProgramElementCompilerFactory factory,
+    public static <O> CodeBlockMachine<O> create(ProgramElementCompilerFactory factory,
                                                  BiConsumer<O, Command> blockConsumer) {
 
         Preconditions.checkNotNull(factory);
@@ -39,6 +39,7 @@ public class CodeBlockMachine<O> extends FiniteStateMachine<O, CompilingExceptio
                 .build();
 
         var matrix = TransitionMatrix.chainedTransitions(openCurlyBracket, program, closeCurlyBracket);
+
         return new CodeBlockMachine<>(matrix, new ExceptionThrower<>(CompilingException::new));
     }
 

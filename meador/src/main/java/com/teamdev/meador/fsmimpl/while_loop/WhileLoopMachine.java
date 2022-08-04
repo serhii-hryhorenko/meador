@@ -6,9 +6,9 @@ import com.teamdev.machine.util.TextIdentifierMachine;
 import com.teamdev.meador.compiler.CompileStatementAcceptor;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
+import com.teamdev.meador.fsmimpl.util.CodeBlockMachine;
 
 import static com.teamdev.meador.compiler.ProgramElement.BOOLEAN_EXPRESSION;
-import static com.teamdev.meador.compiler.ProgramElement.CODE_BLOCK;
 
 public class WhileLoopMachine extends FiniteStateMachine<WhileLoopOutputChain, CompilingException> {
 
@@ -32,7 +32,7 @@ public class WhileLoopMachine extends FiniteStateMachine<WhileLoopOutputChain, C
 
         var loopBody = new State.Builder<WhileLoopOutputChain, CompilingException>()
                 .setName("WHILE LOOP BODY")
-                .setAcceptor(new CompileStatementAcceptor<>(factory, CODE_BLOCK, WhileLoopOutputChain::setLoopBodyStatements))
+                .setAcceptor(CodeBlockMachine.create(factory, WhileLoopOutputChain::setLoopBodyStatements))
                 .setFinal()
                 .build();
 

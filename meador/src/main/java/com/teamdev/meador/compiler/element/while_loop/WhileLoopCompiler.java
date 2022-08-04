@@ -28,8 +28,14 @@ public class WhileLoopCompiler implements ProgramElementCompiler {
             return Optional.of(new Command() {
                 @Override
                 public void execute(RuntimeEnvironment runtimeEnvironment) throws MeadorRuntimeException {
+                    int iterations = 0;
+
                     while (checkCondition(runtimeEnvironment, outputChain.condition())) {
                         outputChain.loopBodyStatements().execute(runtimeEnvironment);
+
+                        if (++iterations == RuntimeEnvironment.MAX_LOOP_ITERATIONS) {
+                            throw new MeadorRuntimeException("Infinite while loop detected.");
+                        }
                     }
                 }
             });
