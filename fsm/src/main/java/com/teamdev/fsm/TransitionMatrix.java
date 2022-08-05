@@ -6,7 +6,7 @@ import java.util.Set;
 
 /**
  * Provides configuration of transition matrix for {@link FiniteStateMachine} and saves it.
- * {@linktourl https://en.wikipedia.org/wiki/Adjacency_matrix}
+ * {@see https://en.wikipedia.org/wiki/Adjacency_matrix}
  *
  * @param <O>
  */
@@ -14,7 +14,8 @@ import java.util.Set;
 public interface TransitionMatrix<O, E extends Exception> {
 
     @SafeVarargs
-    static <O, E extends Exception> TransitionMatrix<O, E> chainedTransitions(State<O, E>... states) {
+    static <O, E extends Exception> TransitionMatrix<O, E> chainedTransitions(
+            State<O, E>... states) {
         State<O, E> initialState = State.initialState();
         var builder = new TransitionMatrixBuilder<O, E>().withStartState(initialState);
 

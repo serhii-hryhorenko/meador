@@ -8,8 +8,8 @@ import com.teamdev.fsm.TransitionMatrix;
 import com.teamdev.machine.util.TextIdentifierMachine;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
-import com.teamdev.meador.fsmimpl.util.CodeBlockMachine;
 import com.teamdev.meador.fsmimpl.util.BracketedValueMachine;
+import com.teamdev.meador.fsmimpl.util.CodeBlockMachine;
 
 import static com.teamdev.meador.compiler.ProgramElement.BOOLEAN_EXPRESSION;
 
@@ -18,21 +18,32 @@ import static com.teamdev.meador.compiler.ProgramElement.BOOLEAN_EXPRESSION;
  * Parsing result is stored at {@link IfOperatorOutputChain}.
  */
 public class IfOperatorMachine extends FiniteStateMachine<IfOperatorOutputChain, CompilingException> {
+
     private static final String IF = "if";
+
+    private IfOperatorMachine(
+            TransitionMatrix<IfOperatorOutputChain, CompilingException> transitionMatrix,
+            ExceptionThrower<CompilingException> thrower) {
+        super(transitionMatrix, thrower);
+    }
 
     public static IfOperatorMachine create(ProgramElementCompilerFactory factory) {
         Preconditions.checkNotNull(factory);
 
+        var exceptionThrower = new ExceptionThrower<>(CompilingException::new);
+
         var ifKeyword = new State.Builder<IfOperatorOutputChain, CompilingException>()
                 .setName("IF KEYWORD")
-                .setAcceptor((reader, outputSequence) ->
-                        TextIdentifierMachine.acceptKeyword(reader, IF, new ExceptionThrower<>(CompilingException::new)))
+                .setAcceptor(
+                        (reader, outputSequence) -> TextIdentifierMachine.acceptKeyword(reader, IF,
+                                                                                        exceptionThrower))
                 .setTemporary()
                 .build();
 
         var condition = new State.Builder<IfOperatorOutputChain, CompilingException>()
                 .setName("IF CONDITION")
-                .setAcceptor(BracketedValueMachine.create(factory, BOOLEAN_EXPRESSION, IfOperatorOutputChain::setCondition))
+                .setAcceptor(BracketedValueMachine.create(factory, BOOLEAN_EXPRESSION,
+                                                          IfOperatorOutputChain::setCondition))
                 .build();
 
         var ifCodeBlock = new State.Builder<IfOperatorOutputChain, CompilingException>()
@@ -43,11 +54,6 @@ public class IfOperatorMachine extends FiniteStateMachine<IfOperatorOutputChain,
 
         var matrix = TransitionMatrix.chainedTransitions(ifKeyword, condition, ifCodeBlock);
 
-        return new IfOperatorMachine(matrix, new ExceptionThrower<>(CompilingException::new));
-    }
-
-    private IfOperatorMachine(TransitionMatrix<IfOperatorOutputChain, CompilingException> transitionMatrix,
-                              ExceptionThrower<CompilingException> thrower) {
-        super(transitionMatrix, thrower);
+        return new IfOperatorMachine(matrix, exceptionThrower);
     }
 }

@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 abstract class MeadorTest {
+
     private static final Logger logger = LoggerFactory.getLogger(MeadorTest.class);
 
     private final Meador executor = new Meador();
@@ -29,7 +30,8 @@ abstract class MeadorTest {
 
     @ParameterizedTest
     @MethodSource("positiveCases")
-    void positiveCases(String code, String expected, String errorMessage) throws InvalidProgramException {
+    void positiveCases(String code, String expected, String errorMessage) throws
+                                                                          InvalidProgramException {
         var output = executor.execute(new Program(code));
         logger.info(output.toString());
         assertEquals(expected + System.lineSeparator(), output.toString(), errorMessage);

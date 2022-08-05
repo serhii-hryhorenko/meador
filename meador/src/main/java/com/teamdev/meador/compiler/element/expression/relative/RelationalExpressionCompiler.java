@@ -5,10 +5,10 @@ import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.ProgramElementCompiler;
 import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
-import com.teamdev.meador.fsmimpl.expression.relative.RelationalExpressionOutputChain;
 import com.teamdev.meador.fsmimpl.expression.relative.RelationalExpressionMachine;
+import com.teamdev.meador.fsmimpl.expression.relative.RelationalExpressionOutputChain;
 import com.teamdev.runtime.Command;
-import com.teamdev.runtime.value.type.Value;
+import com.teamdev.runtime.evaluation.operandtype.Value;
 
 import java.util.Optional;
 
@@ -16,6 +16,7 @@ import java.util.Optional;
  * {@link ProgramElementCompiler} implementation for compiling Meador relational expressions.
  */
 public class RelationalExpressionCompiler implements ProgramElementCompiler {
+
     private final ProgramElementCompilerFactory compilerFactory;
 
     public RelationalExpressionCompiler(ProgramElementCompilerFactory factory) {
@@ -30,25 +31,44 @@ public class RelationalExpressionCompiler implements ProgramElementCompiler {
 
         if (relationalExpressionFSM.accept(reader, context)) {
             return Optional.of(runtimeEnvironment -> {
-                runtimeEnvironment.stack().create();
+                runtimeEnvironment.stack()
+                        .create();
 
-                context.left().execute(runtimeEnvironment);
+                context.left()
+                       .execute(runtimeEnvironment);
 
-                Value leftValue = runtimeEnvironment.stack().pop().popResult();
+                Value leftValue = runtimeEnvironment.stack()
+                                                    .pop()
+                                                    .popResult();
 
-                runtimeEnvironment.stack().create();
+                runtimeEnvironment.stack()
+                        .create();
 
-                context.right().execute(runtimeEnvironment);
+                context.right()
+                       .execute(runtimeEnvironment);
 
-                Value rightValue = runtimeEnvironment.stack().pop().popResult();
+                Value rightValue = runtimeEnvironment.stack()
+                                                     .pop()
+                                                     .popResult();
 
-                runtimeEnvironment.stack().create();
-                runtimeEnvironment.stack().peek().pushOperand(leftValue);
-                runtimeEnvironment.stack().peek().pushOperand(rightValue);
-                runtimeEnvironment.stack().peek().pushOperator(context.operator());
+                runtimeEnvironment.stack()
+                        .create();
+                runtimeEnvironment.stack()
+                                  .peek()
+                                  .pushOperand(leftValue);
+                runtimeEnvironment.stack()
+                                  .peek()
+                                  .pushOperand(rightValue);
+                runtimeEnvironment.stack()
+                                  .peek()
+                                  .pushOperator(context.operator());
 
-                Value result = runtimeEnvironment.stack().pop().popResult();
-                runtimeEnvironment.stack().peek().pushOperand(result);
+                Value result = runtimeEnvironment.stack()
+                                                 .pop()
+                                                 .popResult();
+                runtimeEnvironment.stack()
+                                  .peek()
+                                  .pushOperand(result);
             });
         }
 

@@ -1,16 +1,27 @@
 package com.teamdev.meador.fsmimpl.datastructure;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.fsm.*;
+import com.teamdev.fsm.ExceptionThrower;
+import com.teamdev.fsm.FiniteStateMachine;
+import com.teamdev.fsm.State;
+import com.teamdev.fsm.StateAcceptor;
+import com.teamdev.fsm.TransitionMatrix;
+import com.teamdev.fsm.TransitionMatrixBuilder;
 import com.teamdev.machine.util.TextIdentifierMachine;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
-import com.teamdev.runtime.value.type.datastructure.DataStructureTemplate;
+import com.teamdev.runtime.evaluation.operandtype.DataStructureTemplate;
 
 /**
  * {@link FiniteStateMachine} implementation for recognizing data structure declarations.
  */
 public class DataStructureDeclarationMachine extends FiniteStateMachine<DataStructureTemplate, CompilingException> {
+
+    private DataStructureDeclarationMachine(
+            TransitionMatrix<DataStructureTemplate, CompilingException> transitionMatrix,
+            ExceptionThrower<CompilingException> thrower) {
+        super(transitionMatrix, thrower);
+    }
 
     public static DataStructureDeclarationMachine create(ProgramElementCompilerFactory factory) {
         Preconditions.checkNotNull(factory);
@@ -22,9 +33,11 @@ public class DataStructureDeclarationMachine extends FiniteStateMachine<DataStru
         var structureName = new State.Builder<DataStructureTemplate,
                 CompilingException>()
                 .setName("DATA STRUCTURE NAME")
-                .setAcceptor((reader, outputSequence) -> TextIdentifierMachine.acceptIdentifier(reader, outputSequence,
-                        DataStructureTemplate::setName,
-                        exceptionThrower))
+                .setAcceptor(
+                        (reader, outputSequence) -> TextIdentifierMachine.acceptIdentifier(reader,
+                                                                                           outputSequence,
+                                                                                           DataStructureTemplate::setName,
+                                                                                           exceptionThrower))
                 .setTemporary()
                 .build();
 
@@ -36,9 +49,11 @@ public class DataStructureDeclarationMachine extends FiniteStateMachine<DataStru
 
         var fieldName = new State.Builder<DataStructureTemplate, CompilingException>()
                 .setName("DATA STRUCTURE FIELD")
-                .setAcceptor((reader, outputSequence) -> TextIdentifierMachine.acceptIdentifier(reader, outputSequence,
-                        DataStructureTemplate::addFieldName,
-                        exceptionThrower))
+                .setAcceptor(
+                        (reader, outputSequence) -> TextIdentifierMachine.acceptIdentifier(reader,
+                                                                                           outputSequence,
+                                                                                           DataStructureTemplate::addFieldName,
+                                                                                           exceptionThrower))
                 .build();
 
         var comma = new State.Builder<DataStructureTemplate, CompilingException>()
@@ -71,10 +86,5 @@ public class DataStructureDeclarationMachine extends FiniteStateMachine<DataStru
                 .build();
 
         return new DataStructureDeclarationMachine(matrix, exceptionThrower);
-    }
-
-    private DataStructureDeclarationMachine(TransitionMatrix<DataStructureTemplate, CompilingException> transitionMatrix,
-                                            ExceptionThrower<CompilingException> thrower) {
-        super(transitionMatrix, thrower);
     }
 }

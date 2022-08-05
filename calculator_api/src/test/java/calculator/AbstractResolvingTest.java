@@ -15,8 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public abstract class AbstractResolvingTest {
 
-    public static final String POSITIVE_CASES = "positiveCases";
-    public static final String NEGATIVE_CASES = "negativeCases";
+    private static final String POSITIVE_CASES = "positiveCases";
+    private static final String NEGATIVE_CASES = "negativeCases";
     private final Calculator calculator = new Calculator();
 
     static Stream<Arguments> positiveCases() {
@@ -34,7 +34,8 @@ public abstract class AbstractResolvingTest {
         Output result = null;
         try {
             result = calculator.calculate(new MathExpression(mathExpression));
-        } catch (com.teamdev.runtime.MeadorRuntimeException ignored) {}
+        } catch (com.teamdev.runtime.MeadorRuntimeException ignored) {
+        }
 
         assertEquals(expected, result.getResult(), errorMessage);
     }

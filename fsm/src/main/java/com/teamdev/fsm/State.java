@@ -8,7 +8,8 @@ import java.util.Objects;
  * Represents a certain state of finite state machine and encapsulates a condition of transitioning
  * to it.
  *
- * @param <O> type of output sequence for {@code StateAcceptor}.
+ * @param <O>
+ *         type of output sequence for {@code StateAcceptor}.
  */
 
 public class State<O, E extends Exception> {

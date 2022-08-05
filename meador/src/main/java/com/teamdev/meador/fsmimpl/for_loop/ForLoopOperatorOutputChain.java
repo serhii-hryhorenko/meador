@@ -7,6 +7,7 @@ import com.teamdev.runtime.Command;
  * Output chain for {@link ForLoopOperatorMachine}.
  */
 public class ForLoopOperatorOutputChain {
+
     private Command variableDeclaration;
     private Command repeatCondition;
     private Command updateVariableStatement;

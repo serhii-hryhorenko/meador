@@ -1,7 +1,9 @@
 # Meador
+
 Simple scripting programming language implemented in Java.
 
 Already implemented features:
+
 1. `switch` operator
 2. Custom `data structures`
 3. Conditional expressions

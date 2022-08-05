@@ -11,20 +11,25 @@ import com.teamdev.runtime.Command;
 import java.util.Optional;
 
 /**
- * {@link ProgramElementCompiler} implementation for providing access to variable values stored at {@link com.teamdev.runtime.Memory}.
+ * {@link ProgramElementCompiler} implementation for providing access to variable values stored at
+ * {@link com.teamdev.runtime.Memory}.
  */
 public class VariableValueCompiler implements ProgramElementCompiler {
 
     @Override
     public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
         var optionalName = TextIdentifierMachine.parseIdentifier(reader,
-                new ExceptionThrower<>(CompilingException::new));
+                                                                 new ExceptionThrower<>(
+                                                                         CompilingException::new));
 
         return optionalName.map(variableName -> runtimeEnvironment -> {
 
-            var value = runtimeEnvironment.memory().getVariable(variableName);
+            var value = runtimeEnvironment.memory()
+                                          .getVariable(variableName);
 
-            runtimeEnvironment.stack().peek().pushOperand(value);
+            runtimeEnvironment.stack()
+                              .peek()
+                              .pushOperand(value);
         });
 
     }
@@ -32,9 +37,12 @@ public class VariableValueCompiler implements ProgramElementCompiler {
     public Optional<Command> compile(String variableName) {
         return Optional.of(runtimeEnvironment -> {
 
-            var variable = runtimeEnvironment.memory().getVariable(Preconditions.checkNotNull(variableName));
+            var variable = runtimeEnvironment.memory()
+                                             .getVariable(Preconditions.checkNotNull(variableName));
 
-            runtimeEnvironment.stack().peek().pushOperand(variable);
+            runtimeEnvironment.stack()
+                              .peek()
+                              .pushOperand(variable);
         });
     }
 }

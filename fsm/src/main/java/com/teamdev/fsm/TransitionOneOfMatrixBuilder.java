@@ -19,7 +19,8 @@ public class TransitionOneOfMatrixBuilder<O, E extends Exception> {
         return this;
     }
 
-    public final TransitionOneOfMatrixBuilder<O, E> allowTransition(StateAcceptor<O, E> acceptor, boolean isTemporary) {
+    public final TransitionOneOfMatrixBuilder<O, E> allowTransition(StateAcceptor<O, E> acceptor,
+                                                                    boolean isTemporary) {
         Preconditions.checkNotNull(acceptor);
 
         var state = new State.Builder<O, E>()
@@ -35,6 +36,7 @@ public class TransitionOneOfMatrixBuilder<O, E extends Exception> {
     }
 
     public final TransitionMatrix<O, E> build() {
-        return builder.withStartState(initial).build();
+        return builder.withStartState(initial)
+                      .build();
     }
 }

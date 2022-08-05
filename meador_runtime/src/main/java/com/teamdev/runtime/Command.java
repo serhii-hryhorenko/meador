@@ -1,7 +1,8 @@
 package com.teamdev.runtime;
 
-import com.teamdev.runtime.value.type.Value;
-import com.teamdev.runtime.value.type.bool.BooleanValueVisitor;
+import com.teamdev.runtime.evaluation.TypeMismatchException;
+import com.teamdev.runtime.evaluation.operandtype.BooleanValueVisitor;
+import com.teamdev.runtime.evaluation.operandtype.Value;
 
 /**
  * Runtime command which is created in compile time and evaluated on a runtime.
@@ -11,13 +12,22 @@ public interface Command {
 
     void execute(RuntimeEnvironment runtimeEnvironment) throws MeadorRuntimeException;
 
-    default boolean checkCondition(RuntimeEnvironment runtimeEnvironment, Command booleanExpression) throws MeadorRuntimeException {
-        runtimeEnvironment.stack().create();
+    default boolean checkCondition(RuntimeEnvironment runtimeEnvironment,
+                                   Command booleanExpression) throws MeadorRuntimeException {
+        runtimeEnvironment.stack()
+                .create();
         booleanExpression.execute(runtimeEnvironment);
-        Value condition = runtimeEnvironment.stack().pop().popResult();
+        Value condition = runtimeEnvironment.stack()
+                                            .pop()
+                                            .popResult();
 
         var visitor = new BooleanValueVisitor();
-        condition.acceptVisitor(visitor);
+
+        try {
+            condition.acceptVisitor(visitor);
+        } catch (TypeMismatchException e) {
+            throw new MeadorRuntimeException(e.getMessage());
+        }
 
         return visitor.value();
     }

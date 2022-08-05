@@ -9,13 +9,16 @@ import com.teamdev.meador.compiler.element.variable.VariableValueCompiler;
 import com.teamdev.meador.fsmimpl.unary_operator.PrefixUnaryOperatorMachine;
 import com.teamdev.meador.fsmimpl.unary_operator.UnaryExpressionOutputChain;
 import com.teamdev.runtime.Command;
-import com.teamdev.runtime.value.operator.AbstractOperatorFactory;
-import com.teamdev.runtime.value.operator.unaryoperator.AbstractUnaryOperator;
+import com.teamdev.runtime.MeadorRuntimeException;
+import com.teamdev.runtime.evaluation.TypeMismatchException;
+import com.teamdev.runtime.evaluation.operator.AbstractOperatorFactory;
+import com.teamdev.runtime.evaluation.operator.AbstractUnaryOperator;
 
 import java.util.Optional;
 
 /**
- * {@link ProgramElementCompiler} implementation for creating command of unary expressions with {@link AbstractUnaryOperator} prefix position.
+ * {@link ProgramElementCompiler} implementation for creating command of unary expressions with
+ * {@link AbstractUnaryOperator} prefix position.
  * These operations <b>can change</b> the variable value if the operator is supposed to do it.
  */
 public class UnaryPrefixExpressionCompiler implements ProgramElementCompiler {
@@ -39,19 +42,29 @@ public class UnaryPrefixExpressionCompiler implements ProgramElementCompiler {
                 .accept(reader, outputChain)) {
 
             return Optional.of(runtimeEnvironment -> {
-                var variableCommand = new VariableValueCompiler().compile(outputChain.variableName());
+                var variableCommand = new VariableValueCompiler().compile(
+                        outputChain.variableName());
 
                 if (variableCommand.isPresent()) {
-                    variableCommand.get().execute(runtimeEnvironment);
+                    variableCommand.get()
+                                   .execute(runtimeEnvironment);
 
-                    var topStack = runtimeEnvironment.stack().peek();
+                    var topStack = runtimeEnvironment.stack()
+                                                     .peek();
 
-                    var applied = outputChain.unaryOperator().apply(topStack.popOperand());
+                    try {
+                        var applied = outputChain.unaryOperator()
+                                                 .apply(topStack.popOperand());
 
-                    topStack.pushOperand(applied);
+                        topStack.pushOperand(applied);
 
-                    if (outputChain.unaryOperator().prefixFormMutatesVariable()) {
-                        runtimeEnvironment.memory().putVariable(outputChain.variableName(), applied);
+                        if (outputChain.unaryOperator()
+                                       .prefixFormMutatesVariable()) {
+                            runtimeEnvironment.memory()
+                                              .putVariable(outputChain.variableName(), applied);
+                        }
+                    } catch (TypeMismatchException e) {
+                        throw new MeadorRuntimeException(e.getMessage());
                     }
                 }
             });

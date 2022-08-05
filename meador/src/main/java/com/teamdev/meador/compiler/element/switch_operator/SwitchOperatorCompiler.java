@@ -6,8 +6,8 @@ import com.teamdev.meador.ProgramElementCompilerFactoryImpl;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.ProgramElementCompiler;
 import com.teamdev.meador.fsmimpl.switch_operator.SwitchOperatorMachine;
+import com.teamdev.meador.fsmimpl.switch_operator.SwitchOperatorOutputChain;
 import com.teamdev.runtime.Command;
-import com.teamdev.runtime.value.type.Value;
 
 import java.util.Optional;
 
@@ -15,6 +15,7 @@ import java.util.Optional;
  * {@link ProgramElementCompiler} implementation for {@code switch} Meador operator.
  */
 public class SwitchOperatorCompiler implements ProgramElementCompiler {
+
     private final ProgramElementCompilerFactoryImpl compilerFactory;
 
     public SwitchOperatorCompiler(ProgramElementCompilerFactoryImpl compilerFactory) {
@@ -25,27 +26,37 @@ public class SwitchOperatorCompiler implements ProgramElementCompiler {
     public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
         var outputChain = new SwitchOperatorOutputChain();
 
-        if (SwitchOperatorMachine.create(compilerFactory).accept(reader, outputChain)) {
+        if (SwitchOperatorMachine.create(compilerFactory)
+                .accept(reader, outputChain)) {
             return Optional.of(runtimeEnvironment -> {
 
-                runtimeEnvironment.stack().create();
-                outputChain.mappedValue().execute(runtimeEnvironment);
-                Value mappedValue = runtimeEnvironment.stack().pop().popResult();
+                runtimeEnvironment.stack()
+                        .create();
+                outputChain.mappedValue()
+                           .execute(runtimeEnvironment);
+                var mappedValue = runtimeEnvironment.stack()
+                                                    .pop()
+                                                    .popResult();
 
                 for (var option : outputChain.options()) {
                     var condition = option.condition();
 
-                    runtimeEnvironment.stack().create();
+                    runtimeEnvironment.stack()
+                            .create();
                     condition.execute(runtimeEnvironment);
-                    var conditionValue = runtimeEnvironment.stack().pop().popResult();
+                    var conditionValue = runtimeEnvironment.stack()
+                                                           .pop()
+                                                           .popResult();
 
                     if (mappedValue.equals(conditionValue)) {
-                        option.statement().execute(runtimeEnvironment);
+                        option.statement()
+                              .execute(runtimeEnvironment);
                         return;
                     }
                 }
 
-                outputChain.defaultCommand().execute(runtimeEnvironment);
+                outputChain.defaultCommand()
+                           .execute(runtimeEnvironment);
             });
         }
 

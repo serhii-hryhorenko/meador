@@ -21,6 +21,7 @@ import java.util.Optional;
  * See details {@link ForLoopOperatorMachine}.
  */
 public class ForLoopOperatorCompiler implements ProgramElementCompiler {
+
     private final ProgramElementCompilerFactory factory;
 
     public ForLoopOperatorCompiler(ProgramElementCompilerFactory factory) {
@@ -31,17 +32,22 @@ public class ForLoopOperatorCompiler implements ProgramElementCompiler {
     public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
         var outputChain = new ForLoopOperatorOutputChain();
 
-        if (ForLoopOperatorMachine.create(factory).accept(reader, outputChain)) {
+        if (ForLoopOperatorMachine.create(factory)
+                .accept(reader, outputChain)) {
             return Optional.of(new Command() {
                 @Override
-                public void execute(RuntimeEnvironment runtimeEnvironment) throws MeadorRuntimeException {
-                    outputChain.variableDeclaration().execute(runtimeEnvironment);
+                public void execute(RuntimeEnvironment runtimeEnvironment) throws
+                                                                           MeadorRuntimeException {
+                    outputChain.variableDeclaration()
+                               .execute(runtimeEnvironment);
 
-                    int iterations = 0;
+                    var iterations = 0;
 
                     while (checkCondition(runtimeEnvironment, outputChain.repeatCondition())) {
-                        outputChain.loopBody().execute(runtimeEnvironment);
-                        outputChain.updateVariableStatement().execute(runtimeEnvironment);
+                        outputChain.loopBody()
+                                   .execute(runtimeEnvironment);
+                        outputChain.updateVariableStatement()
+                                   .execute(runtimeEnvironment);
 
                         if (++iterations == RuntimeEnvironment.MAX_LOOP_ITERATIONS) {
                             throw new MeadorRuntimeException("Infinite for loop detected.");

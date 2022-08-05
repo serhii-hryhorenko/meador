@@ -9,13 +9,14 @@ import java.util.Optional;
 /**
  * Realization of finite state machine concept based on {@link StateAcceptor} for accepting
  * transitions between {@link State}.
- * {@linktourl https://en.wikipedia.org/wiki/Finite-state_machine}
+ * {@see https://en.wikipedia.org/wiki/Finite-state_machine}
  *
  * <p>Requires {@link TransitionMatrix} as a definition of assigned directed graph.
  * Realizes traversal algorithm from a so-called start state to so-called finish state
  * that are defined by a transition matrix also.
  *
- * @param <O> output sequence type
+ * @param <O>
+ *         output sequence type
  */
 
 public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor<O, E> {
@@ -23,17 +24,18 @@ public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor
     private static final Logger logger = LoggerFactory.getLogger(FiniteStateMachine.class);
 
     private final TransitionMatrix<O, E> transitionMatrix;
+    private final ExceptionThrower<E> exceptionThrower;
     private boolean skippingWhitespaces = true;
 
-    private final ExceptionThrower<E> exceptionThrower;
-
-    protected FiniteStateMachine(TransitionMatrix<O, E> transitionMatrix, ExceptionThrower<E> thrower) {
+    protected FiniteStateMachine(TransitionMatrix<O, E> transitionMatrix,
+                                 ExceptionThrower<E> thrower) {
 
         this.transitionMatrix = Preconditions.checkNotNull(transitionMatrix);
         this.exceptionThrower = Preconditions.checkNotNull(thrower);
     }
 
-    protected FiniteStateMachine(TransitionMatrix<O, E> transitionMatrix, ExceptionThrower<E> thrower, boolean skippingWhitespaces) {
+    protected FiniteStateMachine(TransitionMatrix<O, E> transitionMatrix,
+                                 ExceptionThrower<E> thrower, boolean skippingWhitespaces) {
 
         this.transitionMatrix = Preconditions.checkNotNull(transitionMatrix);
         this.exceptionThrower = Preconditions.checkNotNull(thrower);
@@ -73,14 +75,14 @@ public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor
             var nextState = getNextState(currentState, reader, outputChain);
 
             if (nextState.isEmpty()) {
-                if (transitionMatrix.getStartState().equals(currentState)) {
+                if (transitionMatrix.getStartState()
+                                    .equals(currentState)) {
                     if (logger.isInfoEnabled()) {
                         logger.info("[{}] is failed to start.", this);
                     }
 
                     return false;
                 }
-
 
                 if (currentState.isFinite()) {
 
@@ -112,12 +114,14 @@ public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor
             input.restorePosition();
 
             if (logger.isInfoEnabled()) {
-                logger.info("[{}] restored to [{}], index: {}.", this, input.getSequence(), input.getPosition());
+                logger.info("[{}] restored to [{}], index: {}.", this, input.getSequence(),
+                            input.getPosition());
             }
         }
     }
 
-    private Optional<State<O, E>> getNextState(State<O, E> currentState, InputSequenceReader input, O output) throws E {
+    private Optional<State<O, E>> getNextState(State<O, E> currentState, InputSequenceReader input,
+                                               O output) throws E {
 
         var allowedStates = Optional.ofNullable(transitionMatrix.getAllowedStates(currentState));
 
@@ -128,11 +132,13 @@ public class FiniteStateMachine<O, E extends Exception> implements StateAcceptor
                     input.savePosition();
 
                     if (logger.isInfoEnabled()) {
-                        logger.info("[{}] saved InputSequence at position [{}], index: {}.", this, input.getSequence(), input.getPosition());
+                        logger.info("[{}] saved InputSequence at position [{}], index: {}.", this,
+                                    input.getSequence(), input.getPosition());
                     }
                 }
 
-                if (candidateState.getAcceptor().accept(input, output)) {
+                if (candidateState.getAcceptor()
+                                  .accept(input, output)) {
 
                     if (logger.isInfoEnabled()) {
                         logger.info("[{}]: [{}] -> [{}]", this, currentState, candidateState);

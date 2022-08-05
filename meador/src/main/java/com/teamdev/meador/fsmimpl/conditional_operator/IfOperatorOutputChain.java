@@ -8,6 +8,7 @@ import com.teamdev.runtime.Command;
  * Provides access to the parsing result of an {@code if} operator.
  */
 public class IfOperatorOutputChain {
+
     private Command condition;
     private Command statements;
 

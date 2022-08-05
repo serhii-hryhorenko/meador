@@ -6,6 +6,7 @@ import com.google.common.base.Preconditions;
  * Output chain for {@link DataStructureFieldReferenceMachine}.
  */
 public class FieldReferenceOutputChain {
+
     private String variableName;
     private String fieldName;
 

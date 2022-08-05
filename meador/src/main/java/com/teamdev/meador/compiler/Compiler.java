@@ -14,13 +14,16 @@ import static com.teamdev.meador.compiler.ProgramElement.LIST_OF_STATEMENTS;
  * Compiles {@link Program} into a single runtime {@link Command}.
  */
 public class Compiler {
+
     public Optional<Command> compile(Program program) throws CompilingException {
 
-        var reader = new InputSequenceReader(Preconditions.checkNotNull(program).getCode());
+        var reader = new InputSequenceReader(Preconditions.checkNotNull(program)
+                                                          .getCode());
 
         ProgramElementCompilerFactory factory = new ProgramElementCompilerFactoryImpl();
 
-        var optionalProgram = factory.create(LIST_OF_STATEMENTS).compile(reader);
+        var optionalProgram = factory.create(LIST_OF_STATEMENTS)
+                .compile(reader);
 
         if (reader.canRead()) {
             throw new CompilingException("Program compilation failed.");

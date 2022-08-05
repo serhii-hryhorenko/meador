@@ -5,12 +5,12 @@ import com.teamdev.fsm.ExceptionThrower;
 import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.machine.function.FunctionHolder;
 import com.teamdev.machine.function.FunctionMachine;
-import com.teamdev.machine.function.ValidatedFunctionFactory;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.ProgramElementCompiler;
 import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
 import com.teamdev.runtime.Command;
-import com.teamdev.runtime.value.type.Value;
+import com.teamdev.runtime.function.ValidatedFunctionFactory;
+import com.teamdev.runtime.evaluation.operandtype.Value;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,8 @@ import java.util.Optional;
 import static com.teamdev.meador.compiler.ProgramElement.NUMERIC_EXPRESSION;
 
 /**
- * {@link ProgramElementCompiler} implementation for recognizing math functions in numeric expressions.
+ * {@link ProgramElementCompiler} implementation for recognizing math functions in numeric
+ * expressions.
  */
 public class FunctionCompiler implements ProgramElementCompiler {
 
@@ -57,20 +58,27 @@ public class FunctionCompiler implements ProgramElementCompiler {
 
             var function = functionFactory.create(context.functionName());
 
-            if (context.arguments().size() >= function.getMinArguments()
-                    && context.arguments().size() <= function.getMaxArguments()) {
+            if (context.arguments()
+                       .size() >= function.getMinArguments()
+                    && context.arguments()
+                              .size() <= function.getMaxArguments()) {
 
                 return Optional.of(runtimeEnvironment -> {
 
                     List<Value> doubles = new ArrayList<>();
 
                     for (var command : context.arguments()) {
-                        runtimeEnvironment.stack().create();
+                        runtimeEnvironment.stack()
+                                .create();
                         command.execute(runtimeEnvironment);
-                        doubles.add(runtimeEnvironment.stack().pop().popResult());
+                        doubles.add(runtimeEnvironment.stack()
+                                                      .pop()
+                                                      .popResult());
                     }
 
-                    runtimeEnvironment.stack().peek().pushOperand(function.apply(doubles));
+                    runtimeEnvironment.stack()
+                                      .peek()
+                                      .pushOperand(function.apply(doubles));
                 });
             }
 

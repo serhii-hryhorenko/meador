@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.function.Predicate;
 
 /**
- * Util state acceptor implementation for reading from {@link InputSequenceReader} and writing to buffer.
+ * Util state acceptor implementation for reading from {@link InputSequenceReader} and writing to
+ * buffer.
  */
 public class SymbolAcceptor<E extends Exception> implements StateAcceptor<StringBuilder, E> {
 
@@ -18,7 +19,7 @@ public class SymbolAcceptor<E extends Exception> implements StateAcceptor<String
         Preconditions.checkNotNull(chars);
 
         this.condition = character -> List.of(chars)
-                .contains(character);
+                                          .contains(character);
     }
 
     public SymbolAcceptor(Predicate<Character> condition) {

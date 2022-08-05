@@ -1,7 +1,11 @@
 package com.teamdev.meador.fsmimpl.datastructure;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.fsm.*;
+import com.teamdev.fsm.ExceptionThrower;
+import com.teamdev.fsm.FiniteStateMachine;
+import com.teamdev.fsm.State;
+import com.teamdev.fsm.StateAcceptor;
+import com.teamdev.fsm.TransitionMatrix;
 import com.teamdev.meador.compiler.CompileStatementAcceptor;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
@@ -13,6 +17,12 @@ import static com.teamdev.meador.compiler.ProgramElement.EXPRESSION;
  */
 public class FieldAssignmentMachine extends FiniteStateMachine<FieldAssignmentOutputChain, CompilingException> {
 
+    private FieldAssignmentMachine(
+            TransitionMatrix<FieldAssignmentOutputChain, CompilingException> transitionMatrix,
+            ExceptionThrower<CompilingException> thrower) {
+        super(transitionMatrix, thrower);
+    }
+
     public static FieldAssignmentMachine create(ProgramElementCompilerFactory factory) {
         Preconditions.checkNotNull(factory);
 
@@ -21,7 +31,8 @@ public class FieldAssignmentMachine extends FiniteStateMachine<FieldAssignmentOu
                 .setAcceptor((reader, outputSequence) -> {
                     var field = new FieldReferenceOutputChain();
 
-                    if (DataStructureFieldReferenceMachine.create().accept(reader, field)) {
+                    if (DataStructureFieldReferenceMachine.create()
+                            .accept(reader, field)) {
                         outputSequence.setField(field);
                         return true;
                     }
@@ -37,7 +48,8 @@ public class FieldAssignmentMachine extends FiniteStateMachine<FieldAssignmentOu
 
         var value = new State.Builder<FieldAssignmentOutputChain, CompilingException>()
                 .setName("NEW FIELD VALUE")
-                .setAcceptor(new CompileStatementAcceptor<>(factory, EXPRESSION, FieldAssignmentOutputChain::setCommand))
+                .setAcceptor(new CompileStatementAcceptor<>(factory, EXPRESSION,
+                                                            FieldAssignmentOutputChain::setCommand))
                 .build();
 
         var semicolon = new State.Builder<FieldAssignmentOutputChain, CompilingException>()
@@ -47,13 +59,9 @@ public class FieldAssignmentMachine extends FiniteStateMachine<FieldAssignmentOu
                 .build();
 
         var matrix =
-                TransitionMatrix.chainedTransitions(structureField, assignOperator, value, semicolon);
+                TransitionMatrix.chainedTransitions(structureField, assignOperator, value,
+                                                    semicolon);
 
         return new FieldAssignmentMachine(matrix, new ExceptionThrower<>(CompilingException::new));
-    }
-
-    private FieldAssignmentMachine(TransitionMatrix<FieldAssignmentOutputChain, CompilingException> transitionMatrix,
-                                   ExceptionThrower<CompilingException> thrower) {
-        super(transitionMatrix, thrower);
     }
 }

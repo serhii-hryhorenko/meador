@@ -9,11 +9,14 @@ import java.util.function.BiConsumer;
 
 /**
  * {@link StateAcceptor} implementation for complex {@link com.teamdev.fsm.FiniteStateMachine}.
- * Checks whether the element is compiled or not and performs an action over output chain if it does.
+ * Checks whether the element is compiled or not and performs an action over output chain if it
+ * does.
  *
- * @param <O> custom output chain
+ * @param <O>
+ *         custom output chain
  */
 public class CompileStatementAcceptor<O> implements StateAcceptor<O, CompilingException> {
+
     private final ProgramElementCompilerFactory factory;
     private final ProgramElement type;
     private final BiConsumer<O, Command> resultConsumer;

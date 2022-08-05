@@ -1,7 +1,12 @@
 package com.teamdev.meador.fsmimpl.datastructure;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.fsm.*;
+import com.teamdev.fsm.ExceptionThrower;
+import com.teamdev.fsm.FiniteStateMachine;
+import com.teamdev.fsm.State;
+import com.teamdev.fsm.StateAcceptor;
+import com.teamdev.fsm.TransitionMatrix;
+import com.teamdev.fsm.TransitionMatrixBuilder;
 import com.teamdev.machine.util.TextIdentifierMachine;
 import com.teamdev.meador.compiler.CompileStatementAcceptor;
 import com.teamdev.meador.compiler.CompilingException;
@@ -10,9 +15,16 @@ import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
 import static com.teamdev.meador.compiler.ProgramElement.EXPRESSION;
 
 /**
- * {@link FiniteStateMachine} implementation for recognizing data structures implementations in Meador programs.
+ * {@link FiniteStateMachine} implementation for recognizing data structures implementations in
+ * Meador programs.
  */
 public class DataStructureInstanceMachine extends FiniteStateMachine<DataStructureOutputChain, CompilingException> {
+
+    private DataStructureInstanceMachine(
+            TransitionMatrix<DataStructureOutputChain, CompilingException> transitionMatrix,
+            ExceptionThrower<CompilingException> thrower) {
+        super(transitionMatrix, thrower);
+    }
 
     public static DataStructureInstanceMachine create(ProgramElementCompilerFactory factory) {
         Preconditions.checkNotNull(factory);
@@ -23,9 +35,11 @@ public class DataStructureInstanceMachine extends FiniteStateMachine<DataStructu
 
         var templateName = new State.Builder<DataStructureOutputChain, CompilingException>()
                 .setName("TEMPLATE NAME")
-                .setAcceptor((reader, outputSequence) -> TextIdentifierMachine.acceptIdentifier(reader, outputSequence,
-                        DataStructureOutputChain::setTemplateName,
-                        exceptionThrower))
+                .setAcceptor(
+                        (reader, outputSequence) -> TextIdentifierMachine.acceptIdentifier(reader,
+                                                                                           outputSequence,
+                                                                                           DataStructureOutputChain::setTemplateName,
+                                                                                           exceptionThrower))
                 .setTemporary()
                 .build();
 
@@ -36,7 +50,8 @@ public class DataStructureInstanceMachine extends FiniteStateMachine<DataStructu
 
         var structureField = new State.Builder<DataStructureOutputChain, CompilingException>()
                 .setName("STRUCTURE FIELD")
-                .setAcceptor(new CompileStatementAcceptor<>(factory, EXPRESSION, DataStructureOutputChain::addValue))
+                .setAcceptor(new CompileStatementAcceptor<>(factory, EXPRESSION,
+                                                            DataStructureOutputChain::addValue))
                 .build();
 
         var comma = new State.Builder<DataStructureOutputChain, CompilingException>()
@@ -60,10 +75,5 @@ public class DataStructureInstanceMachine extends FiniteStateMachine<DataStructu
                 .build();
 
         return new DataStructureInstanceMachine(matrix, exceptionThrower);
-    }
-
-    private DataStructureInstanceMachine(TransitionMatrix<DataStructureOutputChain, CompilingException> transitionMatrix,
-                                         ExceptionThrower<CompilingException> thrower) {
-        super(transitionMatrix, thrower);
     }
 }

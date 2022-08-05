@@ -9,15 +9,22 @@ import com.teamdev.machine.expression.OperatorAcceptor;
 import com.teamdev.machine.util.TextIdentifierMachine;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
-import com.teamdev.runtime.value.operator.AbstractOperatorFactory;
-import com.teamdev.runtime.value.operator.unaryoperator.AbstractUnaryOperator;
+import com.teamdev.runtime.evaluation.operator.AbstractOperatorFactory;
+import com.teamdev.runtime.evaluation.operator.AbstractUnaryOperator;
 
 /**
- * {@link FiniteStateMachine} implementation for recognizing unary expressions with an {@link AbstractUnaryOperator} prefix
+ * {@link FiniteStateMachine} implementation for recognizing unary expressions with an {@link
+ * AbstractUnaryOperator} prefix
  * position.
  * Parses only the variable name, not a value.
  */
 public class PrefixUnaryOperatorMachine extends FiniteStateMachine<UnaryExpressionOutputChain, CompilingException> {
+
+    private PrefixUnaryOperatorMachine(
+            TransitionMatrix<UnaryExpressionOutputChain, CompilingException> transitionMatrix,
+            ExceptionThrower<CompilingException> thrower) {
+        super(transitionMatrix, thrower);
+    }
 
     public static PrefixUnaryOperatorMachine create(ProgramElementCompilerFactory compilerFactory,
                                                     AbstractOperatorFactory<AbstractUnaryOperator> operatorFactory) {
@@ -27,25 +34,23 @@ public class PrefixUnaryOperatorMachine extends FiniteStateMachine<UnaryExpressi
 
         var prefixOperator = new State.Builder<UnaryExpressionOutputChain, CompilingException>()
                 .setName("PREFIX OPERATOR")
-                .setAcceptor(new OperatorAcceptor<>(operatorFactory, UnaryExpressionOutputChain::setUnaryOperator))
+                .setAcceptor(new OperatorAcceptor<>(operatorFactory,
+                                                    UnaryExpressionOutputChain::setUnaryOperator))
                 .setTemporary()
                 .build();
 
-
         var expression = new State.Builder<UnaryExpressionOutputChain, CompilingException>()
                 .setName("VARIABLE NAME")
-                .setAcceptor((reader, outputSequence) -> TextIdentifierMachine.acceptIdentifier(reader, outputSequence,
-                        UnaryExpressionOutputChain::setVariableName,
-                        exceptionThrower))
+                .setAcceptor(
+                        (reader, outputSequence) -> TextIdentifierMachine.acceptIdentifier(reader,
+                                                                                           outputSequence,
+                                                                                           UnaryExpressionOutputChain::setVariableName,
+                                                                                           exceptionThrower))
                 .setFinal()
                 .build();
 
-        return new PrefixUnaryOperatorMachine(TransitionMatrix.chainedTransitions(prefixOperator, expression),
+        return new PrefixUnaryOperatorMachine(
+                TransitionMatrix.chainedTransitions(prefixOperator, expression),
                 exceptionThrower);
-    }
-
-    private PrefixUnaryOperatorMachine(TransitionMatrix<UnaryExpressionOutputChain, CompilingException> transitionMatrix,
-                                       ExceptionThrower<CompilingException> thrower) {
-        super(transitionMatrix, thrower);
     }
 }

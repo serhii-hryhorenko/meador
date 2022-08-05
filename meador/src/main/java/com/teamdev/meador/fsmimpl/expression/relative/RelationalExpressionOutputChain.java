@@ -2,12 +2,13 @@ package com.teamdev.meador.fsmimpl.expression.relative;
 
 import com.google.common.base.Preconditions;
 import com.teamdev.runtime.Command;
-import com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperator;
+import com.teamdev.runtime.evaluation.operator.AbstractBinaryOperator;
 
 /**
  * Output chain for {@link RelationalExpressionMachine}.
  */
 public class RelationalExpressionOutputChain {
+
     private Command left;
     private Command right;
     private AbstractBinaryOperator operator;

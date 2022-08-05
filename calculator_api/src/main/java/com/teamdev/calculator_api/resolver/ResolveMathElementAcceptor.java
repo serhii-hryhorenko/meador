@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.fsm.StateAcceptor;
 import com.teamdev.runtime.MeadorRuntimeException;
-import com.teamdev.runtime.value.type.Value;
+import com.teamdev.runtime.evaluation.operandtype.Value;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -35,7 +35,8 @@ public class ResolveMathElementAcceptor<O> implements StateAcceptor<O, Resolving
 
         try {
             optionalResult = resolver.resolve(reader);
-        } catch (MeadorRuntimeException ignored) {}
+        } catch (MeadorRuntimeException ignored) {
+        }
 
         optionalResult.ifPresent(value -> resultConsumer.accept(outputChain, value));
 

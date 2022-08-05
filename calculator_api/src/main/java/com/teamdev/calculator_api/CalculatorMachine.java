@@ -4,8 +4,12 @@ import com.google.common.base.Preconditions;
 import com.teamdev.calculator_api.resolver.MathElementResolverFactory;
 import com.teamdev.calculator_api.resolver.ResolveMathElementAcceptor;
 import com.teamdev.calculator_api.resolver.ResolvingException;
-import com.teamdev.fsm.*;
-import com.teamdev.runtime.value.ShuntingYard;
+import com.teamdev.fsm.ExceptionThrower;
+import com.teamdev.fsm.FiniteStateMachine;
+import com.teamdev.fsm.InputSequenceReader;
+import com.teamdev.fsm.State;
+import com.teamdev.fsm.TransitionMatrix;
+import com.teamdev.runtime.ShuntingYard;
 
 import static com.teamdev.calculator_api.resolver.MathElement.EXPRESSION;
 
@@ -26,7 +30,7 @@ class CalculatorMachine extends FiniteStateMachine<ShuntingYard, ResolvingExcept
         var expressionState = new State.Builder<ShuntingYard, ResolvingException>()
                 .setName("EXPRESSION")
                 .setAcceptor(new ResolveMathElementAcceptor<>(factory, EXPRESSION,
-                        ShuntingYard::pushOperand))
+                                                              ShuntingYard::pushOperand))
                 .build();
 
         var finalState = new State.Builder<ShuntingYard, ResolvingException>()

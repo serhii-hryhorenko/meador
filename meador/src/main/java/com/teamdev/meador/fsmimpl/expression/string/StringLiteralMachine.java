@@ -1,12 +1,22 @@
 package com.teamdev.meador.fsmimpl.expression.string;
 
-import com.teamdev.fsm.*;
+import com.teamdev.fsm.ExceptionThrower;
+import com.teamdev.fsm.FiniteStateMachine;
+import com.teamdev.fsm.State;
+import com.teamdev.fsm.StateAcceptor;
+import com.teamdev.fsm.TransitionMatrix;
 import com.teamdev.meador.compiler.CompilingException;
 
 /**
  * {@link FiniteStateMachine} implementation for parsing Meador string literals.
  */
 public class StringLiteralMachine extends FiniteStateMachine<StringLiteralOutputChain, CompilingException> {
+
+    private StringLiteralMachine(
+            TransitionMatrix<StringLiteralOutputChain, CompilingException> transitionMatrix,
+            ExceptionThrower<CompilingException> thrower) {
+        super(transitionMatrix, thrower, false);
+    }
 
     public static StringLiteralMachine create() {
         var exceptionThrower = new ExceptionThrower<>(CompilingException::new);
@@ -33,11 +43,7 @@ public class StringLiteralMachine extends FiniteStateMachine<StringLiteralOutput
                 .setFinal()
                 .build();
 
-        return new StringLiteralMachine(TransitionMatrix.chainedTransitions(start, literal, end), exceptionThrower);
-    }
-
-    private StringLiteralMachine(TransitionMatrix<StringLiteralOutputChain, CompilingException> transitionMatrix,
-                                 ExceptionThrower<CompilingException> thrower) {
-        super(transitionMatrix, thrower, false);
+        return new StringLiteralMachine(TransitionMatrix.chainedTransitions(start, literal, end),
+                                        exceptionThrower);
     }
 }

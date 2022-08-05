@@ -2,7 +2,7 @@ package com.teamdev.meador.fsmimpl.datastructure;
 
 import com.google.common.base.Preconditions;
 import com.teamdev.runtime.Command;
-import com.teamdev.runtime.value.type.datastructure.DataStructureTemplate;
+import com.teamdev.runtime.evaluation.operandtype.DataStructureTemplate;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,8 +12,9 @@ import java.util.List;
  * Output chain for {@link DataStructureTemplate} implementation.
  */
 public class DataStructureOutputChain {
-    private String templateName;
+
     private final List<Command> fieldValues = new ArrayList<>();
+    private String templateName;
 
     public String templateName() {
         return templateName;

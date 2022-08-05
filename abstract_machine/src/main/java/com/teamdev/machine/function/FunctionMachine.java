@@ -1,8 +1,15 @@
 package com.teamdev.machine.function;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.fsm.*;
+import com.teamdev.fsm.ExceptionThrower;
+import com.teamdev.fsm.FiniteStateMachine;
+import com.teamdev.fsm.InputSequenceReader;
+import com.teamdev.fsm.State;
+import com.teamdev.fsm.StateAcceptor;
+import com.teamdev.fsm.TransitionMatrix;
+import com.teamdev.fsm.TransitionMatrixBuilder;
 import com.teamdev.machine.util.TextIdentifierMachine;
+import com.teamdev.runtime.function.ValidatedFunction;
 
 /**
  * {@link FiniteStateMachine} implementation for recognizing {@link  ValidatedFunction}
@@ -27,9 +34,10 @@ public class FunctionMachine<T, E extends Exception> extends FiniteStateMachine<
 
         var nameState = new State.Builder<FunctionHolder<T>, E>()
                 .setName("NAME")
-                .setAcceptor((reader, outputSequence) -> TextIdentifierMachine.acceptIdentifier(reader, outputSequence,
-                        FunctionHolder::setFunctionName,
-                        exceptionThrower))
+                .setAcceptor((reader, outputSequence) ->
+                                     TextIdentifierMachine.acceptIdentifier(reader, outputSequence,
+                                                                            FunctionHolder::setFunctionName,
+                                                                            exceptionThrower))
                 .setTemporary()
                 .build();
 

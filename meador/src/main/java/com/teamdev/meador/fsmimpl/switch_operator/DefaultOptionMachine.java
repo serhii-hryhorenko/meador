@@ -1,11 +1,14 @@
 package com.teamdev.meador.fsmimpl.switch_operator;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.fsm.*;
+import com.teamdev.fsm.ExceptionThrower;
+import com.teamdev.fsm.FiniteStateMachine;
+import com.teamdev.fsm.State;
+import com.teamdev.fsm.StateAcceptor;
+import com.teamdev.fsm.TransitionMatrix;
 import com.teamdev.machine.util.TextIdentifierMachine;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
-import com.teamdev.meador.compiler.element.switch_operator.SwitchOperatorOutputChain;
 import com.teamdev.meador.fsmimpl.util.CodeBlockMachine;
 
 /**
@@ -15,7 +18,9 @@ public class DefaultOptionMachine extends FiniteStateMachine<SwitchOperatorOutpu
 
     private static final String DEFAULT = "default";
 
-    private DefaultOptionMachine(TransitionMatrix<SwitchOperatorOutputChain, CompilingException> transitionMatrix, ExceptionThrower<CompilingException> thrower) {
+    private DefaultOptionMachine(
+            TransitionMatrix<SwitchOperatorOutputChain, CompilingException> transitionMatrix,
+            ExceptionThrower<CompilingException> thrower) {
         super(transitionMatrix, thrower);
     }
 
@@ -27,7 +32,8 @@ public class DefaultOptionMachine extends FiniteStateMachine<SwitchOperatorOutpu
         var defaultKeyword = new State.Builder<SwitchOperatorOutputChain, CompilingException>()
                 .setName("DEFAULT OPTION")
                 .setAcceptor((inputSequence, outputSequence) ->
-                        TextIdentifierMachine.acceptKeyword(inputSequence, DEFAULT, exceptionThrower))
+                                     TextIdentifierMachine.acceptKeyword(inputSequence, DEFAULT,
+                                                                         exceptionThrower))
                 .build();
 
         var colon = new State.Builder<SwitchOperatorOutputChain, CompilingException>()
@@ -37,7 +43,8 @@ public class DefaultOptionMachine extends FiniteStateMachine<SwitchOperatorOutpu
 
         var executableExpression = new State.Builder<SwitchOperatorOutputChain, CompilingException>()
                 .setName("EXECUTABLE EXPRESSION")
-                .setAcceptor(CodeBlockMachine.create(factory, SwitchOperatorOutputChain::setDefaultCommand))
+                .setAcceptor(CodeBlockMachine.create(factory,
+                                                     SwitchOperatorOutputChain::setDefaultCommand))
                 .setFinal()
                 .build();
 

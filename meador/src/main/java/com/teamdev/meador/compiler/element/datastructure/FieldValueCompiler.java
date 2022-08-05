@@ -6,13 +6,16 @@ import com.teamdev.meador.compiler.ProgramElementCompiler;
 import com.teamdev.meador.fsmimpl.datastructure.DataStructureFieldReferenceMachine;
 import com.teamdev.meador.fsmimpl.datastructure.FieldReferenceOutputChain;
 import com.teamdev.runtime.Command;
-import com.teamdev.runtime.value.type.Value;
-import com.teamdev.runtime.value.type.datastructure.DataStructureValueVisitor;
+import com.teamdev.runtime.MeadorRuntimeException;
+import com.teamdev.runtime.evaluation.TypeMismatchException;
+import com.teamdev.runtime.evaluation.operandtype.Value;
+import com.teamdev.runtime.evaluation.operandtype.DataStructureValueVisitor;
 
 import java.util.Optional;
 
 /**
- * {@link ProgramElementCompiler} implementation for providing access to data structure's field values stored at {@link com.teamdev.runtime.Memory}.
+ * {@link ProgramElementCompiler} implementation for providing access to data structure's field
+ * values stored at {@link com.teamdev.runtime.Memory}.
  */
 public class FieldValueCompiler implements ProgramElementCompiler {
 
@@ -20,18 +23,26 @@ public class FieldValueCompiler implements ProgramElementCompiler {
     public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
         var outputChain = new FieldReferenceOutputChain();
 
-        if (DataStructureFieldReferenceMachine.create().accept(reader, outputChain)) {
+        if (DataStructureFieldReferenceMachine.create()
+                .accept(reader, outputChain)) {
             return Optional.of(runtimeEnvironment -> {
                 String name = outputChain.variableName();
 
-                Value value = runtimeEnvironment.memory().getVariable(name);
+                Value value = runtimeEnvironment.memory()
+                                                .getVariable(name);
 
                 var visitor = new DataStructureValueVisitor();
-                value.acceptVisitor(visitor);
 
-                var field = visitor.value().getField(outputChain.fieldName());
+                try {
+                    value.acceptVisitor(visitor);
+                } catch (TypeMismatchException e) {
+                    throw new MeadorRuntimeException(e.getMessage());
+                }
 
-                field.command().execute(runtimeEnvironment);
+                var field = visitor.value()
+                                   .getField(outputChain.fieldName());
+
+                runtimeEnvironment.stack().peek().pushOperand(field.getValue());
             });
         }
 

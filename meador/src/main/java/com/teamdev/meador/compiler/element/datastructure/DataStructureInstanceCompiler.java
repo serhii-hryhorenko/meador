@@ -5,12 +5,12 @@ import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.ProgramElementCompiler;
 import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
-import com.teamdev.meador.fsmimpl.datastructure.DataStructureOutputChain;
 import com.teamdev.meador.fsmimpl.datastructure.DataStructureInstanceMachine;
+import com.teamdev.meador.fsmimpl.datastructure.DataStructureOutputChain;
 import com.teamdev.runtime.Command;
 import com.teamdev.runtime.MeadorRuntimeException;
-import com.teamdev.runtime.value.type.datastructure.DataStructureHolder;
-import com.teamdev.runtime.value.type.datastructure.DataStructureValue;
+import com.teamdev.runtime.evaluation.operandtype.DataStructureHolder;
+import com.teamdev.runtime.evaluation.operandtype.DataStructureValue;
 
 import java.util.Optional;
 
@@ -29,6 +29,7 @@ import java.util.Optional;
  * Parsed structure instance is represented as {@link DataStructureValue}.
  */
 public class DataStructureInstanceCompiler implements ProgramElementCompiler {
+
     private final ProgramElementCompilerFactory factory;
 
     public DataStructureInstanceCompiler(ProgramElementCompilerFactory factory) {
@@ -39,22 +40,31 @@ public class DataStructureInstanceCompiler implements ProgramElementCompiler {
     public Optional<Command> compile(InputSequenceReader inputSequence) throws CompilingException {
         var dataStructureContext = new DataStructureOutputChain();
 
-        if (DataStructureInstanceMachine.create(factory).accept(inputSequence, dataStructureContext)) {
+        if (DataStructureInstanceMachine.create(factory)
+                .accept(inputSequence, dataStructureContext)) {
             return Optional.of(runtimeEnvironment -> {
                 var template = runtimeEnvironment.memory()
-                        .getDataStructureTemplate(dataStructureContext.templateName());
+                                                 .getDataStructureTemplate(
+                                                         dataStructureContext.templateName());
 
-                if (template.fieldNumber() != dataStructureContext.fieldValues().size()) {
-                    throw new MeadorRuntimeException("The number of parsed fields doesn't match the template's from memory.");
+                if (template.fieldNumber() != dataStructureContext.fieldValues()
+                                                                  .size()) {
+                    throw new MeadorRuntimeException(
+                            "The number of parsed fields doesn't match the template's from memory.");
                 }
 
                 var implementation = new DataStructureHolder(template);
 
                 for (var value : dataStructureContext.fieldValues()) {
-                    implementation.assignFieldValue(value);
+                    runtimeEnvironment.stack().create();
+                    value.execute(runtimeEnvironment);
+
+                    implementation.assignFieldValue(runtimeEnvironment.stack().pop().popResult());
                 }
 
-                runtimeEnvironment.stack().peek().pushOperand(new DataStructureValue(implementation));
+                runtimeEnvironment.stack()
+                                  .peek()
+                                  .pushOperand(new DataStructureValue(implementation));
             });
         }
 

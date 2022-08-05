@@ -8,6 +8,7 @@ import java.io.OutputStream;
  * A result of executing Meador {@link Program}.
  */
 public class Output {
+
     private final OutputStream outputStream;
 
     public Output(OutputStream stream) {

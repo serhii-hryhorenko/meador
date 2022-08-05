@@ -5,9 +5,10 @@ import com.teamdev.calculator_api.resolver.MathElementResolverFactory;
 import com.teamdev.calculator_api.resolver.ResolvingException;
 import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.runtime.MeadorRuntimeException;
-import com.teamdev.runtime.value.ShuntingYard;
-import com.teamdev.runtime.value.type.number.NumericValueVisitor;
-import com.teamdev.runtime.value.type.Value;
+import com.teamdev.runtime.ShuntingYard;
+import com.teamdev.runtime.evaluation.TypeMismatchException;
+import com.teamdev.runtime.evaluation.operandtype.Value;
+import com.teamdev.runtime.evaluation.operandtype.NumericValueVisitor;
 
 /**
  * An API for resolving of math expressions. Math expression may contain:
@@ -29,12 +30,14 @@ public class Calculator {
 
     private final MathElementResolverFactory factory = new MathElementResolverFactoryImpl();
 
-    private static void raiseException(InputSequenceReader inputChain) throws InvalidExpressionException {
+    private static void raiseException(InputSequenceReader inputChain) throws
+                                                                       InvalidExpressionException {
         throw new InvalidExpressionException("Wrong mathematical expression",
-                inputChain.getPosition());
+                                             inputChain.getPosition());
     }
 
-    public Output calculate(MathExpression expression) throws InvalidExpressionException, MeadorRuntimeException {
+    public Output calculate(MathExpression expression) throws InvalidExpressionException,
+                                                              MeadorRuntimeException {
         Preconditions.checkNotNull(expression);
         var calculatorFSM = CalculatorMachine.create(factory);
 
@@ -52,7 +55,11 @@ public class Calculator {
 
         Value value = outputChain.popResult();
         NumericValueVisitor visitor = new NumericValueVisitor();
-        value.acceptVisitor(visitor);
+        try {
+            value.acceptVisitor(visitor);
+        } catch (TypeMismatchException e) {
+            e.printStackTrace();
+        }
         return new Output(visitor.value());
     }
 }

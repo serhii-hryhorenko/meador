@@ -1,7 +1,11 @@
 package com.teamdev.machine.brackets;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.fsm.*;
+import com.teamdev.fsm.ExceptionThrower;
+import com.teamdev.fsm.FiniteStateMachine;
+import com.teamdev.fsm.State;
+import com.teamdev.fsm.StateAcceptor;
+import com.teamdev.fsm.TransitionMatrix;
 
 /**
  * {@link FiniteStateMachine} implementation that recognizes expressions
@@ -14,8 +18,9 @@ public class BracketsMachine<O, E extends Exception> extends FiniteStateMachine<
         super(transitionMatrix, thrower);
     }
 
-    public static <O, E extends Exception> BracketsMachine<O, E> create(StateAcceptor<O, E> expression,
-                                                                        ExceptionThrower<E> thrower) {
+    public static <O, E extends Exception> BracketsMachine<O, E> create(
+            StateAcceptor<O, E> expression,
+            ExceptionThrower<E> thrower) {
         Preconditions.checkNotNull(expression);
 
         var openBracketState = new State.Builder<O, E>()

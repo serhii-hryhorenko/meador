@@ -9,13 +9,16 @@ import com.teamdev.meador.compiler.element.variable.VariableValueCompiler;
 import com.teamdev.meador.fsmimpl.unary_operator.PostfixUnaryOperatorMachine;
 import com.teamdev.meador.fsmimpl.unary_operator.UnaryExpressionOutputChain;
 import com.teamdev.runtime.Command;
-import com.teamdev.runtime.value.operator.AbstractOperatorFactory;
-import com.teamdev.runtime.value.operator.unaryoperator.AbstractUnaryOperator;
+import com.teamdev.runtime.MeadorRuntimeException;
+import com.teamdev.runtime.evaluation.TypeMismatchException;
+import com.teamdev.runtime.evaluation.operator.AbstractOperatorFactory;
+import com.teamdev.runtime.evaluation.operator.AbstractUnaryOperator;
 
 import java.util.Optional;
 
 /**
- * {@link ProgramElementCompiler} implementation for creating command of unary expressions with {@link AbstractUnaryOperator} postfix position.
+ * {@link ProgramElementCompiler} implementation for creating command of unary expressions with
+ * {@link AbstractUnaryOperator} postfix position.
  * This kind of operations <b>always</b> changes the variable value.
  */
 public class UnaryPostfixExpressionCompiler implements ProgramElementCompiler {
@@ -32,17 +35,29 @@ public class UnaryPostfixExpressionCompiler implements ProgramElementCompiler {
 
     @Override
     public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
-        UnaryExpressionOutputChain outputChain = new UnaryExpressionOutputChain();
+        var outputChain = new UnaryExpressionOutputChain();
+
         if (PostfixUnaryOperatorMachine.create(statementCompilerFactory, unaryOperatorFactory)
                 .accept(reader, outputChain)) {
             return Optional.of(runtimeEnvironment -> {
-                var variableCommand = new VariableValueCompiler().compile(outputChain.variableName());
+
+                var variableCommand = new VariableValueCompiler().compile(
+                        outputChain.variableName());
 
                 if (variableCommand.isPresent()) {
-                    variableCommand.get().execute(runtimeEnvironment);
+                    variableCommand.get()
+                                   .execute(runtimeEnvironment);
 
-                    runtimeEnvironment.memory().putVariable(outputChain.variableName(),
-                            outputChain.unaryOperator().apply(runtimeEnvironment.stack().peek().peekOperand()));
+                    try {
+                        runtimeEnvironment.memory()
+                                          .putVariable(outputChain.variableName(),
+                                                       outputChain.unaryOperator()
+                                                                  .apply(runtimeEnvironment.stack()
+                                                                                           .peek()
+                                                                                           .peekOperand()));
+                    } catch (TypeMismatchException e) {
+                        throw new MeadorRuntimeException(e.getMessage());
+                    }
                 }
             });
         }

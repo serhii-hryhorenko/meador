@@ -15,7 +15,8 @@ public class InputSequenceReader {
     private int readingPosition;
 
     public InputSequenceReader(String value) {
-        this.source = Preconditions.checkNotNull(value).toCharArray();
+        this.source = Preconditions.checkNotNull(value)
+                                   .toCharArray();
     }
 
     public boolean canRead() {
@@ -63,7 +64,7 @@ public class InputSequenceReader {
 
     public String getSequence() {
         return String.valueOf(source)
-                .substring(readingPosition);
+                     .substring(readingPosition);
     }
 
     @Override

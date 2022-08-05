@@ -3,13 +3,13 @@ package com.teamdev.machine.expression;
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.fsm.StateAcceptor;
-import com.teamdev.runtime.value.operator.AbstractOperatorFactory;
+import com.teamdev.runtime.evaluation.operator.AbstractOperatorFactory;
 
 import java.util.function.BiConsumer;
 
-
 /**
- * {@link StateAcceptor} implementation for recognizing both binary and unary operators in expressions.
+ * {@link StateAcceptor} implementation for recognizing both binary and unary operators in
+ * expressions.
  */
 public class OperatorAcceptor<T, O, E extends Exception> implements StateAcceptor<O, E> {
 
@@ -28,7 +28,8 @@ public class OperatorAcceptor<T, O, E extends Exception> implements StateAccepto
         var operator = new StringBuilder();
 
         while (reader.canRead()) {
-            if (factory.operators().noneMatch(op -> op.startsWith(operator.toString() + reader.read()))) {
+            if (factory.operators()
+                       .noneMatch(op -> op.startsWith(operator.toString() + reader.read()))) {
                 break;
             }
 

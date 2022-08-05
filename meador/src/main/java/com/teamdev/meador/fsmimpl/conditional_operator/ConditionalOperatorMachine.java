@@ -1,7 +1,11 @@
 package com.teamdev.meador.fsmimpl.conditional_operator;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.fsm.*;
+import com.teamdev.fsm.ExceptionThrower;
+import com.teamdev.fsm.FiniteStateMachine;
+import com.teamdev.fsm.State;
+import com.teamdev.fsm.TransitionMatrix;
+import com.teamdev.fsm.TransitionMatrixBuilder;
 import com.teamdev.machine.util.TextIdentifierMachine;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
@@ -12,7 +16,14 @@ import com.teamdev.meador.fsmimpl.util.CodeBlockMachine;
  * Parsing result is stored at {@link ConditionalOperatorOutputChain}.
  */
 public class ConditionalOperatorMachine extends FiniteStateMachine<ConditionalOperatorOutputChain, CompilingException> {
+
     private static final String ELSE = "else";
+
+    private ConditionalOperatorMachine(
+            TransitionMatrix<ConditionalOperatorOutputChain, CompilingException> transitionMatrix,
+            ExceptionThrower<CompilingException> thrower) {
+        super(transitionMatrix, thrower);
+    }
 
     public static ConditionalOperatorMachine create(ProgramElementCompilerFactory factory) {
         Preconditions.checkNotNull(factory);
@@ -26,7 +37,8 @@ public class ConditionalOperatorMachine extends FiniteStateMachine<ConditionalOp
                 .setAcceptor((inputSequence, outputSequence) -> {
                     var context = new IfOperatorOutputChain();
 
-                    if (IfOperatorMachine.create(factory).accept(inputSequence, context)) {
+                    if (IfOperatorMachine.create(factory)
+                            .accept(inputSequence, context)) {
                         outputSequence.addConditionalOperator(context);
                         return true;
                     }
@@ -38,14 +50,16 @@ public class ConditionalOperatorMachine extends FiniteStateMachine<ConditionalOp
 
         var elseKeyword = new State.Builder<ConditionalOperatorOutputChain, CompilingException>()
                 .setName("ELSE KEYWORD")
-                .setAcceptor((reader, outputSequence) ->
-                        TextIdentifierMachine.acceptKeyword(reader, ELSE, exceptionThrower))
+                .setAcceptor((reader, outputSequence) -> TextIdentifierMachine.acceptKeyword(reader,
+                                                                                             ELSE,
+                                                                                             exceptionThrower))
                 .setTemporary()
                 .build();
 
         var elseCodeBlock = new State.Builder<ConditionalOperatorOutputChain, CompilingException>()
                 .setName("ELSE CODE BLOCK")
-                .setAcceptor(CodeBlockMachine.create(factory, ConditionalOperatorOutputChain::setElseStatementList))
+                .setAcceptor(CodeBlockMachine.create(factory,
+                                                     ConditionalOperatorOutputChain::setElseStatementList))
                 .setFinal()
                 .build();
 
@@ -57,10 +71,5 @@ public class ConditionalOperatorMachine extends FiniteStateMachine<ConditionalOp
                 .build();
 
         return new ConditionalOperatorMachine(matrix, exceptionThrower);
-    }
-
-    private ConditionalOperatorMachine(TransitionMatrix<ConditionalOperatorOutputChain, CompilingException> transitionMatrix,
-                                       ExceptionThrower<CompilingException> thrower) {
-        super(transitionMatrix, thrower);
     }
 }

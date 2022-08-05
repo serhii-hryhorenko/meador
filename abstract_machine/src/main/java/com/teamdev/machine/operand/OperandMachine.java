@@ -19,8 +19,9 @@ public class OperandMachine<O, E extends Exception> extends FiniteStateMachine<O
         super(transitionMatrix, exceptionThrower);
     }
 
-    public static <O, E extends Exception> OperandMachine<O, E> create(TransitionMatrix<O, E> oneOfMatrix,
-                                                                       ExceptionThrower<E> exceptionThrower) {
+    public static <O, E extends Exception> OperandMachine<O, E> create(
+            TransitionMatrix<O, E> oneOfMatrix,
+            ExceptionThrower<E> exceptionThrower) {
         Preconditions.checkNotNull(oneOfMatrix, exceptionThrower);
         return new OperandMachine<>(oneOfMatrix, exceptionThrower);
     }

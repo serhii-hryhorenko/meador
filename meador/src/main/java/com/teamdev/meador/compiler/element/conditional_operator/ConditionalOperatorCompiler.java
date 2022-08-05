@@ -8,8 +8,10 @@ import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
 import com.teamdev.meador.fsmimpl.conditional_operator.ConditionalOperatorMachine;
 import com.teamdev.meador.fsmimpl.conditional_operator.ConditionalOperatorOutputChain;
 import com.teamdev.runtime.Command;
-import com.teamdev.runtime.value.type.Value;
-import com.teamdev.runtime.value.type.bool.BooleanValueVisitor;
+import com.teamdev.runtime.MeadorRuntimeException;
+import com.teamdev.runtime.evaluation.TypeMismatchException;
+import com.teamdev.runtime.evaluation.operandtype.Value;
+import com.teamdev.runtime.evaluation.operandtype.BooleanValueVisitor;
 
 import java.util.Optional;
 
@@ -29,6 +31,7 @@ import java.util.Optional;
  * </pre>
  */
 public class ConditionalOperatorCompiler implements ProgramElementCompiler {
+
     private final ProgramElementCompilerFactory factory;
 
     public ConditionalOperatorCompiler(ProgramElementCompilerFactory factory) {
@@ -39,25 +42,38 @@ public class ConditionalOperatorCompiler implements ProgramElementCompiler {
     public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
         var context = new ConditionalOperatorOutputChain();
 
-        if (ConditionalOperatorMachine.create(factory).accept(reader, context)) {
+        if (ConditionalOperatorMachine.create(factory)
+                .accept(reader, context)) {
             return Optional.of(runtimeEnvironment -> {
                 var booleanVisitor = new BooleanValueVisitor();
 
                 for (var operator : context.conditionalOperators()) {
-                    runtimeEnvironment.stack().create();
-                    operator.condition().execute(runtimeEnvironment);
-                    Value conditionValue = runtimeEnvironment.stack().pop().popResult();
+                    runtimeEnvironment.stack()
+                            .create();
 
-                    conditionValue.acceptVisitor(booleanVisitor);
+                    operator.condition()
+                            .execute(runtimeEnvironment);
+
+                    var conditionValue = runtimeEnvironment.stack()
+                                                             .pop()
+                                                             .popResult();
+
+                    try {
+                        conditionValue.acceptVisitor(booleanVisitor);
+                    } catch (TypeMismatchException e) {
+                        throw new MeadorRuntimeException(e.getMessage());
+                    }
 
                     if (booleanVisitor.value()) {
-                        operator.statements().execute(runtimeEnvironment);
+                        operator.statements()
+                                .execute(runtimeEnvironment);
                         return;
                     }
                 }
 
                 if (context.elseInstructionPresent()) {
-                    context.elseStatementList().execute(runtimeEnvironment);
+                    context.elseStatementList()
+                           .execute(runtimeEnvironment);
                 }
             });
         }

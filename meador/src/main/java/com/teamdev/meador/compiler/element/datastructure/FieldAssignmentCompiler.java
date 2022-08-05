@@ -8,7 +8,10 @@ import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
 import com.teamdev.meador.fsmimpl.datastructure.FieldAssignmentMachine;
 import com.teamdev.meador.fsmimpl.datastructure.FieldAssignmentOutputChain;
 import com.teamdev.runtime.Command;
-import com.teamdev.runtime.value.type.datastructure.DataStructureValueVisitor;
+import com.teamdev.runtime.MeadorRuntimeException;
+import com.teamdev.runtime.evaluation.TypeMismatchException;
+import com.teamdev.runtime.evaluation.operandtype.DataStructureValueVisitor;
+import com.teamdev.runtime.evaluation.operandtype.Value;
 
 import java.util.Optional;
 
@@ -16,6 +19,7 @@ import java.util.Optional;
  * {@link ProgramElementCompiler} implementation for compiling field value reassignment statements.
  */
 public class FieldAssignmentCompiler implements ProgramElementCompiler {
+
     private final ProgramElementCompilerFactory factory;
 
     public FieldAssignmentCompiler(ProgramElementCompilerFactory factory) {
@@ -26,14 +30,30 @@ public class FieldAssignmentCompiler implements ProgramElementCompiler {
     public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
         var context = new FieldAssignmentOutputChain();
 
-        if (FieldAssignmentMachine.create(factory).accept(reader, context)) {
+        if (FieldAssignmentMachine.create(factory)
+                .accept(reader, context)) {
             return Optional.of(runtimeEnvironment -> {
-                var optionalValue = runtimeEnvironment.memory().getVariable(context.field().variableName());
+                var optionalValue = runtimeEnvironment.memory()
+                                                      .getVariable(context.field()
+                                                                          .variableName());
 
                 var visitor = new DataStructureValueVisitor();
-                optionalValue.acceptVisitor(visitor);
 
-                visitor.value().assignFieldValue(context.field().fieldName(), context.command());
+                try {
+                    optionalValue.acceptVisitor(visitor);
+                } catch (TypeMismatchException e) {
+                    throw new MeadorRuntimeException(e.getMessage());
+                }
+
+                runtimeEnvironment.stack().create();
+                context.command().execute(runtimeEnvironment);
+                var value = runtimeEnvironment.stack()
+                                                .pop()
+                                                .popResult();
+
+                visitor.value()
+                       .assignFieldValue(context.field()
+                                                .fieldName(), value);
             });
         }
 

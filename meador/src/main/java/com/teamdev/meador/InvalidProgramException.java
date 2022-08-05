@@ -3,7 +3,8 @@ package com.teamdev.meador;
 import java.io.Serial;
 
 /**
- * Exception thrown to user when either {@link com.teamdev.meador.compiler.CompilingException} or {@link com.teamdev.runtime.MeadorRuntimeException} is occurred.
+ * Exception thrown to user when either {@link com.teamdev.meador.compiler.CompilingException} or
+ * {@link com.teamdev.runtime.MeadorRuntimeException} is occurred.
  */
 public class InvalidProgramException extends Exception {
 

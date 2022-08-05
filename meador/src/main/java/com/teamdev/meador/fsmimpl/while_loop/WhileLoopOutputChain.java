@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.teamdev.runtime.Command;
 
 public class WhileLoopOutputChain {
+
     private Command condition;
     private Command statementList;
 

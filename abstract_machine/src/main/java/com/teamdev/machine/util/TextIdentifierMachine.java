@@ -1,53 +1,69 @@
 package com.teamdev.machine.util;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.fsm.*;
-import com.teamdev.machine.function.ValidatedFunction;
+import com.teamdev.fsm.ExceptionThrower;
+import com.teamdev.fsm.FiniteStateMachine;
+import com.teamdev.fsm.InputSequenceReader;
+import com.teamdev.fsm.State;
+import com.teamdev.fsm.TransitionMatrix;
+import com.teamdev.fsm.TransitionMatrixBuilder;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
 /**
- * {@link FiniteStateMachine} implementation for recognizing names of {@link ValidatedFunction}.
+ * {@link FiniteStateMachine} implementation for parsing text from {@link InputSequenceReader}.
  * <p>
- * Requires no whitespaces from {@link InputSequenceReader}.
+ * Requires no whitespaces from the input.
  */
 
 public class TextIdentifierMachine<E extends Exception> extends FiniteStateMachine<StringBuilder, E> {
 
+    private TextIdentifierMachine(TransitionMatrix<StringBuilder, E> transitionMatrix,
+                                  ExceptionThrower<E> exceptionThrower) {
+
+        super(transitionMatrix, exceptionThrower, false);
+    }
+
     public static <E extends Exception> Optional<String> parseIdentifier(InputSequenceReader reader,
-                                                                         ExceptionThrower<E> exceptionThrower) throws E {
+                                                                         ExceptionThrower<E> exceptionThrower) throws
+                                                                                                               E {
         var identifier = new StringBuilder();
         return create(exceptionThrower).accept(reader, identifier) ?
-                Optional.of(identifier.toString()) : Optional.empty();
+               Optional.of(identifier.toString()) : Optional.empty();
 
     }
 
     public static <O, E extends Exception> boolean acceptIdentifier(InputSequenceReader reader,
                                                                     O outputSequence,
                                                                     BiConsumer<O, String> identifierConsumer,
-                                                                    ExceptionThrower<E> exceptionThrower) throws E {
+                                                                    ExceptionThrower<E> exceptionThrower) throws
+                                                                                                          E {
 
         var optionalIdentifier = parseIdentifier(reader, exceptionThrower);
 
         optionalIdentifier.ifPresent(identifier ->
-                identifierConsumer.accept(Preconditions.checkNotNull(outputSequence), identifier));
+                                             identifierConsumer.accept(
+                                                     Preconditions.checkNotNull(outputSequence),
+                                                     identifier));
 
         return optionalIdentifier.isPresent();
     }
 
     public static <E extends Exception> boolean acceptKeyword(InputSequenceReader reader,
                                                               String keyword,
-                                                              ExceptionThrower<E> exceptionThrower) throws E {
+                                                              ExceptionThrower<E> exceptionThrower) throws
+                                                                                                    E {
 
         Preconditions.checkNotNull(keyword);
 
         var optionalKeyword = parseIdentifier(reader, exceptionThrower);
 
-        return optionalKeyword.isPresent() && optionalKeyword.get().equals(keyword);
+        return optionalKeyword.isPresent() && optionalKeyword.get()
+                                                             .equals(keyword);
     }
 
-    public static <E extends Exception> TextIdentifierMachine<E> create(
+    private static <E extends Exception> TextIdentifierMachine<E> create(
             ExceptionThrower<E> exceptionThrower) {
         Preconditions.checkNotNull(exceptionThrower);
 
@@ -66,19 +82,5 @@ public class TextIdentifierMachine<E extends Exception> extends FiniteStateMachi
                 .build();
 
         return new TextIdentifierMachine<>(matrix, exceptionThrower);
-    }
-
-    public boolean acceptName(InputSequenceReader inputSequence, String name) throws E {
-        Preconditions.checkNotNull(name);
-
-        var outputSequence = new StringBuilder(16);
-        return accept(inputSequence, outputSequence) && outputSequence.toString()
-                .equals(name);
-    }
-
-    private TextIdentifierMachine(TransitionMatrix<StringBuilder, E> transitionMatrix,
-                                  ExceptionThrower<E> exceptionThrower) {
-
-        super(transitionMatrix, exceptionThrower, false);
     }
 }

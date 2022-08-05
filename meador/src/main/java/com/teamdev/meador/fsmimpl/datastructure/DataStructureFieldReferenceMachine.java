@@ -1,6 +1,10 @@
 package com.teamdev.meador.fsmimpl.datastructure;
 
-import com.teamdev.fsm.*;
+import com.teamdev.fsm.ExceptionThrower;
+import com.teamdev.fsm.FiniteStateMachine;
+import com.teamdev.fsm.State;
+import com.teamdev.fsm.StateAcceptor;
+import com.teamdev.fsm.TransitionMatrix;
 import com.teamdev.machine.util.TextIdentifierMachine;
 import com.teamdev.meador.compiler.CompilingException;
 
@@ -9,14 +13,22 @@ import com.teamdev.meador.compiler.CompilingException;
  */
 public class DataStructureFieldReferenceMachine extends FiniteStateMachine<FieldReferenceOutputChain, CompilingException> {
 
+    private DataStructureFieldReferenceMachine(
+            TransitionMatrix<FieldReferenceOutputChain, CompilingException> transitionMatrix,
+            ExceptionThrower<CompilingException> thrower) {
+        super(transitionMatrix, thrower, false);
+    }
+
     public static DataStructureFieldReferenceMachine create() {
         var exceptionThrower = new ExceptionThrower<>(CompilingException::new);
 
         var variableName = new State.Builder<FieldReferenceOutputChain, CompilingException>()
                 .setName("DATA STRUCTURE VARIABLE NAME")
-                .setAcceptor((reader, outputSequence) -> TextIdentifierMachine.acceptIdentifier(reader, outputSequence,
-                        FieldReferenceOutputChain::setVariableName,
-                        exceptionThrower))
+                .setAcceptor(
+                        (reader, outputSequence) -> TextIdentifierMachine.acceptIdentifier(reader,
+                                                                                           outputSequence,
+                                                                                           FieldReferenceOutputChain::setVariableName,
+                                                                                           exceptionThrower))
                 .setTemporary()
                 .build();
 
@@ -27,17 +39,16 @@ public class DataStructureFieldReferenceMachine extends FiniteStateMachine<Field
 
         var fieldName = new State.Builder<FieldReferenceOutputChain, CompilingException>()
                 .setName("FIELD NAME")
-                .setAcceptor((reader, outputSequence) -> TextIdentifierMachine.acceptIdentifier(reader, outputSequence,
-                        FieldReferenceOutputChain::setFieldName,
-                        exceptionThrower))
+                .setAcceptor(
+                        (reader, outputSequence) -> TextIdentifierMachine.acceptIdentifier(reader,
+                                                                                           outputSequence,
+                                                                                           FieldReferenceOutputChain::setFieldName,
+                                                                                           exceptionThrower))
                 .setFinal()
                 .build();
 
-        return new DataStructureFieldReferenceMachine(TransitionMatrix.chainedTransitions(variableName, dot, fieldName), exceptionThrower);
-    }
-
-    private DataStructureFieldReferenceMachine(TransitionMatrix<FieldReferenceOutputChain, CompilingException> transitionMatrix,
-                                               ExceptionThrower<CompilingException> thrower) {
-        super(transitionMatrix, thrower, false);
+        return new DataStructureFieldReferenceMachine(
+                TransitionMatrix.chainedTransitions(variableName, dot, fieldName),
+                exceptionThrower);
     }
 }

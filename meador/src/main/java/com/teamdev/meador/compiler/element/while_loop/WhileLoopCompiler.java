@@ -14,6 +14,7 @@ import com.teamdev.runtime.RuntimeEnvironment;
 import java.util.Optional;
 
 public class WhileLoopCompiler implements ProgramElementCompiler {
+
     private final ProgramElementCompilerFactory factory;
 
     public WhileLoopCompiler(ProgramElementCompilerFactory factory) {
@@ -24,14 +25,17 @@ public class WhileLoopCompiler implements ProgramElementCompiler {
     public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
         WhileLoopOutputChain outputChain = new WhileLoopOutputChain();
 
-        if (WhileLoopMachine.create(factory).accept(reader, outputChain)) {
+        if (WhileLoopMachine.create(factory)
+                .accept(reader, outputChain)) {
             return Optional.of(new Command() {
                 @Override
-                public void execute(RuntimeEnvironment runtimeEnvironment) throws MeadorRuntimeException {
+                public void execute(RuntimeEnvironment runtimeEnvironment) throws
+                                                                           MeadorRuntimeException {
                     int iterations = 0;
 
                     while (checkCondition(runtimeEnvironment, outputChain.condition())) {
-                        outputChain.loopBodyStatements().execute(runtimeEnvironment);
+                        outputChain.loopBodyStatements()
+                                   .execute(runtimeEnvironment);
 
                         if (++iterations == RuntimeEnvironment.MAX_LOOP_ITERATIONS) {
                             throw new MeadorRuntimeException("Infinite while loop detected.");

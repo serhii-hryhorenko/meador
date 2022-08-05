@@ -1,10 +1,15 @@
 package com.teamdev.machine.expression;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.fsm.*;
+import com.teamdev.fsm.ExceptionThrower;
+import com.teamdev.fsm.FiniteStateMachine;
+import com.teamdev.fsm.State;
+import com.teamdev.fsm.StateAcceptor;
+import com.teamdev.fsm.TransitionMatrix;
+import com.teamdev.fsm.TransitionMatrixBuilder;
 import com.teamdev.machine.operand.OperandMachine;
-import com.teamdev.runtime.value.operator.AbstractOperatorFactory;
-import com.teamdev.runtime.value.operator.bioperator.AbstractBinaryOperator;
+import com.teamdev.runtime.evaluation.operator.AbstractBinaryOperator;
+import com.teamdev.runtime.evaluation.operator.AbstractOperatorFactory;
 
 import java.util.function.BiConsumer;
 
@@ -15,6 +20,11 @@ import java.util.function.BiConsumer;
  * see {@link OperandMachine} for details.
  */
 public class ExpressionMachine<O, E extends Exception> extends FiniteStateMachine<O, E> {
+
+    private ExpressionMachine(TransitionMatrix<O, E> transitionMatrix,
+                              ExceptionThrower<E> thrower) {
+        super(transitionMatrix, thrower);
+    }
 
     public static <O, E extends Exception> ExpressionMachine<O, E> create(
             StateAcceptor<O, E> operandAcceptor,
@@ -33,7 +43,8 @@ public class ExpressionMachine<O, E extends Exception> extends FiniteStateMachin
 
         var binaryOperatorState = new State.Builder<O, E>()
                 .setName("BINARY OPERATOR")
-                .setAcceptor(new OperatorAcceptor<>(Preconditions.checkNotNull(factory), operatorConsumer))
+                .setAcceptor(new OperatorAcceptor<>(Preconditions.checkNotNull(factory),
+                                                    operatorConsumer))
                 .build();
 
         var matrix = new TransitionMatrixBuilder<O, E>()
@@ -44,10 +55,5 @@ public class ExpressionMachine<O, E extends Exception> extends FiniteStateMachin
                 .build();
 
         return new ExpressionMachine<>(matrix, thrower);
-    }
-
-    private ExpressionMachine(TransitionMatrix<O, E> transitionMatrix,
-                              ExceptionThrower<E> thrower) {
-        super(transitionMatrix, thrower);
     }
 }

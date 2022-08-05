@@ -1,7 +1,7 @@
 package com.teamdev.meador.fsmimpl.unary_operator;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.runtime.value.operator.unaryoperator.AbstractUnaryOperator;
+import com.teamdev.runtime.evaluation.operator.AbstractUnaryOperator;
 
 /**
  * Output chain for both {@link PrefixUnaryOperatorMachine} and {@link PostfixUnaryOperatorMachine}.

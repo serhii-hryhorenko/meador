@@ -8,17 +8,19 @@ import com.teamdev.fsm.TransitionMatrix;
 import com.teamdev.machine.expression.OperatorAcceptor;
 import com.teamdev.meador.compiler.CompileStatementAcceptor;
 import com.teamdev.meador.compiler.CompilingException;
-import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
 import com.teamdev.meador.compiler.ProgramElement;
-import com.teamdev.runtime.value.RelativeBinaryOperatorFactory;
+import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
+import com.teamdev.runtime.operatorfactoryimpl.RelativeBinaryOperatorFactory;
 
 /**
- * {@link FiniteStateMachine} implementation for recognizing relational expressions in Meador programs.
+ * {@link FiniteStateMachine} implementation for recognizing relational expressions in Meador
+ * programs.
  */
 public class RelationalExpressionMachine extends FiniteStateMachine<RelationalExpressionOutputChain, CompilingException> {
 
-    protected RelationalExpressionMachine(TransitionMatrix<RelationalExpressionOutputChain, CompilingException> transitionMatrix,
-                                          ExceptionThrower<CompilingException> thrower) {
+    private RelationalExpressionMachine(
+            TransitionMatrix<RelationalExpressionOutputChain, CompilingException> transitionMatrix,
+            ExceptionThrower<CompilingException> thrower) {
         super(transitionMatrix, thrower);
     }
 
@@ -28,27 +30,29 @@ public class RelationalExpressionMachine extends FiniteStateMachine<RelationalEx
         var left = new State.Builder<RelationalExpressionOutputChain, CompilingException>()
                 .setName("LEFT EXPRESSION")
                 .setAcceptor(new CompileStatementAcceptor<>(factory,
-                        ProgramElement.NUMERIC_EXPRESSION,
-                        RelationalExpressionOutputChain::setLeft))
+                                                            ProgramElement.NUMERIC_EXPRESSION,
+                                                            RelationalExpressionOutputChain::setLeft))
                 .setTemporary()
                 .build();
 
         var relationOperator = new State.Builder<RelationalExpressionOutputChain, CompilingException>()
                 .setName("RELATION OPERATOR")
-                .setAcceptor(new OperatorAcceptor<>(new RelativeBinaryOperatorFactory(), RelationalExpressionOutputChain::setOperator))
+                .setAcceptor(new OperatorAcceptor<>(new RelativeBinaryOperatorFactory(),
+                                                    RelationalExpressionOutputChain::setOperator))
                 .build();
 
         var right = new State.Builder<RelationalExpressionOutputChain, CompilingException>()
                 .setName("RIGHT EXPRESSION")
                 .setAcceptor(new CompileStatementAcceptor<>(factory,
-                        ProgramElement.NUMERIC_EXPRESSION,
-                        RelationalExpressionOutputChain::setRight))
+                                                            ProgramElement.NUMERIC_EXPRESSION,
+                                                            RelationalExpressionOutputChain::setRight))
                 .setFinal()
                 .build();
 
         var matrix =
                 TransitionMatrix.chainedTransitions(left, relationOperator, right);
 
-        return new RelationalExpressionMachine(matrix, new ExceptionThrower<>(CompilingException::new));
+        return new RelationalExpressionMachine(matrix,
+                                               new ExceptionThrower<>(CompilingException::new));
     }
 }

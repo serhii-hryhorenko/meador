@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Util output sequence class for collecting interpreted input from {@link FunctionMachine}.
+ * Output chain for {@link FunctionMachine}.
  */
 public class FunctionHolder<T> {
 
-    private String functionName;
     private final List<T> arguments = new ArrayList<>();
+    private String functionName;
 
     public String functionName() {
         Preconditions.checkState(Objects.nonNull(functionName));

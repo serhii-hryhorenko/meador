@@ -13,6 +13,7 @@ import java.util.Objects;
  * Provides access to the parsing result of a sequence of conditional operators.
  */
 public class ConditionalOperatorOutputChain {
+
     private final List<IfOperatorOutputChain> conditionalOperators = new LinkedList<>();
     private Command elseStatementList;
 

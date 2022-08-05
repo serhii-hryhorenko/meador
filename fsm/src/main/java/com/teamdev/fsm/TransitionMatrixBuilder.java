@@ -2,7 +2,12 @@ package com.teamdev.fsm;
 
 import com.google.common.base.Preconditions;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 public class TransitionMatrixBuilder<O, E extends Exception> {
 
@@ -11,7 +16,7 @@ public class TransitionMatrixBuilder<O, E extends Exception> {
 
     public TransitionMatrixBuilder<O, E> withStartState(State<O, E> state) {
         Preconditions.checkState(startState == null,
-                "Start state is already determined.");
+                                 "Start state is already determined.");
 
         this.startState = Preconditions.checkNotNull(state);
         return this;
@@ -25,7 +30,8 @@ public class TransitionMatrixBuilder<O, E extends Exception> {
         Preconditions.checkNotNull(state, transitionStates);
 
         if (transitions.containsKey(state)) {
-            transitions.get(state).addAll(List.of(transitionStates));
+            transitions.get(state)
+                       .addAll(List.of(transitionStates));
             return this;
         }
 

@@ -7,35 +7,35 @@ import java.util.stream.Stream;
 import static java.lang.System.lineSeparator;
 import static org.junit.jupiter.params.provider.Arguments.of;
 
-public class WhileLoopOperatorTest extends MeadorTest {
+class WhileLoopOperatorTest extends MeadorTest {
 
     static Stream<Arguments> positiveCases() {
         return Stream.of(
                 of("i = 0; while (i < 5) { print(++i); }",
-                        "[1.0]" + lineSeparator() +
-                                "[2.0]" + lineSeparator() +
-                                "[3.0]" + lineSeparator() +
-                                "[4.0]" + lineSeparator() +
-                                "[5.0]",
-                        "While operator is broken."),
+                   "[1.0]" + lineSeparator() +
+                           "[2.0]" + lineSeparator() +
+                           "[3.0]" + lineSeparator() +
+                           "[4.0]" + lineSeparator() +
+                           "[5.0]",
+                   "While operator is broken."),
 
                 of("while (false) { print(true); } print(false);",
-                        "[false]",
-                        "Loop body was executed with false condition."),
+                   "[false]",
+                   "Loop body was executed with false condition."),
                 of("""
-                        i = 0;
-                        j = 0;
-                        sum = 0;
-                        while (i < 5) {
-                            while(j < 5) {
-                                sum = ++i + ++j;
-                            }
-                        }
-                        
-                        print(sum);
-                        """,
-                        "[10.0]",
-                        "Nested while loop is broken.")
+                           i = 0;
+                           j = 0;
+                           sum = 0;
+                           while (i < 5) {
+                               while(j < 5) {
+                                   sum = ++i + ++j;
+                               }
+                           }
+                                                   
+                           print(sum);
+                           """,
+                   "[10.0]",
+                   "Nested while loop is broken.")
         );
     }
 

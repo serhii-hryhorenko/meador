@@ -10,8 +10,11 @@ import java.util.List;
 import java.util.function.Supplier;
 
 /**
- * "One of" {@link StateAcceptor} which executes run acceptor on detached output chain and executes one which parsed the most symbols.
- * @param <O> output chain
+ * "One of" {@link StateAcceptor} which executes run acceptor on detached output chain and executes
+ * one which parsed the most symbols.
+ *
+ * @param <O>
+ *         output chain
  */
 public class DeepestParsedInputAcceptor<O> implements StateAcceptor<O, CompilingException> {
 
@@ -30,6 +33,7 @@ public class DeepestParsedInputAcceptor<O> implements StateAcceptor<O, Compiling
         var optionalCandidate = acceptors.stream()
                 .max(Comparator.comparing(o -> o.parseInDepth(reader, outputChainSupplier)));
 
-        return optionalCandidate.isPresent() && optionalCandidate.get().accept(reader, outputChain);
+        return optionalCandidate.isPresent() && optionalCandidate.get()
+                                                                 .accept(reader, outputChain);
     }
 }

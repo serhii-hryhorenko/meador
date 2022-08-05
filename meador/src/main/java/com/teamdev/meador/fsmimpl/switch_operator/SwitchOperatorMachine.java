@@ -1,18 +1,22 @@
 package com.teamdev.meador.fsmimpl.switch_operator;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.fsm.*;
+import com.teamdev.fsm.ExceptionThrower;
+import com.teamdev.fsm.FiniteStateMachine;
+import com.teamdev.fsm.State;
+import com.teamdev.fsm.StateAcceptor;
+import com.teamdev.fsm.TransitionMatrix;
+import com.teamdev.fsm.TransitionMatrixBuilder;
 import com.teamdev.machine.util.TextIdentifierMachine;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
-import com.teamdev.meador.compiler.element.switch_operator.SwitchOperatorOutputChain;
-import com.teamdev.meador.compiler.element.switch_operator.CaseOptionOutputChain;
 import com.teamdev.meador.fsmimpl.util.BracketedValueMachine;
 
 import static com.teamdev.meador.compiler.ProgramElement.READ_VARIABLE;
 
 /**
- * {@link FiniteStateMachine} implementation for recognizing {@code switch} operator in Meador programs.
+ * {@link FiniteStateMachine} implementation for recognizing {@code switch} operator in Meador
+ * programs.
  * <p>Grammar reference:
  * {@code switch (variable) {
  * <p>
@@ -33,6 +37,12 @@ public class SwitchOperatorMachine extends FiniteStateMachine<SwitchOperatorOutp
 
     private static final String SWITCH = "switch";
 
+    private SwitchOperatorMachine(
+            TransitionMatrix<SwitchOperatorOutputChain, CompilingException> transitionMatrix,
+            ExceptionThrower<CompilingException> thrower) {
+        super(transitionMatrix, thrower);
+    }
+
     public static SwitchOperatorMachine create(ProgramElementCompilerFactory factory) {
         Preconditions.checkNotNull(factory);
 
@@ -43,12 +53,14 @@ public class SwitchOperatorMachine extends FiniteStateMachine<SwitchOperatorOutp
         var switchKeyword = new State.Builder<SwitchOperatorOutputChain, CompilingException>()
                 .setName("SWITCH")
                 .setAcceptor((reader, outputSequence) ->
-                        TextIdentifierMachine.acceptKeyword(reader, SWITCH, exceptionThrower))
+                                     TextIdentifierMachine.acceptKeyword(reader, SWITCH,
+                                                                         exceptionThrower))
                 .build();
 
         var matchedValue = new State.Builder<SwitchOperatorOutputChain, CompilingException>()
                 .setName("MATCHED VALUE")
-                .setAcceptor(BracketedValueMachine.create(factory, READ_VARIABLE, SwitchOperatorOutputChain::setMappedValue))
+                .setAcceptor(BracketedValueMachine.create(factory, READ_VARIABLE,
+                                                          SwitchOperatorOutputChain::setMappedValue))
                 .build();
 
         var openCurlyBracket = new State.Builder<SwitchOperatorOutputChain, CompilingException>()
@@ -61,7 +73,8 @@ public class SwitchOperatorMachine extends FiniteStateMachine<SwitchOperatorOutp
                 .setAcceptor((inputSequence, outputSequence) -> {
                     var context = new CaseOptionOutputChain();
 
-                    if (CaseOptionMachine.create(factory).accept(inputSequence, context)) {
+                    if (CaseOptionMachine.create(factory)
+                            .accept(inputSequence, context)) {
                         outputSequence.addOption(context);
                         return true;
                     }
@@ -93,10 +106,5 @@ public class SwitchOperatorMachine extends FiniteStateMachine<SwitchOperatorOutp
                 .build();
 
         return new SwitchOperatorMachine(matrix, exceptionThrower);
-    }
-
-    private SwitchOperatorMachine(TransitionMatrix<SwitchOperatorOutputChain, CompilingException> transitionMatrix,
-                                  ExceptionThrower<CompilingException> thrower) {
-        super(transitionMatrix, thrower);
     }
 }

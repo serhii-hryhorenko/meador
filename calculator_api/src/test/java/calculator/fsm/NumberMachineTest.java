@@ -2,12 +2,11 @@ package calculator.fsm;
 
 import calculator.AbstractResolvingTest;
 import com.google.common.testing.NullPointerTester;
-import com.teamdev.machine.number.NumberMachine;
 import com.teamdev.fsm.ExceptionThrower;
+import com.teamdev.machine.number.NumberMachine;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 class NumberMachineTest extends AbstractResolvingTest {

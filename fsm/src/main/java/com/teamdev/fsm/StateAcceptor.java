@@ -11,7 +11,8 @@ import java.util.function.Supplier;
  * Accepts transitions from one state to another and operates on the input sequence inside
  * {@link FiniteStateMachine}.
  *
- * @param <O> output sequence type.
+ * @param <O>
+ *         output sequence type.
  */
 
 @FunctionalInterface
@@ -21,7 +22,8 @@ public interface StateAcceptor<O, E extends Exception> {
 
     static <O, E extends Exception> StateAcceptor<O, E> acceptChar(Character... chars) {
         return (inputSequence, outputSequence) -> {
-            if (inputSequence.canRead() && List.of(chars).contains(inputSequence.read())) {
+            if (inputSequence.canRead() && List.of(chars)
+                                               .contains(inputSequence.read())) {
                 if (logger.isInfoEnabled()) {
                     logger.info("Parsed {} symbol.", inputSequence.read());
                 }
@@ -45,7 +47,7 @@ public interface StateAcceptor<O, E extends Exception> {
 
         if (logger.isInfoEnabled()) {
             logger.info("[{}] started parsing in depth. Reader sequence: {}, index: {}.",
-                    this, inputSequence.getSequence(), inputSequence.getPosition());
+                        this, inputSequence.getSequence(), inputSequence.getPosition());
         }
 
         try {
@@ -53,7 +55,7 @@ public interface StateAcceptor<O, E extends Exception> {
         } catch (Exception deadlock) {
             if (logger.isInfoEnabled()) {
                 logger.info("[{}] got into deadlock while parsing. Reader sequence: {}, index: {}.",
-                        this, inputSequence.getSequence(), inputSequence.getPosition());
+                            this, inputSequence.getSequence(), inputSequence.getPosition());
             }
 
             inputSequence.setState(readerState);
@@ -69,10 +71,10 @@ public interface StateAcceptor<O, E extends Exception> {
 
         if (logger.isInfoEnabled()) {
             logger.info("Reader position is restored to {}, index: {}.",
-                    inputSequence.getSequence(), inputSequence.getPosition());
+                        inputSequence.getSequence(), inputSequence.getPosition());
 
             logger.info("[{}] parsed {} symbols.",
-                    this, depth);
+                        this, depth);
         }
 
         return depth;
@@ -99,6 +101,6 @@ public interface StateAcceptor<O, E extends Exception> {
         return (inputSequence, outputSequence) ->
                 this.accept(inputSequence, outputSequence) &&
                         Preconditions.checkNotNull(other)
-                                .accept(inputSequence, outputSequence);
+                                     .accept(inputSequence, outputSequence);
     }
 }

@@ -1,10 +1,15 @@
 package com.teamdev.machine.number;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.fsm.*;
+import com.teamdev.fsm.ExceptionThrower;
+import com.teamdev.fsm.FiniteStateMachine;
+import com.teamdev.fsm.InputSequenceReader;
+import com.teamdev.fsm.State;
+import com.teamdev.fsm.TransitionMatrix;
+import com.teamdev.fsm.TransitionMatrixBuilder;
 import com.teamdev.machine.util.SymbolAcceptor;
-import com.teamdev.runtime.value.type.number.NumericValue;
-import com.teamdev.runtime.value.type.Value;
+import com.teamdev.runtime.evaluation.operandtype.Value;
+import com.teamdev.runtime.evaluation.operandtype.NumericValue;
 
 import java.util.Optional;
 
@@ -22,7 +27,7 @@ public class NumberMachine<E extends Exception> extends FiniteStateMachine<Strin
 
     public static <E extends Exception> Optional<Value> execute(InputSequenceReader inputSequence,
                                                                 ExceptionThrower<E> exceptionThrower) throws
-            E {
+                                                                                                      E {
         var number = create(Preconditions.checkNotNull(exceptionThrower));
         var outputSequence = new StringBuilder();
 
@@ -33,7 +38,8 @@ public class NumberMachine<E extends Exception> extends FiniteStateMachine<Strin
         return Optional.empty();
     }
 
-    public static <E extends Exception> NumberMachine<E> create(ExceptionThrower<E> exceptionThrower) {
+    public static <E extends Exception> NumberMachine<E> create(
+            ExceptionThrower<E> exceptionThrower) {
         State<StringBuilder, E> initialState = State.initialState();
 
         var signState = new State.Builder<StringBuilder, E>()

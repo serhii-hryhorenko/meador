@@ -6,13 +6,14 @@ import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.fsm.StateAcceptor;
 import com.teamdev.machine.function.FunctionHolder;
 import com.teamdev.machine.function.FunctionMachine;
-import com.teamdev.meador.ValidatedProcedureFactoryImpl;
 import com.teamdev.meador.compiler.CompileStatementAcceptor;
 import com.teamdev.meador.compiler.CompilingException;
 import com.teamdev.meador.compiler.ProgramElementCompiler;
 import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
 import com.teamdev.runtime.Command;
-import com.teamdev.runtime.value.type.Value;
+import com.teamdev.runtime.functionfactoryimpl.ValidatedProcedureFactoryImpl;
+import com.teamdev.runtime.function.ValidatedProcedureFactory;
+import com.teamdev.runtime.evaluation.operandtype.Value;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,8 +39,9 @@ public class ProcedureCompiler implements ProgramElementCompiler {
     public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
 
         var functionFSM = FunctionMachine.create(
-                new CompileStatementAcceptor<FunctionHolder<Command>>(compilerFactory, EXPRESSION, FunctionHolder::addArgument),
-                new ExceptionThrower<>(CompilingException::new))
+                        new CompileStatementAcceptor<FunctionHolder<Command>>(compilerFactory, EXPRESSION,
+                                                                              FunctionHolder::addArgument),
+                        new ExceptionThrower<>(CompilingException::new))
                 .and(StateAcceptor.acceptChar(';'));
 
         var context = new FunctionHolder<Command>();
@@ -49,16 +51,21 @@ public class ProcedureCompiler implements ProgramElementCompiler {
 
             var procedure = factory.create(context.functionName());
 
-            if (context.arguments().size() >= procedure.minArguments()
-                    && context.arguments().size() <= procedure.maxArguments()) {
+            if (context.arguments()
+                       .size() >= procedure.minArguments()
+                    && context.arguments()
+                              .size() <= procedure.maxArguments()) {
 
                 return Optional.of(runtimeEnvironment -> {
                     List<Value> values = new ArrayList<>();
 
                     for (var command : context.arguments()) {
-                        runtimeEnvironment.stack().create();
+                        runtimeEnvironment.stack()
+                                .create();
                         command.execute(runtimeEnvironment);
-                        values.add(runtimeEnvironment.stack().pop().popResult());
+                        values.add(runtimeEnvironment.stack()
+                                                     .pop()
+                                                     .popResult());
                     }
 
                     procedure.accept(values, runtimeEnvironment);
