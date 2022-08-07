@@ -12,8 +12,7 @@ import com.teamdev.runtime.RuntimeEnvironment;
 public class Meador {
 
     public Output execute(Program program) throws InvalidProgramException {
-
-        var compiler = new Compiler();
+        var compiler = new Compiler(new ProgramElementCompilerFactoryImpl());
         var environment = new RuntimeEnvironment();
 
         try {

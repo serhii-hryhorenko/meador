@@ -12,12 +12,13 @@ public interface Command {
 
     void execute(RuntimeEnvironment runtimeEnvironment) throws MeadorRuntimeException;
 
-    default boolean checkCondition(RuntimeEnvironment runtimeEnvironment,
-                                   Command booleanExpression) throws MeadorRuntimeException {
+    default boolean checkCondition(RuntimeEnvironment runtimeEnvironment) throws MeadorRuntimeException {
         runtimeEnvironment.stack()
                 .create();
-        booleanExpression.execute(runtimeEnvironment);
-        Value condition = runtimeEnvironment.stack()
+
+        execute(runtimeEnvironment);
+
+        var condition = runtimeEnvironment.stack()
                                             .pop()
                                             .popResult();
 

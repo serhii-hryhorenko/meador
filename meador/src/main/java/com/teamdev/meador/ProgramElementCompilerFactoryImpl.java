@@ -8,38 +8,38 @@ import com.teamdev.fsm.TransitionOneOfMatrixBuilder;
 import com.teamdev.machine.brackets.BracketsMachine;
 import com.teamdev.machine.expression.ExpressionMachine;
 import com.teamdev.machine.number.NumberMachine;
-import com.teamdev.meador.compiler.CompileStatementAcceptor;
+import com.teamdev.meador.compiler.util.CompilerMachine;
 import com.teamdev.meador.compiler.CompilingException;
-import com.teamdev.meador.compiler.DetachedStackStatementCompiler;
 import com.teamdev.meador.compiler.ProgramElement;
 import com.teamdev.meador.compiler.ProgramElementCompiler;
 import com.teamdev.meador.compiler.ProgramElementCompilerFactory;
-import com.teamdev.meador.compiler.element.conditional_operator.ConditionalOperatorCompiler;
-import com.teamdev.meador.compiler.element.datastructure.DataStructureDeclarationCompiler;
-import com.teamdev.meador.compiler.element.datastructure.DataStructureInstanceCompiler;
-import com.teamdev.meador.compiler.element.datastructure.FieldAssignmentCompiler;
-import com.teamdev.meador.compiler.element.datastructure.FieldValueCompiler;
-import com.teamdev.meador.compiler.element.expression.bool.BooleanLiteralCompiler;
-import com.teamdev.meador.compiler.element.expression.relative.RelationalExpressionCompiler;
-import com.teamdev.meador.compiler.element.expression.string.StringLiteralCompiler;
-import com.teamdev.meador.compiler.element.for_loop.ForLoopOperatorCompiler;
-import com.teamdev.meador.compiler.element.function.FunctionCompiler;
-import com.teamdev.meador.compiler.element.procedure.ProcedureCompiler;
-import com.teamdev.meador.compiler.element.switch_operator.SwitchOperatorCompiler;
-import com.teamdev.meador.compiler.element.unary_operator.UnaryPostfixExpressionCompiler;
-import com.teamdev.meador.compiler.element.unary_operator.UnaryPrefixExpressionCompiler;
-import com.teamdev.meador.compiler.element.variable.VariableAssignmentCompiler;
-import com.teamdev.meador.compiler.element.variable.VariableValueCompiler;
-import com.teamdev.meador.compiler.element.while_loop.WhileLoopCompiler;
-import com.teamdev.meador.fsmimpl.compiler.CompilerMachine;
-import com.teamdev.meador.fsmimpl.util.DeepestParsedInputAcceptor;
+import com.teamdev.meador.compiler.conditionaloperator.ConditionalOperatorCompiler;
+import com.teamdev.meador.compiler.datastructure.DataStructureDeclarationCompiler;
+import com.teamdev.meador.compiler.datastructure.DataStructureInstanceCompiler;
+import com.teamdev.meador.compiler.datastructure.FieldAssignmentCompiler;
+import com.teamdev.meador.compiler.datastructure.FieldValueCompiler;
+import com.teamdev.meador.compiler.expression.bool.BooleanLiteralCompiler;
+import com.teamdev.meador.compiler.expression.relative.RelationalExpressionCompiler;
+import com.teamdev.meador.compiler.expression.string.StringLiteralCompiler;
+import com.teamdev.meador.compiler.forloop.ForLoopOperatorCompiler;
+import com.teamdev.meador.compiler.function.FunctionCompiler;
+import com.teamdev.meador.compiler.procedure.ProcedureCompiler;
+import com.teamdev.meador.compiler.switchoperator.SwitchOperatorCompiler;
+import com.teamdev.meador.compiler.unaryoperator.UnaryPostfixExpressionCompiler;
+import com.teamdev.meador.compiler.unaryoperator.UnaryPrefixExpressionCompiler;
+import com.teamdev.meador.compiler.util.CompileStatementAcceptor;
+import com.teamdev.meador.compiler.util.DeepestParsedInputAcceptor;
+import com.teamdev.meador.compiler.util.DetachedStackStatementCompiler;
+import com.teamdev.meador.compiler.variable.VariableAssignmentCompiler;
+import com.teamdev.meador.compiler.variable.VariableValueCompiler;
+import com.teamdev.meador.compiler.whileloop.WhileLoopCompiler;
 import com.teamdev.runtime.Command;
+import com.teamdev.runtime.evaluation.operator.AbstractBinaryOperator;
 import com.teamdev.runtime.functionfactoryimpl.ValidatedFunctionFactoryImpl;
 import com.teamdev.runtime.operatorfactoryimpl.BooleanBinaryOperatorFactory;
 import com.teamdev.runtime.operatorfactoryimpl.MathBinaryOperatorFactoryImpl;
 import com.teamdev.runtime.operatorfactoryimpl.StringBinaryOperatorFactory;
 import com.teamdev.runtime.operatorfactoryimpl.UnaryOperatorFactory;
-import com.teamdev.runtime.evaluation.operator.AbstractBinaryOperator;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -84,13 +84,12 @@ import static com.teamdev.meador.compiler.ProgramElement.WHILE_LOOP;
  */
 public class ProgramElementCompilerFactoryImpl implements ProgramElementCompilerFactory {
 
-    private final Map<ProgramElement, ProgramElementCompiler> compilers = new EnumMap<>(
-            ProgramElement.class);
+    private final Map<ProgramElement, ProgramElementCompiler> compilers = new EnumMap<>(ProgramElement.class);
 
     public ProgramElementCompilerFactoryImpl() {
         var compilingExceptionThrower = new ExceptionThrower<>(CompilingException::new);
 
-        Supplier<StateAcceptor<List<Command>, CompilingException>> numericOperand = () -> FiniteStateMachine.oneOf(
+        var numericOperand = (Supplier<StateAcceptor<List<Command>, CompilingException>>) () -> FiniteStateMachine.oneOf(
                 "NUMERIC OPERAND",
                 new TransitionOneOfMatrixBuilder<List<Command>, CompilingException>()
 
@@ -115,7 +114,7 @@ public class ProgramElementCompilerFactoryImpl implements ProgramElementCompiler
                 compilingExceptionThrower
         );
 
-        Supplier<StateAcceptor<List<Command>, CompilingException>> booleanOperand = () -> FiniteStateMachine.oneOf(
+        var booleanOperand = (Supplier<StateAcceptor<List<Command>, CompilingException>>) () -> FiniteStateMachine.oneOf(
                 "BOOLEAN OPERAND",
                 new TransitionOneOfMatrixBuilder<List<Command>, CompilingException>()
                         .allowTransition(
@@ -141,7 +140,7 @@ public class ProgramElementCompilerFactoryImpl implements ProgramElementCompiler
                 compilingExceptionThrower
         );
 
-        Supplier<StateAcceptor<List<Command>, CompilingException>> stringOperand = () -> FiniteStateMachine.oneOf(
+        var stringOperand = (Supplier<StateAcceptor<List<Command>, CompilingException>>) () -> FiniteStateMachine.oneOf(
                 "STRING OPERAND",
                 new TransitionOneOfMatrixBuilder<List<Command>, CompilingException>()
                         .allowTransition(
@@ -157,33 +156,33 @@ public class ProgramElementCompilerFactoryImpl implements ProgramElementCompiler
                 compilingExceptionThrower
         );
 
-        BiConsumer<List<Command>, AbstractBinaryOperator> pushBinaryOperator = (commands, operator) ->
+        var pushBinaryOperator = (BiConsumer<List<Command>, AbstractBinaryOperator>) (commands, operator) ->
                 commands.add(environment -> environment.stack()
                                                        .peek()
                                                        .pushOperator(operator));
 
-        Supplier<ExpressionMachine<List<Command>, CompilingException>> numericExpression = () -> ExpressionMachine.create(
+        var numericExpression = (Supplier<ExpressionMachine<List<Command>, CompilingException>>) () -> ExpressionMachine.create(
                 numericOperand.get(),
                 new MathBinaryOperatorFactoryImpl(),
                 pushBinaryOperator,
                 compilingExceptionThrower
         );
 
-        Supplier<ExpressionMachine<List<Command>, CompilingException>> booleanExpression = () -> ExpressionMachine.create(
+        var booleanExpression = (Supplier<ExpressionMachine<List<Command>, CompilingException>>) () -> ExpressionMachine.create(
                 booleanOperand.get(),
                 new BooleanBinaryOperatorFactory(),
                 pushBinaryOperator,
                 compilingExceptionThrower
         );
 
-        Supplier<ExpressionMachine<List<Command>, CompilingException>> stringExpression = () -> ExpressionMachine.create(
+        var stringExpression = (Supplier<ExpressionMachine<List<Command>, CompilingException>>) () -> ExpressionMachine.create(
                 stringOperand.get(),
                 new StringBinaryOperatorFactory(),
                 pushBinaryOperator,
                 compilingExceptionThrower
         );
 
-        Supplier<DetachedStackStatementCompiler> expressionAcceptor = () -> new DetachedStackStatementCompiler(
+        var expressionAcceptor = (Supplier<DetachedStackStatementCompiler>) () -> new DetachedStackStatementCompiler(
                 new DeepestParsedInputAcceptor<>(
                         ArrayList::new,
 
@@ -223,7 +222,7 @@ public class ProgramElementCompilerFactoryImpl implements ProgramElementCompiler
 
         compilers.put(LIST_OF_STATEMENTS, programAcceptor.get());
 
-        Supplier<ProgramElementCompiler> numberAcceptor = () -> inputSequence ->
+        var numberAcceptor = (Supplier<ProgramElementCompiler>) () -> inputSequence ->
                 NumberMachine.execute(inputSequence, compilingExceptionThrower)
                              .map(value -> environment -> environment.stack()
                                                                      .peek()
@@ -280,7 +279,7 @@ public class ProgramElementCompilerFactoryImpl implements ProgramElementCompiler
         compilers.put(UNARY_POSTFIX_EXPRESSION,
                       new UnaryPostfixExpressionCompiler(this, new UnaryOperatorFactory()));
 
-        Supplier<StateAcceptor<List<Command>, CompilingException>> readVariableAcceptor = () ->
+        var readVariableAcceptor = (Supplier<StateAcceptor<List<Command>, CompilingException>>) () ->
                 FiniteStateMachine.oneOf("VALUE FROM MEMORY",
 
                                          new TransitionOneOfMatrixBuilder<List<Command>, CompilingException>()
