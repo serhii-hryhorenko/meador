@@ -2,7 +2,6 @@ package com.teamdev.runtime;
 
 import com.teamdev.runtime.evaluation.TypeMismatchException;
 import com.teamdev.runtime.evaluation.operandtype.BooleanValueVisitor;
-import com.teamdev.runtime.evaluation.operandtype.Value;
 
 /**
  * Runtime command which is created in compile time and evaluated on a runtime.
@@ -10,15 +9,15 @@ import com.teamdev.runtime.evaluation.operandtype.Value;
 @FunctionalInterface
 public interface Command {
 
-    void execute(RuntimeEnvironment runtimeEnvironment) throws MeadorRuntimeException;
+    void execute(RuntimeEnvironment environment) throws MeadorRuntimeException;
 
-    default boolean checkCondition(RuntimeEnvironment runtimeEnvironment) throws MeadorRuntimeException {
-        runtimeEnvironment.stack()
+    default boolean checkCondition(RuntimeEnvironment environment) throws MeadorRuntimeException {
+        environment.stack()
                 .create();
 
-        execute(runtimeEnvironment);
+        execute(environment);
 
-        var condition = runtimeEnvironment.stack()
+        var condition = environment.stack()
                                             .pop()
                                             .popResult();
 

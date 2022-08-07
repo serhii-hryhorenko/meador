@@ -1,6 +1,5 @@
 package com.teamdev.runtime.operatorimpl.bioperator;
 
-import com.teamdev.runtime.MeadorRuntimeException;
 import com.teamdev.runtime.evaluation.TypeMismatchException;
 import com.teamdev.runtime.evaluation.operandtype.NumericValue;
 import com.teamdev.runtime.evaluation.operandtype.NumericValueVisitor;

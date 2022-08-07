@@ -25,7 +25,7 @@ public interface StateAcceptor<O, E extends Exception> {
             if (inputSequence.canRead() && List.of(chars)
                                                .contains(inputSequence.read())) {
                 if (logger.isInfoEnabled()) {
-                    logger.info("Parsed {} symbol.", inputSequence.read());
+                    logger.info("Parsed `{}` symbol.", inputSequence.read());
                 }
 
                 inputSequence.next();

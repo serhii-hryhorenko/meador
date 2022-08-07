@@ -15,10 +15,10 @@ import com.teamdev.machine.function.FunctionMachine;
 import com.teamdev.machine.number.NumberMachine;
 import com.teamdev.machine.operand.OperandMachine;
 import com.teamdev.runtime.MeadorRuntimeException;
-import com.teamdev.runtime.functionfactoryimpl.ValidatedFunctionFactoryImpl;
-import com.teamdev.runtime.operatorfactoryimpl.MathBinaryOperatorFactoryImpl;
 import com.teamdev.runtime.ShuntingYard;
 import com.teamdev.runtime.evaluation.operandtype.Value;
+import com.teamdev.runtime.functionfactoryimpl.ValidatedFunctionFactoryImpl;
+import com.teamdev.runtime.operatorfactoryimpl.MathBinaryOperatorFactoryImpl;
 
 import java.util.EnumMap;
 import java.util.Map;

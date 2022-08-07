@@ -1,7 +1,6 @@
 package com.teamdev.meador;
 
-import com.teamdev.meador.compiler.Compiler;
-import com.teamdev.meador.compiler.CompilingException;
+import com.teamdev.meador.programelement.CompilingException;
 import com.teamdev.runtime.MeadorRuntimeException;
 import com.teamdev.runtime.RuntimeEnvironment;
 

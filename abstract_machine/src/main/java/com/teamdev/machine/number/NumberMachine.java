@@ -8,8 +8,8 @@ import com.teamdev.fsm.State;
 import com.teamdev.fsm.TransitionMatrix;
 import com.teamdev.fsm.TransitionMatrixBuilder;
 import com.teamdev.machine.util.SymbolAcceptor;
-import com.teamdev.runtime.evaluation.operandtype.Value;
 import com.teamdev.runtime.evaluation.operandtype.NumericValue;
+import com.teamdev.runtime.evaluation.operandtype.Value;
 
 import java.util.Optional;
 

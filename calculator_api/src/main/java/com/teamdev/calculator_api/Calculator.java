@@ -7,8 +7,8 @@ import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.runtime.MeadorRuntimeException;
 import com.teamdev.runtime.ShuntingYard;
 import com.teamdev.runtime.evaluation.TypeMismatchException;
-import com.teamdev.runtime.evaluation.operandtype.Value;
 import com.teamdev.runtime.evaluation.operandtype.NumericValueVisitor;
+import com.teamdev.runtime.evaluation.operandtype.Value;
 
 /**
  * An API for resolving of math expressions. Math expression may contain:

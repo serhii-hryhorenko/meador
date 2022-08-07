@@ -1,7 +1,6 @@
 package com.teamdev.runtime.operatorimpl.bioperator;
 
 import com.google.common.base.Preconditions;
-import com.teamdev.runtime.MeadorRuntimeException;
 import com.teamdev.runtime.evaluation.TypeMismatchException;
 import com.teamdev.runtime.evaluation.operandtype.BooleanValue;
 import com.teamdev.runtime.evaluation.operandtype.NumericValueVisitor;
