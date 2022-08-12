@@ -5,7 +5,7 @@ import com.teamdev.fsm.ExceptionThrower;
 import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.machine.function.FunctionHolder;
 import com.teamdev.machine.function.FunctionMachine;
-import com.teamdev.meador.programelement.CompilingException;
+import com.teamdev.meador.programelement.SyntaxException;
 import com.teamdev.meador.programelement.ProgramElementCompiler;
 import com.teamdev.meador.programelement.ProgramElementCompilerFactory;
 import com.teamdev.runtime.Command;
@@ -35,9 +35,9 @@ public class FunctionCompiler implements ProgramElementCompiler {
     }
 
     @Override
-    public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
+    public Optional<Command> compile(InputSequenceReader reader) throws SyntaxException {
 
-        var functionFSM = FunctionMachine.<Command, CompilingException>create(
+        var functionFSM = FunctionMachine.<Command, SyntaxException>create(
                 (inputSequence, outputSequence) -> {
 
                     var optionalCommand = compilerFactory.create(NUMERIC_EXPRESSION)
@@ -48,7 +48,7 @@ public class FunctionCompiler implements ProgramElementCompiler {
                     return optionalCommand.isPresent();
                 },
 
-                new ExceptionThrower<>(CompilingException::new)
+                new ExceptionThrower<>(() -> new SyntaxException("Failed to recognize a function."))
         );
 
         var context = new FunctionHolder<Command>();

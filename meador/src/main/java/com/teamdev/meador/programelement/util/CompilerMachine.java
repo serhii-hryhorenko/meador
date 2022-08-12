@@ -5,7 +5,7 @@ import com.teamdev.fsm.ExceptionThrower;
 import com.teamdev.fsm.FiniteStateMachine;
 import com.teamdev.fsm.StateAcceptor;
 import com.teamdev.fsm.TransitionOneOfMatrixBuilder;
-import com.teamdev.meador.programelement.CompilingException;
+import com.teamdev.meador.programelement.SyntaxException;
 import com.teamdev.meador.programelement.ProgramElementCompilerFactory;
 import com.teamdev.runtime.Command;
 
@@ -30,16 +30,16 @@ public class CompilerMachine {
 
     }
 
-    public static StateAcceptor<List<Command>, CompilingException> create(
+    public static StateAcceptor<List<Command>, SyntaxException> create(
             ProgramElementCompilerFactory factory) {
         Preconditions.checkNotNull(factory);
 
-        var compilingExceptionThrower = new ExceptionThrower<>(CompilingException::new);
+        var compilingExceptionThrower = new ExceptionThrower<>(() -> new SyntaxException("Failed to recognize program element."));
 
         return FiniteStateMachine.oneOf(
                 "PROGRAM ELEMENT",
 
-                new TransitionOneOfMatrixBuilder<List<Command>, CompilingException>()
+                new TransitionOneOfMatrixBuilder<List<Command>, SyntaxException>()
                         .allowTransition(
                                 new CompileStatementAcceptor<List<Command>>(
                                         factory, CONDITIONAL_OPERATOR,

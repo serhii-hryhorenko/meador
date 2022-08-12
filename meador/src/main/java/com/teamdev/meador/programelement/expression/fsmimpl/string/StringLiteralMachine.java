@@ -5,28 +5,28 @@ import com.teamdev.fsm.FiniteStateMachine;
 import com.teamdev.fsm.State;
 import com.teamdev.fsm.StateAcceptor;
 import com.teamdev.fsm.TransitionMatrix;
-import com.teamdev.meador.programelement.CompilingException;
+import com.teamdev.meador.programelement.SyntaxException;
 
 /**
  * {@link FiniteStateMachine} implementation for parsing Meador string literals.
  */
-public class StringLiteralMachine extends FiniteStateMachine<StringLiteralOutputChain, CompilingException> {
+public class StringLiteralMachine extends FiniteStateMachine<StringLiteralOutputChain, SyntaxException> {
 
     private StringLiteralMachine(
-            TransitionMatrix<StringLiteralOutputChain, CompilingException> transitionMatrix,
-            ExceptionThrower<CompilingException> thrower) {
+            TransitionMatrix<StringLiteralOutputChain, SyntaxException> transitionMatrix,
+            ExceptionThrower<SyntaxException> thrower) {
         super(transitionMatrix, thrower, false);
     }
 
     public static StringLiteralMachine create() {
-        var exceptionThrower = new ExceptionThrower<>(CompilingException::new);
+        var exceptionThrower = new ExceptionThrower<>(() -> new SyntaxException("Failed to recognize a string literal."));
 
-        var start = new State.Builder<StringLiteralOutputChain, CompilingException>()
+        var start = new State.Builder<StringLiteralOutputChain, SyntaxException>()
                 .setName("STRING START")
                 .setAcceptor(StateAcceptor.acceptChar('`'))
                 .build();
 
-        var literal = new State.Builder<StringLiteralOutputChain, CompilingException>()
+        var literal = new State.Builder<StringLiteralOutputChain, SyntaxException>()
                 .setName("STRING LITERAL")
                 .setAcceptor((reader, outputSequence) -> {
                     var optionalLiteral = StringLiteralValueParser.parse(reader);
@@ -37,7 +37,7 @@ public class StringLiteralMachine extends FiniteStateMachine<StringLiteralOutput
                 })
                 .build();
 
-        var end = new State.Builder<StringLiteralOutputChain, CompilingException>()
+        var end = new State.Builder<StringLiteralOutputChain, SyntaxException>()
                 .setName("STRING START")
                 .setAcceptor(StateAcceptor.acceptChar('`'))
                 .setFinal()

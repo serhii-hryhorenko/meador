@@ -2,7 +2,7 @@ package com.teamdev.meador.programelement.conditionaloperator;
 
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.InputSequenceReader;
-import com.teamdev.meador.programelement.CompilingException;
+import com.teamdev.meador.programelement.SyntaxException;
 import com.teamdev.meador.programelement.ProgramElementCompiler;
 import com.teamdev.meador.programelement.ProgramElementCompilerFactory;
 import com.teamdev.meador.programelement.conditionaloperator.fsmimpl.ConditionalOperatorMachine;
@@ -37,7 +37,7 @@ public class ConditionalOperatorCompiler implements ProgramElementCompiler {
     }
 
     @Override
-    public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
+    public Optional<Command> compile(InputSequenceReader reader) throws SyntaxException {
         var context = new ConditionalOperatorOutputChain();
 
         if (ConditionalOperatorMachine.create(factory)

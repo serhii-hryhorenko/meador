@@ -42,13 +42,12 @@ public class DataStructureTemplate {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof DataStructureTemplate that)) {
-            return false;
-        }
+        if (this == o) return true;
+        if (!(o instanceof DataStructureTemplate)) return false;
 
+        DataStructureTemplate that = (DataStructureTemplate) o;
+
+        if (!fieldNames.equals(that.fieldNames)) return false;
         return name.equals(that.name);
     }
 }

@@ -3,7 +3,7 @@ package com.teamdev.meador.programelement.expression.bool;
 import com.teamdev.fsm.ExceptionThrower;
 import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.machine.util.TextIdentifierMachine;
-import com.teamdev.meador.programelement.CompilingException;
+import com.teamdev.meador.programelement.SyntaxException;
 import com.teamdev.meador.programelement.ProgramElementCompiler;
 import com.teamdev.runtime.Command;
 import com.teamdev.runtime.evaluation.operandtype.BooleanValue;
@@ -19,10 +19,10 @@ public class BooleanLiteralCompiler implements ProgramElementCompiler {
     private static final String FALSE = "false";
 
     @Override
-    public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
+    public Optional<Command> compile(InputSequenceReader reader) throws SyntaxException {
         var optionalLiteral = TextIdentifierMachine.parseIdentifier(reader,
                                                                     new ExceptionThrower<>(
-                                                                            CompilingException::new));
+                                                                            () -> new SyntaxException("Failed to recognize a boolean literal.")));
 
         if (optionalLiteral.isPresent()) {
             String literal = optionalLiteral.get();

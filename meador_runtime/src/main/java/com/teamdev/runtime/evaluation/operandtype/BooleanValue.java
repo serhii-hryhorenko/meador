@@ -28,12 +28,10 @@ public class BooleanValue implements Value {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof BooleanValue that)) {
-            return false;
-        }
+        if (this == o) return true;
+        if (!(o instanceof BooleanValue)) return false;
+
+        BooleanValue that = (BooleanValue) o;
 
         return value == that.value;
     }

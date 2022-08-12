@@ -2,7 +2,7 @@ package com.teamdev.meador.programelement.expression.relative;
 
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.InputSequenceReader;
-import com.teamdev.meador.programelement.CompilingException;
+import com.teamdev.meador.programelement.SyntaxException;
 import com.teamdev.meador.programelement.ProgramElementCompiler;
 import com.teamdev.meador.programelement.ProgramElementCompilerFactory;
 import com.teamdev.meador.programelement.expression.fsmimpl.relative.RelationalExpressionMachine;
@@ -24,7 +24,7 @@ public class RelationalExpressionCompiler implements ProgramElementCompiler {
     }
 
     @Override
-    public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
+    public Optional<Command> compile(InputSequenceReader reader) throws SyntaxException {
         var relationalExpressionFSM = RelationalExpressionMachine.create(compilerFactory);
 
         var context = new RelationalExpressionOutputChain();

@@ -6,7 +6,7 @@ import com.teamdev.fsm.FiniteStateMachine;
 import com.teamdev.fsm.State;
 import com.teamdev.fsm.TransitionMatrix;
 import com.teamdev.machine.expression.OperatorAcceptor;
-import com.teamdev.meador.programelement.CompilingException;
+import com.teamdev.meador.programelement.SyntaxException;
 import com.teamdev.meador.programelement.ProgramElement;
 import com.teamdev.meador.programelement.ProgramElementCompilerFactory;
 import com.teamdev.meador.programelement.util.CompileStatementAcceptor;
@@ -16,18 +16,18 @@ import com.teamdev.runtime.operatorfactoryimpl.RelativeBinaryOperatorFactory;
  * {@link FiniteStateMachine} implementation for recognizing relational expressions in Meador
  * programs.
  */
-public class RelationalExpressionMachine extends FiniteStateMachine<RelationalExpressionOutputChain, CompilingException> {
+public class RelationalExpressionMachine extends FiniteStateMachine<RelationalExpressionOutputChain, SyntaxException> {
 
     private RelationalExpressionMachine(
-            TransitionMatrix<RelationalExpressionOutputChain, CompilingException> transitionMatrix,
-            ExceptionThrower<CompilingException> thrower) {
+            TransitionMatrix<RelationalExpressionOutputChain, SyntaxException> transitionMatrix,
+            ExceptionThrower<SyntaxException> thrower) {
         super(transitionMatrix, thrower);
     }
 
     public static RelationalExpressionMachine create(ProgramElementCompilerFactory factory) {
         Preconditions.checkNotNull(factory);
 
-        var left = new State.Builder<RelationalExpressionOutputChain, CompilingException>()
+        var left = new State.Builder<RelationalExpressionOutputChain, SyntaxException>()
                 .setName("LEFT EXPRESSION")
                 .setAcceptor(new CompileStatementAcceptor<>(factory,
                                                             ProgramElement.NUMERIC_EXPRESSION,
@@ -35,13 +35,13 @@ public class RelationalExpressionMachine extends FiniteStateMachine<RelationalEx
                 .setTemporary()
                 .build();
 
-        var relationOperator = new State.Builder<RelationalExpressionOutputChain, CompilingException>()
+        var relationOperator = new State.Builder<RelationalExpressionOutputChain, SyntaxException>()
                 .setName("RELATION OPERATOR")
                 .setAcceptor(new OperatorAcceptor<>(new RelativeBinaryOperatorFactory(),
                                                     RelationalExpressionOutputChain::setOperator))
                 .build();
 
-        var right = new State.Builder<RelationalExpressionOutputChain, CompilingException>()
+        var right = new State.Builder<RelationalExpressionOutputChain, SyntaxException>()
                 .setName("RIGHT EXPRESSION")
                 .setAcceptor(new CompileStatementAcceptor<>(factory,
                                                             ProgramElement.NUMERIC_EXPRESSION,
@@ -53,6 +53,6 @@ public class RelationalExpressionMachine extends FiniteStateMachine<RelationalEx
                 TransitionMatrix.chainedTransitions(left, relationOperator, right);
 
         return new RelationalExpressionMachine(matrix,
-                                               new ExceptionThrower<>(CompilingException::new));
+                                               new ExceptionThrower<>(() -> new SyntaxException("Failed to recognize a relational expression.")));
     }
 }

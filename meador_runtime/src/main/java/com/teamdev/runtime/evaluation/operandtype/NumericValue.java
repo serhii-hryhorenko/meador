@@ -29,12 +29,10 @@ public class NumericValue implements Value {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof NumericValue that)) {
-            return false;
-        }
+        if (this == o) return true;
+        if (!(o instanceof NumericValue)) return false;
+
+        NumericValue that = (NumericValue) o;
 
         return Double.compare(that.value, value) == 0;
     }

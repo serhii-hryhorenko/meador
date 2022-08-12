@@ -11,5 +11,5 @@ import java.util.Optional;
 @FunctionalInterface
 public interface ProgramElementCompiler {
 
-    Optional<Command> compile(InputSequenceReader reader) throws CompilingException;
+    Optional<Command> compile(InputSequenceReader reader) throws SyntaxException;
 }

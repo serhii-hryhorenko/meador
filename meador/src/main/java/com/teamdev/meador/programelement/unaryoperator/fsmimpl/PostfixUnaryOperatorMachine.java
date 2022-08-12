@@ -7,7 +7,7 @@ import com.teamdev.fsm.State;
 import com.teamdev.fsm.TransitionMatrix;
 import com.teamdev.machine.expression.OperatorAcceptor;
 import com.teamdev.machine.util.TextIdentifierMachine;
-import com.teamdev.meador.programelement.CompilingException;
+import com.teamdev.meador.programelement.SyntaxException;
 import com.teamdev.meador.programelement.ProgramElementCompilerFactory;
 import com.teamdev.runtime.evaluation.operator.AbstractOperatorFactory;
 import com.teamdev.runtime.evaluation.operator.AbstractUnaryOperator;
@@ -18,11 +18,11 @@ import com.teamdev.runtime.evaluation.operator.AbstractUnaryOperator;
  * position.
  * Parses only the variable name, not a value.
  */
-public class PostfixUnaryOperatorMachine extends FiniteStateMachine<UnaryExpressionOutputChain, CompilingException> {
+public class PostfixUnaryOperatorMachine extends FiniteStateMachine<UnaryExpressionOutputChain, SyntaxException> {
 
     private PostfixUnaryOperatorMachine(
-            TransitionMatrix<UnaryExpressionOutputChain, CompilingException> transitionMatrix,
-            ExceptionThrower<CompilingException> thrower) {
+            TransitionMatrix<UnaryExpressionOutputChain, SyntaxException> transitionMatrix,
+            ExceptionThrower<SyntaxException> thrower) {
         super(transitionMatrix, thrower);
     }
 
@@ -30,9 +30,9 @@ public class PostfixUnaryOperatorMachine extends FiniteStateMachine<UnaryExpress
                                                      AbstractOperatorFactory<AbstractUnaryOperator> operatorFactory) {
         Preconditions.checkNotNull(compilerFactory, operatorFactory);
 
-        var exceptionThrower = new ExceptionThrower<>(CompilingException::new);
+        var exceptionThrower = new ExceptionThrower<>(() -> new SyntaxException("Failed to recognize postfix unary operator."));
 
-        var expression = new State.Builder<UnaryExpressionOutputChain, CompilingException>()
+        var expression = new State.Builder<UnaryExpressionOutputChain, SyntaxException>()
                 .setName("VARIABLE NAME")
                 .setAcceptor(
                         (reader, outputSequence) -> TextIdentifierMachine.acceptIdentifier(reader,
@@ -42,7 +42,7 @@ public class PostfixUnaryOperatorMachine extends FiniteStateMachine<UnaryExpress
                 .setTemporary()
                 .build();
 
-        var postfixOperator = new State.Builder<UnaryExpressionOutputChain, CompilingException>()
+        var postfixOperator = new State.Builder<UnaryExpressionOutputChain, SyntaxException>()
                 .setName("POSTFIX OPERATOR")
                 .setAcceptor(new OperatorAcceptor<>(operatorFactory,
                                                     UnaryExpressionOutputChain::setUnaryOperator))

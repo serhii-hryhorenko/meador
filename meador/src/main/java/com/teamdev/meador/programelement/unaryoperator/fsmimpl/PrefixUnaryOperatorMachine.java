@@ -7,7 +7,7 @@ import com.teamdev.fsm.State;
 import com.teamdev.fsm.TransitionMatrix;
 import com.teamdev.machine.expression.OperatorAcceptor;
 import com.teamdev.machine.util.TextIdentifierMachine;
-import com.teamdev.meador.programelement.CompilingException;
+import com.teamdev.meador.programelement.SyntaxException;
 import com.teamdev.meador.programelement.ProgramElementCompilerFactory;
 import com.teamdev.runtime.evaluation.operator.AbstractOperatorFactory;
 import com.teamdev.runtime.evaluation.operator.AbstractUnaryOperator;
@@ -18,11 +18,11 @@ import com.teamdev.runtime.evaluation.operator.AbstractUnaryOperator;
  * position.
  * Parses only the variable name, not a value.
  */
-public class PrefixUnaryOperatorMachine extends FiniteStateMachine<UnaryExpressionOutputChain, CompilingException> {
+public class PrefixUnaryOperatorMachine extends FiniteStateMachine<UnaryExpressionOutputChain, SyntaxException> {
 
     private PrefixUnaryOperatorMachine(
-            TransitionMatrix<UnaryExpressionOutputChain, CompilingException> transitionMatrix,
-            ExceptionThrower<CompilingException> thrower) {
+            TransitionMatrix<UnaryExpressionOutputChain, SyntaxException> transitionMatrix,
+            ExceptionThrower<SyntaxException> thrower) {
         super(transitionMatrix, thrower);
     }
 
@@ -30,16 +30,16 @@ public class PrefixUnaryOperatorMachine extends FiniteStateMachine<UnaryExpressi
                                                     AbstractOperatorFactory<AbstractUnaryOperator> operatorFactory) {
         Preconditions.checkNotNull(compilerFactory, operatorFactory);
 
-        var exceptionThrower = new ExceptionThrower<>(CompilingException::new);
+        var exceptionThrower = new ExceptionThrower<>(() -> new SyntaxException("Failed to recognize prefix unary operator."));
 
-        var prefixOperator = new State.Builder<UnaryExpressionOutputChain, CompilingException>()
+        var prefixOperator = new State.Builder<UnaryExpressionOutputChain, SyntaxException>()
                 .setName("PREFIX OPERATOR")
                 .setAcceptor(new OperatorAcceptor<>(operatorFactory,
                                                     UnaryExpressionOutputChain::setUnaryOperator))
                 .setTemporary()
                 .build();
 
-        var expression = new State.Builder<UnaryExpressionOutputChain, CompilingException>()
+        var expression = new State.Builder<UnaryExpressionOutputChain, SyntaxException>()
                 .setName("VARIABLE NAME")
                 .setAcceptor(
                         (reader, outputSequence) -> TextIdentifierMachine.acceptIdentifier(reader,

@@ -6,7 +6,7 @@ import com.teamdev.fsm.FiniteStateMachine;
 import com.teamdev.fsm.State;
 import com.teamdev.fsm.StateAcceptor;
 import com.teamdev.fsm.TransitionMatrix;
-import com.teamdev.meador.programelement.CompilingException;
+import com.teamdev.meador.programelement.SyntaxException;
 import com.teamdev.meador.programelement.ProgramElementCompilerFactory;
 import com.teamdev.runtime.Command;
 
@@ -20,10 +20,10 @@ import static com.teamdev.meador.programelement.ProgramElement.LIST_OF_STATEMENT
  * @param <O>
  *         output chain
  */
-public class CodeBlockMachine<O> extends FiniteStateMachine<O, CompilingException> {
+public class CodeBlockMachine<O> extends FiniteStateMachine<O, SyntaxException> {
 
-    private CodeBlockMachine(TransitionMatrix<O, CompilingException> transitionMatrix,
-                             ExceptionThrower<CompilingException> thrower) {
+    private CodeBlockMachine(TransitionMatrix<O, SyntaxException> transitionMatrix,
+                             ExceptionThrower<SyntaxException> thrower) {
         super(transitionMatrix, thrower);
     }
 
@@ -32,18 +32,18 @@ public class CodeBlockMachine<O> extends FiniteStateMachine<O, CompilingExceptio
 
         Preconditions.checkNotNull(factory);
 
-        var openCurlyBracket = new State.Builder<O, CompilingException>()
+        var openCurlyBracket = new State.Builder<O, SyntaxException>()
                 .setName("CODE BLOCK START")
                 .setAcceptor(StateAcceptor.acceptChar('{'))
                 .build();
 
-        var program = new State.Builder<O, CompilingException>()
+        var program = new State.Builder<O, SyntaxException>()
                 .setName("CODE BLOCK")
                 .setAcceptor(
                         new CompileStatementAcceptor<>(factory, LIST_OF_STATEMENTS, blockConsumer))
                 .build();
 
-        var closeCurlyBracket = new State.Builder<O, CompilingException>()
+        var closeCurlyBracket = new State.Builder<O, SyntaxException>()
                 .setName("CODE BLOCK END")
                 .setAcceptor(StateAcceptor.acceptChar('}'))
                 .setFinal()
@@ -52,6 +52,6 @@ public class CodeBlockMachine<O> extends FiniteStateMachine<O, CompilingExceptio
         var matrix = TransitionMatrix.chainedTransitions(openCurlyBracket, program,
                                                          closeCurlyBracket);
 
-        return new CodeBlockMachine<>(matrix, new ExceptionThrower<>(CompilingException::new));
+        return new CodeBlockMachine<>(matrix, new ExceptionThrower<>(() -> new SyntaxException("Failed to recognize a block of code.")));
     }
 }

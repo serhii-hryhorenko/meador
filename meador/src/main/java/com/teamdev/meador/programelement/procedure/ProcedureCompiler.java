@@ -6,7 +6,7 @@ import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.fsm.StateAcceptor;
 import com.teamdev.machine.function.FunctionHolder;
 import com.teamdev.machine.function.FunctionMachine;
-import com.teamdev.meador.programelement.CompilingException;
+import com.teamdev.meador.programelement.SyntaxException;
 import com.teamdev.meador.programelement.ProgramElementCompiler;
 import com.teamdev.meador.programelement.ProgramElementCompilerFactory;
 import com.teamdev.meador.programelement.util.CompileStatementAcceptor;
@@ -36,12 +36,12 @@ public class ProcedureCompiler implements ProgramElementCompiler {
     }
 
     @Override
-    public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
+    public Optional<Command> compile(InputSequenceReader reader) throws SyntaxException {
 
         var functionFSM = FunctionMachine.create(
                         new CompileStatementAcceptor<FunctionHolder<Command>>(compilerFactory, EXPRESSION,
                                                                               FunctionHolder::addArgument),
-                        new ExceptionThrower<>(CompilingException::new))
+                        new ExceptionThrower<>(() -> new SyntaxException("Failed to recognize a procedure.")))
                 .and(StateAcceptor.acceptChar(';'));
 
         var context = new FunctionHolder<Command>();

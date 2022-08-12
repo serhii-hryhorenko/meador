@@ -3,7 +3,7 @@ package com.teamdev.meador.programelement.util;
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.fsm.StateAcceptor;
-import com.teamdev.meador.programelement.CompilingException;
+import com.teamdev.meador.programelement.SyntaxException;
 import com.teamdev.meador.programelement.ProgramElement;
 import com.teamdev.meador.programelement.ProgramElementCompilerFactory;
 import com.teamdev.runtime.Command;
@@ -18,7 +18,7 @@ import java.util.function.BiConsumer;
  * @param <O>
  *         custom output chain
  */
-public class CompileStatementAcceptor<O> implements StateAcceptor<O, CompilingException> {
+public class CompileStatementAcceptor<O> implements StateAcceptor<O, SyntaxException> {
 
     private final ProgramElementCompilerFactory factory;
     private final ProgramElement type;
@@ -33,7 +33,7 @@ public class CompileStatementAcceptor<O> implements StateAcceptor<O, CompilingEx
     }
 
     @Override
-    public boolean accept(InputSequenceReader reader, O outputChain) throws CompilingException {
+    public boolean accept(InputSequenceReader reader, O outputChain) throws SyntaxException {
         var compiler = factory.create(type);
 
         var optionalCommand = compiler.compile(reader);

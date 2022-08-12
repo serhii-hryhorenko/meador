@@ -1,7 +1,7 @@
 package com.teamdev.meador.programelement.datastructure;
 
 import com.teamdev.fsm.InputSequenceReader;
-import com.teamdev.meador.programelement.CompilingException;
+import com.teamdev.meador.programelement.SyntaxException;
 import com.teamdev.meador.programelement.ProgramElementCompiler;
 import com.teamdev.meador.programelement.datastructure.fsmimpl.DataStructureFieldReferenceMachine;
 import com.teamdev.meador.programelement.datastructure.fsmimpl.FieldReferenceOutputChain;
@@ -12,7 +12,6 @@ import com.teamdev.runtime.evaluation.operandtype.DataStructureInitializationExc
 import com.teamdev.runtime.evaluation.operandtype.DataStructureValueVisitor;
 import com.teamdev.runtime.evaluation.operandtype.Value;
 
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -22,7 +21,7 @@ import java.util.Optional;
 public class FieldValueCompiler implements ProgramElementCompiler {
 
     @Override
-    public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
+    public Optional<Command> compile(InputSequenceReader reader) throws SyntaxException {
         var outputChain = new FieldReferenceOutputChain();
 
         if (DataStructureFieldReferenceMachine.create()

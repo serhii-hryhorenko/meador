@@ -6,7 +6,7 @@ import com.teamdev.fsm.FiniteStateMachine;
 import com.teamdev.fsm.State;
 import com.teamdev.fsm.StateAcceptor;
 import com.teamdev.fsm.TransitionMatrix;
-import com.teamdev.meador.programelement.CompilingException;
+import com.teamdev.meador.programelement.SyntaxException;
 import com.teamdev.meador.programelement.ProgramElementCompilerFactory;
 import com.teamdev.meador.programelement.util.CompileStatementAcceptor;
 
@@ -15,18 +15,18 @@ import static com.teamdev.meador.programelement.ProgramElement.EXPRESSION;
 /**
  * {@link FiniteStateMachine} implementation for recognizing reassigning data structure fields.
  */
-public class FieldAssignmentMachine extends FiniteStateMachine<FieldAssignmentOutputChain, CompilingException> {
+public class FieldAssignmentMachine extends FiniteStateMachine<FieldAssignmentOutputChain, SyntaxException> {
 
     private FieldAssignmentMachine(
-            TransitionMatrix<FieldAssignmentOutputChain, CompilingException> transitionMatrix,
-            ExceptionThrower<CompilingException> thrower) {
+            TransitionMatrix<FieldAssignmentOutputChain, SyntaxException> transitionMatrix,
+            ExceptionThrower<SyntaxException> thrower) {
         super(transitionMatrix, thrower);
     }
 
     public static FieldAssignmentMachine create(ProgramElementCompilerFactory factory) {
         Preconditions.checkNotNull(factory);
 
-        var structureField = new State.Builder<FieldAssignmentOutputChain, CompilingException>()
+        var structureField = new State.Builder<FieldAssignmentOutputChain, SyntaxException>()
                 .setName("ASSIGNED FIELD")
                 .setAcceptor((reader, outputSequence) -> {
                     var field = new FieldReferenceOutputChain();
@@ -41,18 +41,18 @@ public class FieldAssignmentMachine extends FiniteStateMachine<FieldAssignmentOu
                 })
                 .build();
 
-        var assignOperator = new State.Builder<FieldAssignmentOutputChain, CompilingException>()
+        var assignOperator = new State.Builder<FieldAssignmentOutputChain, SyntaxException>()
                 .setName("ASSIGN OPERATOR")
                 .setAcceptor(StateAcceptor.acceptChar('='))
                 .build();
 
-        var value = new State.Builder<FieldAssignmentOutputChain, CompilingException>()
+        var value = new State.Builder<FieldAssignmentOutputChain, SyntaxException>()
                 .setName("NEW FIELD VALUE")
                 .setAcceptor(new CompileStatementAcceptor<>(factory, EXPRESSION,
                                                             FieldAssignmentOutputChain::setCommand))
                 .build();
 
-        var semicolon = new State.Builder<FieldAssignmentOutputChain, CompilingException>()
+        var semicolon = new State.Builder<FieldAssignmentOutputChain, SyntaxException>()
                 .setName("FIELD ASSIGNMENT END")
                 .setAcceptor(StateAcceptor.acceptChar(';'))
                 .setFinal()
@@ -62,6 +62,6 @@ public class FieldAssignmentMachine extends FiniteStateMachine<FieldAssignmentOu
                 TransitionMatrix.chainedTransitions(structureField, assignOperator, value,
                                                     semicolon);
 
-        return new FieldAssignmentMachine(matrix, new ExceptionThrower<>(CompilingException::new));
+        return new FieldAssignmentMachine(matrix, new ExceptionThrower<>(() -> new SyntaxException("Failed to recognize a reassignment of a data structure field.")));
     }
 }

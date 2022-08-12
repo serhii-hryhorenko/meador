@@ -3,7 +3,7 @@ package com.teamdev.meador.programelement.util;
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.InputSequenceReader;
 import com.teamdev.fsm.StateAcceptor;
-import com.teamdev.meador.programelement.CompilingException;
+import com.teamdev.meador.programelement.SyntaxException;
 import com.teamdev.meador.programelement.ProgramElementCompiler;
 import com.teamdev.runtime.Command;
 import com.teamdev.runtime.ShuntingYard;
@@ -18,15 +18,15 @@ import java.util.Optional;
  */
 public class DetachedStackStatementCompiler implements ProgramElementCompiler {
 
-    private final StateAcceptor<List<Command>, CompilingException> machine;
+    private final StateAcceptor<List<Command>, SyntaxException> machine;
 
     public DetachedStackStatementCompiler(
-            StateAcceptor<List<Command>, CompilingException> machine) {
+            StateAcceptor<List<Command>, SyntaxException> machine) {
         this.machine = Preconditions.checkNotNull(machine);
     }
 
     @Override
-    public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
+    public Optional<Command> compile(InputSequenceReader reader) throws SyntaxException {
         List<Command> commands = new ArrayList<>();
 
         if (machine.accept(reader, commands)) {

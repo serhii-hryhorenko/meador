@@ -8,7 +8,7 @@ import com.teamdev.fsm.TransitionOneOfMatrixBuilder;
 import com.teamdev.machine.brackets.BracketsMachine;
 import com.teamdev.machine.expression.ExpressionMachine;
 import com.teamdev.machine.number.NumberMachine;
-import com.teamdev.meador.programelement.CompilingException;
+import com.teamdev.meador.programelement.SyntaxException;
 import com.teamdev.meador.programelement.ProgramElement;
 import com.teamdev.meador.programelement.ProgramElementCompiler;
 import com.teamdev.meador.programelement.ProgramElementCompilerFactory;
@@ -41,42 +41,11 @@ import com.teamdev.runtime.operatorfactoryimpl.MathBinaryOperatorFactoryImpl;
 import com.teamdev.runtime.operatorfactoryimpl.StringBinaryOperatorFactory;
 import com.teamdev.runtime.operatorfactoryimpl.UnaryOperatorFactory;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
-import static com.teamdev.meador.programelement.ProgramElement.BOOLEAN_BRACKETS;
-import static com.teamdev.meador.programelement.ProgramElement.BOOLEAN_EXPRESSION;
-import static com.teamdev.meador.programelement.ProgramElement.BOOLEAN_LITERAL;
-import static com.teamdev.meador.programelement.ProgramElement.BOOLEAN_OPERAND;
-import static com.teamdev.meador.programelement.ProgramElement.CONDITIONAL_OPERATOR;
-import static com.teamdev.meador.programelement.ProgramElement.DATA_STRUCTURE_DECLARATION;
-import static com.teamdev.meador.programelement.ProgramElement.DATA_STRUCTURE_INSTANCE;
-import static com.teamdev.meador.programelement.ProgramElement.EXPRESSION;
-import static com.teamdev.meador.programelement.ProgramElement.FOR_LOOP;
-import static com.teamdev.meador.programelement.ProgramElement.FUNCTION;
-import static com.teamdev.meador.programelement.ProgramElement.LIST_OF_STATEMENTS;
-import static com.teamdev.meador.programelement.ProgramElement.NUMBER;
-import static com.teamdev.meador.programelement.ProgramElement.NUMERIC_BRACKETS;
-import static com.teamdev.meador.programelement.ProgramElement.NUMERIC_EXPRESSION;
-import static com.teamdev.meador.programelement.ProgramElement.NUMERIC_OPERAND;
-import static com.teamdev.meador.programelement.ProgramElement.PROCEDURE;
-import static com.teamdev.meador.programelement.ProgramElement.READ_VARIABLE;
-import static com.teamdev.meador.programelement.ProgramElement.RELATIONAL_EXPRESSION;
-import static com.teamdev.meador.programelement.ProgramElement.STRING_EXPRESSION;
-import static com.teamdev.meador.programelement.ProgramElement.STRING_LITERAL;
-import static com.teamdev.meador.programelement.ProgramElement.STRUCTURE_FIELD_ASSIGNMENT;
-import static com.teamdev.meador.programelement.ProgramElement.STRUCTURE_FIELD_VALUE;
-import static com.teamdev.meador.programelement.ProgramElement.SWITCH_OPERATOR;
-import static com.teamdev.meador.programelement.ProgramElement.UNARY_POSTFIX_EXPRESSION;
-import static com.teamdev.meador.programelement.ProgramElement.UNARY_PREFIX_EXPRESSION;
-import static com.teamdev.meador.programelement.ProgramElement.VARIABLE_ASSIGNMENT;
-import static com.teamdev.meador.programelement.ProgramElement.VARIABLE_VALUE;
-import static com.teamdev.meador.programelement.ProgramElement.WHILE_LOOP;
+import static com.teamdev.meador.programelement.ProgramElement.*;
 
 /**
  * {@link ProgramElementCompilerFactory} implementation which provides creation of any implemented
@@ -88,66 +57,65 @@ public class ProgramElementCompilerFactoryImpl implements ProgramElementCompiler
             ProgramElement.class);
 
     public ProgramElementCompilerFactoryImpl() {
-        var compilingExceptionThrower = new ExceptionThrower<>(CompilingException::new);
-
-        var numericOperand = (Supplier<StateAcceptor<List<Command>, CompilingException>>) () -> FiniteStateMachine.oneOf(
+        var numericOperand = (Supplier<StateAcceptor<List<Command>, SyntaxException>>) () -> FiniteStateMachine.oneOf(
                 "NumericOperandMachine",
-                new TransitionOneOfMatrixBuilder<List<Command>, CompilingException>()
+                new TransitionOneOfMatrixBuilder<List<Command>, SyntaxException>()
 
                         .allowTransition(
                                 new CompileStatementAcceptor<List<Command>>(this, NUMERIC_BRACKETS,
-                                                                            List::add)
+                                        List::add)
                                         .named("MEADOR BRACKETS"))
 
                         .allowTransition(
                                 new CompileStatementAcceptor<List<Command>>(this, FUNCTION,
-                                                                            List::add)
+                                        List::add)
                                         .named("MEADOR FUNCTION"))
 
                         .allowTransition(
                                 new CompileStatementAcceptor<List<Command>>(this, READ_VARIABLE,
-                                                                            List::add)
+                                        List::add)
                                         .named("MEADOR VARIABLE"))
 
                         .allowTransition(
                                 new CompileStatementAcceptor<List<Command>>(this, NUMBER, List::add)
                                         .named("MEADOR NUMBER")),
 
-                compilingExceptionThrower
+                new ExceptionThrower<>(() -> new SyntaxException("Failed to recognize numeric operand."))
         );
 
-        var booleanOperand = (Supplier<StateAcceptor<List<Command>, CompilingException>>) () -> FiniteStateMachine.oneOf(
+        var booleanOperand = (Supplier<StateAcceptor<List<Command>, SyntaxException>>) () -> FiniteStateMachine.oneOf(
                 "BooleanOperandMachine",
-                new TransitionOneOfMatrixBuilder<List<Command>, CompilingException>()
+                new TransitionOneOfMatrixBuilder<List<Command>, SyntaxException>()
                         .allowTransition(
                                 new CompileStatementAcceptor<List<Command>>(this, BOOLEAN_LITERAL,
-                                                                            List::add)
+                                        List::add)
                                         .named("MEADOR BOOLEAN LITERAL"), true)
 
                         .allowTransition(
                                 new CompileStatementAcceptor<List<Command>>(this, BOOLEAN_BRACKETS,
-                                                                            List::add)
+                                        List::add)
                                         .named("MEADOR BOOLEAN BRACKETS"))
 
                         .allowTransition(new CompileStatementAcceptor<List<Command>>(this,
-                                                                                     RELATIONAL_EXPRESSION,
-                                                                                     List::add)
-                                                 .named("MEADOR RELATIVE EXPRESSION"), true)
+                                RELATIONAL_EXPRESSION,
+                                List::add)
+                                .named("MEADOR RELATIVE EXPRESSION"), true)
 
                         .allowTransition(
                                 new CompileStatementAcceptor<List<Command>>(this, READ_VARIABLE,
-                                                                            List::add)
+                                        List::add)
                                         .named("MEADOR VARIABLE")),
 
-                compilingExceptionThrower
+                new ExceptionThrower<>(() -> new SyntaxException("Failed to recognize boolean operand."))
+
         );
 
-        var stringOperand = (Supplier<StateAcceptor<List<Command>, CompilingException>>) () -> FiniteStateMachine.oneOf(
+        var stringOperand = (Supplier<StateAcceptor<List<Command>, SyntaxException>>) () -> FiniteStateMachine.oneOf(
                 "StringOperandMachine",
-                new TransitionOneOfMatrixBuilder<List<Command>, CompilingException>()
+                new TransitionOneOfMatrixBuilder<List<Command>, SyntaxException>()
                         .allowTransition(
                                 new CompileStatementAcceptor<List<Command>>(this, STRING_LITERAL,
-                                                                            List::add)
+                                        List::add)
                                         .named("STRING LITERAL"))
 
                         .allowTransition(new DeepestParsedInputAcceptor<>(
@@ -155,33 +123,33 @@ public class ProgramElementCompilerFactoryImpl implements ProgramElementCompiler
                                 booleanOperand.get(),
                                 numericOperand.get())),
 
-                compilingExceptionThrower
+                new ExceptionThrower<>(() -> new SyntaxException("Failed to recognize string operand."))
         );
 
         var pushBinaryOperator = (BiConsumer<List<Command>, AbstractBinaryOperator>) (commands, operator) ->
                 commands.add(environment -> environment.stack()
-                                                       .peek()
-                                                       .pushOperator(operator));
+                        .peek()
+                        .pushOperator(operator));
 
-        var numericExpression = (Supplier<ExpressionMachine<List<Command>, CompilingException>>) () -> ExpressionMachine.create(
+        var numericExpression = (Supplier<ExpressionMachine<List<Command>, SyntaxException>>) () -> ExpressionMachine.create(
                 numericOperand.get(),
                 new MathBinaryOperatorFactoryImpl(),
                 pushBinaryOperator,
-                compilingExceptionThrower
+                new ExceptionThrower<>(() -> new SyntaxException("Failed to recognize numeric expression."))
         );
 
-        var booleanExpression = (Supplier<ExpressionMachine<List<Command>, CompilingException>>) () -> ExpressionMachine.create(
+        var booleanExpression = (Supplier<ExpressionMachine<List<Command>, SyntaxException>>) () -> ExpressionMachine.create(
                 booleanOperand.get(),
                 new BooleanBinaryOperatorFactory(),
                 pushBinaryOperator,
-                compilingExceptionThrower
+                new ExceptionThrower<>(() -> new SyntaxException("Failed to recognize boolean expression."))
         );
 
-        var stringExpression = (Supplier<ExpressionMachine<List<Command>, CompilingException>>) () -> ExpressionMachine.create(
+        var stringExpression = (Supplier<ExpressionMachine<List<Command>, SyntaxException>>) () -> ExpressionMachine.create(
                 stringOperand.get(),
                 new StringBinaryOperatorFactory(),
                 pushBinaryOperator,
-                compilingExceptionThrower
+                new ExceptionThrower<>(() -> new SyntaxException("Failed to recognize string expression."))
         );
 
         var expressionAcceptor = (Supplier<DetachedStackStatementCompiler>) () -> new DetachedStackStatementCompiler(
@@ -189,19 +157,19 @@ public class ProgramElementCompilerFactoryImpl implements ProgramElementCompiler
                         ArrayList::new,
 
                         new CompileStatementAcceptor<List<Command>>(this, DATA_STRUCTURE_INSTANCE,
-                                                                    List::add)
+                                List::add)
                                 .named("DataStructureInstanceMachine"),
 
                         new CompileStatementAcceptor<List<Command>>(this, BOOLEAN_EXPRESSION,
-                                                                    List::add)
+                                List::add)
                                 .named("BooleanExpressionMachine"),
 
                         new CompileStatementAcceptor<List<Command>>(this, NUMERIC_EXPRESSION,
-                                                                    List::add)
+                                List::add)
                                 .named("NumericExpressionMachine"),
 
                         new CompileStatementAcceptor<List<Command>>(this, STRING_EXPRESSION,
-                                                                    List::add)
+                                List::add)
                                 .named("StringExpressionMachine")
                 )
         );
@@ -213,7 +181,7 @@ public class ProgramElementCompilerFactoryImpl implements ProgramElementCompiler
                     .accept(reader, commands)) ;
 
             if (commands.isEmpty()) {
-                throw new CompilingException("List of statements is empty.");
+                throw new SyntaxException("Program does not contain any of statements.");
             }
 
             return Optional.of(runtimeEnvironment -> {
@@ -226,10 +194,10 @@ public class ProgramElementCompilerFactoryImpl implements ProgramElementCompiler
         compilers.put(LIST_OF_STATEMENTS, programAcceptor.get());
 
         var numberAcceptor = (Supplier<ProgramElementCompiler>) () -> inputSequence ->
-                NumberMachine.execute(inputSequence, compilingExceptionThrower)
-                             .map(value -> environment -> environment.stack()
-                                                                     .peek()
-                                                                     .pushOperand(value));
+                NumberMachine.execute(inputSequence, new ExceptionThrower<>(() -> new SyntaxException("Failed to recognize a number.")))
+                        .map(value -> environment -> environment.stack()
+                                .peek()
+                                .pushOperand(value));
 
         compilers.put(NUMBER, numberAcceptor.get());
 
@@ -240,20 +208,20 @@ public class ProgramElementCompilerFactoryImpl implements ProgramElementCompiler
         compilers.put(BOOLEAN_LITERAL, new BooleanLiteralCompiler());
 
         compilers.put(NUMERIC_EXPRESSION,
-                      new DetachedStackStatementCompiler(numericExpression.get()));
+                new DetachedStackStatementCompiler(numericExpression.get()));
 
         compilers.put(BOOLEAN_EXPRESSION,
-                      new DetachedStackStatementCompiler(booleanExpression.get()));
+                new DetachedStackStatementCompiler(booleanExpression.get()));
 
         compilers.put(RELATIONAL_EXPRESSION, new RelationalExpressionCompiler(this));
 
         compilers.put(BOOLEAN_BRACKETS, new DetachedStackStatementCompiler(
                 BracketsMachine.create(booleanExpression.get(),
-                                       compilingExceptionThrower)));
+                        new ExceptionThrower<>(() -> new SyntaxException("Failed to recognize boolean expression in brackets.")))));
 
         compilers.put(NUMERIC_BRACKETS, new DetachedStackStatementCompiler(
                 BracketsMachine.create(numericExpression.get(),
-                                       compilingExceptionThrower)));
+                        new ExceptionThrower<>(() -> new SyntaxException("Failed to recognize numeric expression in brackets.")))));
 
         compilers.put(NUMERIC_OPERAND, new DetachedStackStatementCompiler(numericOperand.get()));
 
@@ -270,23 +238,23 @@ public class ProgramElementCompilerFactoryImpl implements ProgramElementCompiler
         compilers.put(STRING_LITERAL, new StringLiteralCompiler());
 
         compilers.put(STRING_EXPRESSION,
-                      new DetachedStackStatementCompiler(stringExpression.get()));
+                new DetachedStackStatementCompiler(stringExpression.get()));
 
         compilers.put(FOR_LOOP, new ForLoopOperatorCompiler(this));
 
         compilers.put(WHILE_LOOP, new WhileLoopCompiler(this));
 
         compilers.put(UNARY_PREFIX_EXPRESSION,
-                      new UnaryPrefixExpressionCompiler(this, new UnaryOperatorFactory()));
+                new UnaryPrefixExpressionCompiler(this, new UnaryOperatorFactory()));
 
         compilers.put(UNARY_POSTFIX_EXPRESSION,
-                      new UnaryPostfixExpressionCompiler(this, new UnaryOperatorFactory()));
+                new UnaryPostfixExpressionCompiler(this, new UnaryOperatorFactory()));
 
-        var readVariableAcceptor = (Supplier<StateAcceptor<List<Command>, CompilingException>>) () ->
+        var unaryExpression = (Supplier<StateAcceptor<List<Command>, SyntaxException>>) () ->
                 FiniteStateMachine.oneOf(
                         "StoredValueMachine",
 
-                        new TransitionOneOfMatrixBuilder<List<Command>, CompilingException>()
+                        new TransitionOneOfMatrixBuilder<List<Command>, SyntaxException>()
                                 .allowTransition(
                                         new CompileStatementAcceptor<List<Command>>(
                                                 this, UNARY_PREFIX_EXPRESSION, List::add)
@@ -300,7 +268,7 @@ public class ProgramElementCompilerFactoryImpl implements ProgramElementCompiler
 
                                 .allowTransition(FiniteStateMachine.oneOf(
                                         "STORED VALUE",
-                                        new TransitionOneOfMatrixBuilder<List<Command>, CompilingException>()
+                                        new TransitionOneOfMatrixBuilder<List<Command>, SyntaxException>()
                                                 .allowTransition(
                                                         new CompileStatementAcceptor<List<Command>>(
                                                                 this,
@@ -315,11 +283,11 @@ public class ProgramElementCompilerFactoryImpl implements ProgramElementCompiler
                                                                 List::add)
                                                                 .named("VARIABLE VALUE")),
 
-                                        compilingExceptionThrower)),
+                                        new ExceptionThrower<>(() -> new SyntaxException("Failed to read variable or structure field.")))),
 
-                        compilingExceptionThrower);
+                        new ExceptionThrower<>(() -> new SyntaxException("Failed to read unary expression.")));
 
-        compilers.put(READ_VARIABLE, new DetachedStackStatementCompiler(readVariableAcceptor.get()));
+        compilers.put(READ_VARIABLE, new DetachedStackStatementCompiler(unaryExpression.get()));
 
         compilers.put(CONDITIONAL_OPERATOR, new ConditionalOperatorCompiler(this));
 

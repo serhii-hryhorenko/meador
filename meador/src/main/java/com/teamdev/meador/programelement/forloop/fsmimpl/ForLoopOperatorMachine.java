@@ -7,7 +7,7 @@ import com.teamdev.fsm.State;
 import com.teamdev.fsm.StateAcceptor;
 import com.teamdev.fsm.TransitionMatrix;
 import com.teamdev.machine.util.TextIdentifierMachine;
-import com.teamdev.meador.programelement.CompilingException;
+import com.teamdev.meador.programelement.SyntaxException;
 import com.teamdev.meador.programelement.ProgramElementCompilerFactory;
 import com.teamdev.meador.programelement.util.CodeBlockMachine;
 import com.teamdev.meador.programelement.util.CompileStatementAcceptor;
@@ -28,16 +28,16 @@ import static com.teamdev.meador.programelement.ProgramElement.VARIABLE_ASSIGNME
  * }
  * </pre>
  */
-public class ForLoopOperatorMachine extends FiniteStateMachine<ForLoopOperatorOutputChain, CompilingException> {
+public class ForLoopOperatorMachine extends FiniteStateMachine<ForLoopOperatorOutputChain, SyntaxException> {
 
     private static final String FOR = "for";
 
     public static ForLoopOperatorMachine create(ProgramElementCompilerFactory factory) {
         Preconditions.checkNotNull(factory);
 
-        var exceptionThrower = new ExceptionThrower<>(CompilingException::new);
+        var exceptionThrower = new ExceptionThrower<>(() -> new SyntaxException("Failed to recognize a for loop operator."));
 
-        var forKeyword = new State.Builder<ForLoopOperatorOutputChain, CompilingException>()
+        var forKeyword = new State.Builder<ForLoopOperatorOutputChain, SyntaxException>()
                 .setName("FOR KEYWORD")
                 .setAcceptor(
                         (reader, outputSequence) -> TextIdentifierMachine.acceptKeyword(reader, FOR,
@@ -45,43 +45,43 @@ public class ForLoopOperatorMachine extends FiniteStateMachine<ForLoopOperatorOu
                 .setTemporary()
                 .build();
 
-        var openBracket = new State.Builder<ForLoopOperatorOutputChain, CompilingException>()
+        var openBracket = new State.Builder<ForLoopOperatorOutputChain, SyntaxException>()
                 .setName("OPEN FOR BRACKET")
                 .setAcceptor(StateAcceptor.acceptChar('('))
                 .build();
 
-        var initVariable = new State.Builder<ForLoopOperatorOutputChain, CompilingException>()
+        var initVariable = new State.Builder<ForLoopOperatorOutputChain, SyntaxException>()
                 .setName("INITIALIZE VARIABLE")
                 .setAcceptor(new CompileStatementAcceptor<>(factory,
                                                             VARIABLE_ASSIGNMENT,
                                                             ForLoopOperatorOutputChain::setVariableDeclaration))
                 .build();
 
-        var repeatCondition = new State.Builder<ForLoopOperatorOutputChain, CompilingException>()
+        var repeatCondition = new State.Builder<ForLoopOperatorOutputChain, SyntaxException>()
                 .setName("REPEAT CONDITION")
                 .setAcceptor(new CompileStatementAcceptor<>(factory,
                                                             BOOLEAN_EXPRESSION,
                                                             ForLoopOperatorOutputChain::setRepeatCondition))
                 .build();
 
-        var repeatSemicolon = new State.Builder<ForLoopOperatorOutputChain, CompilingException>()
+        var repeatSemicolon = new State.Builder<ForLoopOperatorOutputChain, SyntaxException>()
                 .setName("SEMICOLON")
                 .setAcceptor(StateAcceptor.acceptChar(';'))
                 .build();
 
-        var updateVariableStatement = new State.Builder<ForLoopOperatorOutputChain, CompilingException>()
+        var updateVariableStatement = new State.Builder<ForLoopOperatorOutputChain, SyntaxException>()
                 .setName("UPDATE VARIABLE EXPRESSION")
                 .setAcceptor(new CompileStatementAcceptor<>(factory,
                                                             VARIABLE_ASSIGNMENT,
                                                             ForLoopOperatorOutputChain::setUpdateVariableStatement))
                 .build();
 
-        var closeBracket = new State.Builder<ForLoopOperatorOutputChain, CompilingException>()
+        var closeBracket = new State.Builder<ForLoopOperatorOutputChain, SyntaxException>()
                 .setName("CLOSE FOR BRACKET")
                 .setAcceptor(StateAcceptor.acceptChar(')'))
                 .build();
 
-        var loopBody = new State.Builder<ForLoopOperatorOutputChain, CompilingException>()
+        var loopBody = new State.Builder<ForLoopOperatorOutputChain, SyntaxException>()
                 .setName("FOR LOOP BODY")
                 .setAcceptor(
                         CodeBlockMachine.create(factory, ForLoopOperatorOutputChain::setLoopBody))
@@ -97,8 +97,8 @@ public class ForLoopOperatorMachine extends FiniteStateMachine<ForLoopOperatorOu
     }
 
     private ForLoopOperatorMachine(
-            TransitionMatrix<ForLoopOperatorOutputChain, CompilingException> transitionMatrix,
-            ExceptionThrower<CompilingException> thrower) {
+            TransitionMatrix<ForLoopOperatorOutputChain, SyntaxException> transitionMatrix,
+            ExceptionThrower<SyntaxException> thrower) {
         super(transitionMatrix, thrower);
     }
 }

@@ -8,7 +8,7 @@ import com.teamdev.fsm.StateAcceptor;
 import com.teamdev.fsm.TransitionMatrix;
 import com.teamdev.fsm.TransitionMatrixBuilder;
 import com.teamdev.machine.util.TextIdentifierMachine;
-import com.teamdev.meador.programelement.CompilingException;
+import com.teamdev.meador.programelement.SyntaxException;
 import com.teamdev.meador.programelement.ProgramElementCompilerFactory;
 import com.teamdev.meador.programelement.util.BracketedValueMachine;
 
@@ -33,36 +33,36 @@ import static com.teamdev.meador.programelement.ProgramElement.READ_VARIABLE;
  * }
  * </p>
  */
-public class SwitchOperatorMachine extends FiniteStateMachine<SwitchOperatorOutputChain, CompilingException> {
+public class SwitchOperatorMachine extends FiniteStateMachine<SwitchOperatorOutputChain, SyntaxException> {
 
     private static final String SWITCH = "switch";
 
     public static SwitchOperatorMachine create(ProgramElementCompilerFactory factory) {
         Preconditions.checkNotNull(factory);
 
-        var initial = State.<SwitchOperatorOutputChain, CompilingException>initialState();
+        var initial = State.<SwitchOperatorOutputChain, SyntaxException>initialState();
 
-        var exceptionThrower = new ExceptionThrower<>(CompilingException::new);
+        var exceptionThrower = new ExceptionThrower<>(() -> new SyntaxException("Failed to recognize switch operator."));
 
-        var switchKeyword = new State.Builder<SwitchOperatorOutputChain, CompilingException>()
+        var switchKeyword = new State.Builder<SwitchOperatorOutputChain, SyntaxException>()
                 .setName("SWITCH")
                 .setAcceptor((reader, outputSequence) ->
                                      TextIdentifierMachine.acceptKeyword(reader, SWITCH,
                                                                          exceptionThrower))
                 .build();
 
-        var matchedValue = new State.Builder<SwitchOperatorOutputChain, CompilingException>()
+        var matchedValue = new State.Builder<SwitchOperatorOutputChain, SyntaxException>()
                 .setName("MATCHED VALUE")
                 .setAcceptor(BracketedValueMachine.create(factory, READ_VARIABLE,
                                                           SwitchOperatorOutputChain::setMappedValue))
                 .build();
 
-        var openCurlyBracket = new State.Builder<SwitchOperatorOutputChain, CompilingException>()
+        var openCurlyBracket = new State.Builder<SwitchOperatorOutputChain, SyntaxException>()
                 .setName("OPEN CURLY BRACKET")
                 .setAcceptor(StateAcceptor.acceptChar('{'))
                 .build();
 
-        var caseOption = new State.Builder<SwitchOperatorOutputChain, CompilingException>()
+        var caseOption = new State.Builder<SwitchOperatorOutputChain, SyntaxException>()
                 .setName("CASE OPTION")
                 .setAcceptor((inputSequence, outputSequence) -> {
                     var context = new CaseOptionOutputChain();
@@ -78,18 +78,18 @@ public class SwitchOperatorMachine extends FiniteStateMachine<SwitchOperatorOutp
                 .setTemporary()
                 .build();
 
-        var defaultOption = new State.Builder<SwitchOperatorOutputChain, CompilingException>()
+        var defaultOption = new State.Builder<SwitchOperatorOutputChain, SyntaxException>()
                 .setName("DEFAULT OPTION")
                 .setAcceptor(DefaultOptionMachine.create(factory))
                 .build();
 
-        var closeCurlyBracket = new State.Builder<SwitchOperatorOutputChain, CompilingException>()
+        var closeCurlyBracket = new State.Builder<SwitchOperatorOutputChain, SyntaxException>()
                 .setName("CLOSE CURLY BRACKET")
                 .setAcceptor(StateAcceptor.acceptChar('}'))
                 .setFinal()
                 .build();
 
-        var matrix = new TransitionMatrixBuilder<SwitchOperatorOutputChain, CompilingException>()
+        var matrix = new TransitionMatrixBuilder<SwitchOperatorOutputChain, SyntaxException>()
                 .withStartState(initial)
                 .allowTransition(initial, switchKeyword)
                 .allowTransition(switchKeyword, matchedValue)
@@ -103,8 +103,8 @@ public class SwitchOperatorMachine extends FiniteStateMachine<SwitchOperatorOutp
     }
 
     private SwitchOperatorMachine(
-            TransitionMatrix<SwitchOperatorOutputChain, CompilingException> transitionMatrix,
-            ExceptionThrower<CompilingException> thrower) {
+            TransitionMatrix<SwitchOperatorOutputChain, SyntaxException> transitionMatrix,
+            ExceptionThrower<SyntaxException> thrower) {
         super(transitionMatrix, thrower);
     }
 }

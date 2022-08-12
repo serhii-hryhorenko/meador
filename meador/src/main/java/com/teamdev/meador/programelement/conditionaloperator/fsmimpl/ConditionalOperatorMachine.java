@@ -7,7 +7,7 @@ import com.teamdev.fsm.State;
 import com.teamdev.fsm.TransitionMatrix;
 import com.teamdev.fsm.TransitionMatrixBuilder;
 import com.teamdev.machine.util.TextIdentifierMachine;
-import com.teamdev.meador.programelement.CompilingException;
+import com.teamdev.meador.programelement.SyntaxException;
 import com.teamdev.meador.programelement.ProgramElementCompilerFactory;
 import com.teamdev.meador.programelement.util.CodeBlockMachine;
 
@@ -15,24 +15,24 @@ import com.teamdev.meador.programelement.util.CodeBlockMachine;
  * {@link FiniteStateMachine} implementation for parsing Meador conditional operators.
  * Parsing result is stored at {@link ConditionalOperatorOutputChain}.
  */
-public class ConditionalOperatorMachine extends FiniteStateMachine<ConditionalOperatorOutputChain, CompilingException> {
+public class ConditionalOperatorMachine extends FiniteStateMachine<ConditionalOperatorOutputChain, SyntaxException> {
 
     private static final String ELSE = "else";
 
     private ConditionalOperatorMachine(
-            TransitionMatrix<ConditionalOperatorOutputChain, CompilingException> transitionMatrix,
-            ExceptionThrower<CompilingException> thrower) {
+            TransitionMatrix<ConditionalOperatorOutputChain, SyntaxException> transitionMatrix,
+            ExceptionThrower<SyntaxException> thrower) {
         super(transitionMatrix, thrower);
     }
 
     public static ConditionalOperatorMachine create(ProgramElementCompilerFactory factory) {
         Preconditions.checkNotNull(factory);
 
-        var exceptionThrower = new ExceptionThrower<>(CompilingException::new);
+        var exceptionThrower = new ExceptionThrower<>(() -> new SyntaxException("Failed to recognize conditional operator."));
 
-        var initial = State.<ConditionalOperatorOutputChain, CompilingException>initialState();
+        var initial = State.<ConditionalOperatorOutputChain, SyntaxException>initialState();
 
-        var ifOperator = new State.Builder<ConditionalOperatorOutputChain, CompilingException>()
+        var ifOperator = new State.Builder<ConditionalOperatorOutputChain, SyntaxException>()
                 .setName("IF OPERATOR")
                 .setAcceptor((inputSequence, outputSequence) -> {
                     var context = new IfOperatorOutputChain();
@@ -48,7 +48,7 @@ public class ConditionalOperatorMachine extends FiniteStateMachine<ConditionalOp
                 .setFinal()
                 .build();
 
-        var elseKeyword = new State.Builder<ConditionalOperatorOutputChain, CompilingException>()
+        var elseKeyword = new State.Builder<ConditionalOperatorOutputChain, SyntaxException>()
                 .setName("ELSE KEYWORD")
                 .setAcceptor((reader, outputSequence) -> TextIdentifierMachine.acceptKeyword(reader,
                                                                                              ELSE,
@@ -56,14 +56,14 @@ public class ConditionalOperatorMachine extends FiniteStateMachine<ConditionalOp
                 .setTemporary()
                 .build();
 
-        var elseCodeBlock = new State.Builder<ConditionalOperatorOutputChain, CompilingException>()
+        var elseCodeBlock = new State.Builder<ConditionalOperatorOutputChain, SyntaxException>()
                 .setName("ELSE CODE BLOCK")
                 .setAcceptor(CodeBlockMachine.create(factory,
                                                      ConditionalOperatorOutputChain::setElseStatementList))
                 .setFinal()
                 .build();
 
-        var matrix = new TransitionMatrixBuilder<ConditionalOperatorOutputChain, CompilingException>()
+        var matrix = new TransitionMatrixBuilder<ConditionalOperatorOutputChain, SyntaxException>()
                 .withStartState(initial)
                 .allowTransition(initial, ifOperator)
                 .allowTransition(ifOperator, elseKeyword)

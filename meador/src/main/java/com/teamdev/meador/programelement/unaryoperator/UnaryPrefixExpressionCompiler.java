@@ -2,7 +2,7 @@ package com.teamdev.meador.programelement.unaryoperator;
 
 import com.google.common.base.Preconditions;
 import com.teamdev.fsm.InputSequenceReader;
-import com.teamdev.meador.programelement.CompilingException;
+import com.teamdev.meador.programelement.SyntaxException;
 import com.teamdev.meador.programelement.ProgramElementCompiler;
 import com.teamdev.meador.programelement.ProgramElementCompilerFactory;
 import com.teamdev.meador.programelement.unaryoperator.fsmimpl.PrefixUnaryOperatorMachine;
@@ -35,7 +35,7 @@ public class UnaryPrefixExpressionCompiler implements ProgramElementCompiler {
     }
 
     @Override
-    public Optional<Command> compile(InputSequenceReader reader) throws CompilingException {
+    public Optional<Command> compile(InputSequenceReader reader) throws SyntaxException {
         UnaryExpressionOutputChain outputChain = new UnaryExpressionOutputChain();
 
         if (PrefixUnaryOperatorMachine.create(statementCompilerFactory, unaryOperatorFactory)

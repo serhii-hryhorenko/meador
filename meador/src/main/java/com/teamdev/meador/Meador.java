@@ -1,6 +1,5 @@
 package com.teamdev.meador;
 
-import com.teamdev.meador.programelement.CompilingException;
 import com.teamdev.runtime.MeadorRuntimeException;
 import com.teamdev.runtime.RuntimeEnvironment;
 
@@ -21,9 +20,6 @@ public class Meador {
                 optionalProgram.get()
                                .execute(environment);
             }
-        } catch (CompilingException ce) {
-            throw new InvalidProgramException("ERROR CAUGHT DURING COMPILATION."
-                                                      + System.lineSeparator() + ce.getMessage());
         } catch (MeadorRuntimeException mre) {
             throw new InvalidProgramException("RUNTIME ERROR WHILE EXECUTING PROGRAM."
                                                       + System.lineSeparator() + mre.getMessage());
