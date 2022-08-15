@@ -23,7 +23,7 @@ public class MeadorServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var program = new Program(req.getParameter("program"));
 
         var executor = new Meador();
